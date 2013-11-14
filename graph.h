@@ -14,4 +14,6 @@ void deleteEdge(Graph, int i1, int i2);
 bool areNeighbor(Graph, int i1, int i2);
 List neighbor(Graph, int);
 
+int size(Graph); // retourne le nombre de sommets du graphe
+
 #endif

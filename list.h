@@ -17,4 +17,8 @@ int list_size(List);
 bool list_contain(List, int);
 void display(List);
 
+Elem list_head(List);
+List list_tail(List);
+int list_elemVal(Elem);
+
 #endif

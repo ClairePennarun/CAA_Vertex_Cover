@@ -18,7 +18,7 @@ struct list{
 
 List list_createList(){
   List l = malloc(sizeof(List));
-  assert(l!= NULL);
+  assert(l);
   l->size = 0;
   l->first = NULL;
   l->last = NULL;
@@ -27,7 +27,7 @@ List list_createList(){
 
 Elem list_createElem(Elem previous, Elem next, int val){
   Elem e = malloc(sizeof(struct elem));
-  assert(e!=NULL);
+  assert(e);
   e->previous = previous;
   e->next = next;
   e->val = val;
@@ -50,11 +50,11 @@ void list_freeList(List l){
 void list_freeElem(List l, Elem e){
   Elem previous = e->previous;
   Elem next = e->next;
-  if (previous == NULL) // e était le premier élément, donc next le remplace
+  if (previous == NULL) // e etait le premier element, donc next le remplace
     l->first = next;
   else
     previous->next = next;
-  if (next == NULL) // e était le dernier élément, donc previous le remplace
+  if (next == NULL) // e etait le dernier element, donc previous le remplace
     l->last = previous;
   else
     next->previous = previous;
@@ -62,12 +62,12 @@ void list_freeElem(List l, Elem e){
   free(e);
 }
 
-void list_addInFront(List l, int n){
+void list_addInFront(List l, int n){ // a renommer addInQueue ?
   Elem previous = l->last;
   Elem e = createElem(previous, NULL, n);
   if (previous != NULL)
     previous->next = e;
-  else // La liste était vide : l'élément ajouté à la fin sera également le premier élément
+  else // La liste etait vide : l'element ajoute a la fin sera egalement le premier element
     l->first = e;
   l->last = e;
   l->size = l->size + 1;
@@ -78,7 +78,7 @@ void list_insertInHead(List l, int n){
   Elem e = createElem(NULL, next, n);
   if (next != NULL)
     next->previous = e;
-  else // La liste était vide : l'élément ajouté en tête sera également le dernier élément
+  else // La liste etait vide : l'element ajoute en tete sera egalement le dernier element
     l->last = e;
   l->first = e;
   l->size = l->size + 1;
@@ -117,4 +117,17 @@ void display(List l){
     e = e->next;
   }
   printf("]");
+}
+
+Elem list_head(List l){
+  return list->first;
+}
+
+List list_tail(List l){
+  list_freeElem(list_head(l));
+  return l;
+}
+
+int list_elemVal(Elem e){
+  return e->val;
 }

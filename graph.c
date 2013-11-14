@@ -2,18 +2,18 @@
 #include <malloc.h>
 #include <stdbool.h>
 
-#include "graphe.h"
+#include "graph.h"
 #include "list.h"
 
 struct graph{
-  Vertex* allVertices;
-  int** neighborhood;
+  Vertex* allVertices; //tableau des listes de voisinage
+  int** neighborhood; //matrice d'adjacence globale
   int numberOfVertices;
   int isConstruct;
 };
 
 struct vertex{
-  List neighbor;
+  List neighbor; //liste des voisins
 };
 
 Graph
@@ -47,7 +47,7 @@ addEdge(Graph g, int i1, int i2){
 
 void
 deleteEdge(Graph g, int i1, int i2){
-  // Il faut que l'arete existe reellement
+  // Il faut que l'arete existe
   Vertex v1 = (g->allVertices)[i1];
   Vertex v2 = (g->allVertices)[i2];
   list_deleteFirstOccur(v1->neighbor, i2);
@@ -66,3 +66,6 @@ neighbor(Graph g, int i1){
   return v1->neighbor;
 }
   
+int size(Graph g){
+  return g->numberOfVertices;
+}

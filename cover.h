@@ -1,23 +1,24 @@
 #ifndef COVER_H
 #define COVER_H
 // Module de recherche de couverture par sommets
+#include "graph.h"
 
 // Algorithme glouton : graphes quelconques
-Cover greedyAlg (Graph g); 
+List greedyAlg (Graph g); 
 
 // Algo optimal : arbres
-Cover treeOptAlg(Graph g);
+int* treeOptAlg(Graph g);
 
 // Algo optimal : graphes bipartis
-Cover bipartiteOptAlg (Graph g);
+int* bipartiteOptAlg (Graph g);
 
 // Algo 2-approche par arbres couvrants
-Cover spanningTreeAlg(Graph g);
+int* spanningTreeAlg(Graph g);
 
 // Algo 2-approche par elimination d'aretes
-Cover edgesDeletionAlg(Graph g);
+int* edgesDeletionAlg(Graph g);
 
 // Algo optimal petite couverture
-Cover littleCoverAlg(Graph g);
+int* littleCoverAlg(Graph g);
 
 #endif
