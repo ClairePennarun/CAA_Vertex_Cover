@@ -3,23 +3,22 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#include <list.h>
-
-struct list{
-  Elem first ;
-  Elem last;
-  int size;
-};
-
+#include "list.h"
 struct elem{
   int val;
   Elem previous;
   Elem next;
 };
 
-ListeDC list_createList(){
-  List l = malloc(sizeof(struct list));
-  assert(l);
+struct list{
+  Elem first;
+  Elem last;
+  int size;
+};
+
+List list_createList(){
+  List l = malloc(sizeof(List));
+  assert(l!= NULL);
   l->size = 0;
   l->first = NULL;
   l->last = NULL;
@@ -28,7 +27,7 @@ ListeDC list_createList(){
 
 Elem list_createElem(Elem previous, Elem next, int val){
   Elem e = malloc(sizeof(struct elem));
-  assert(e);
+  assert(e!=NULL);
   e->previous = previous;
   e->next = next;
   e->val = val;
@@ -97,7 +96,7 @@ int list_size(List l){
   return l->size;
 }
 
-int list_contain(List l, int n){
+bool list_contain(List l, int n){
   Elem e = l->first;
   while (e != NULL){
     if (e->val == n)
@@ -114,7 +113,7 @@ void display(List l){
     printf("%d", e->val);
   e = e->next;
   while (e != NULL){
-    print(", %d", e->val)
+    print(", %d", e->val);
     e = e->next;
   }
   printf("]");
