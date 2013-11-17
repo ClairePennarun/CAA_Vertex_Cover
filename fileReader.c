@@ -12,28 +12,33 @@ Graph readFile(char* file){
   
   tmpfile = fopen(file, "r");
   
-  if (tmpfile != NULL)
-    {
-      getline(&line, &len, tmpfile); // recuperation de la premiere ligne
-      char* tok = strtok(line, "\n"); // recuperation du nb de sommets
-      int nbVertices = atoi(tok);
-      Graph graph = createGraph(nbVertices);
+  if (tmpfile != NULL) {
+    getline(&line, &len, tmpfile); // recuperation de la premiere ligne
+    char* tok = strtok(line, "\n"); // recuperation du nb de sommets
+    int nbVertices = atoi(tok);
+    Graph graph = createGraph(nbVertices);
 
-      int i = 1;
-      while (i <= nbVertices){
-	getline(&line, &len, tmpfile); // recuperation d'une ligne
-	char* tok = strtok(line, ":");
-	while (tok){
-	  tok = strtok(NULL, " ");
-	  int vertex = atoi(tok);
-	  addEdge(graph, i, vertex);
-	}
-	i++;
+    int i = 0;
+    while(i < nbVertices){
+      getline(&line, &len, tmpfile); // recuperation d'une ligne
+      tok = strtok(line, ":");
+      i = atoi(tok);
+
+      tok = strtok(NULL, ":");
+      while(*tok == ' '){
+	tok ++;
       }
-      
-      fclose(tmpfile);
-      return graph;
-    }
+      tok = strtok(tok, " ");
+      while (tok){
+	int vertex = atoi(tok);
+	addEdge(graph, i, vertex);
+	tok = strtok(NULL, " ");
+      }
+    }  
+    fclose(tmpfile);
+    return graph;
+  }
+
   free(line);
   return NULL;
 }

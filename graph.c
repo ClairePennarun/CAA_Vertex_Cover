@@ -39,8 +39,8 @@ createVertex(){
 
 void
 addEdge(Graph g, int i1, int i2){
-  Vertex v1 = (g->allVertices)[i1];
-  Vertex v2 = (g->allVertices)[i2];
+  Vertex v1 = (g->allVertices)[i1-1];
+  Vertex v2 = (g->allVertices)[i2-1];
   list_addInFront(v1->neighbor, i2);
   list_addInFront(v2->neighbor, i1);
 }
@@ -48,15 +48,15 @@ addEdge(Graph g, int i1, int i2){
 void
 deleteEdge(Graph g, int i1, int i2){
   // Il faut que l'arete existe
-  Vertex v1 = (g->allVertices)[i1];
-  Vertex v2 = (g->allVertices)[i2];
+  Vertex v1 = (g->allVertices)[i1-1];
+  Vertex v2 = (g->allVertices)[i2-1];
   list_deleteFirstOccur(v1->neighbor, i2);
   list_deleteFirstOccur(v2->neighbor, i1);
 }
 
 bool
 areNeighbor(Graph g, int i1, int i2){
-  Vertex v1 = (g->allVertices)[i1];
+  Vertex v1 = (g->allVertices)[i1-1];
   return list_contain(v1->neighbor, i2);
 }
 

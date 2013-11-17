@@ -62,7 +62,7 @@ void list_freeElem(List l, Elem e){
   free(e);
 }
 
-void list_addInFront(List l, int n){ // a renommer addInQueue ?
+void list_addInFront(List l, int n){ // a renommer addInBack ?
   Elem previous = l->last;
   Elem e = list_createElem(previous, NULL, n);
   if (previous != NULL)
@@ -110,13 +110,14 @@ void display(List l){
   Elem e = l->first;
   printf("[");
   if (e != NULL)
-    printf("%d", e->val);
+  printf("%d", e->val);
   e = e->next;
   while (e != NULL){
     printf(", %d", e->val);
     e = e->next;
   }
   printf("]");
+  printf("\n");
 }
 
 Elem list_head(List l){
