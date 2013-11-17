@@ -31,7 +31,9 @@ Graph readFile(char* file){
       tok = strtok(tok, " ");
       while (tok){
 	int vertex = atoi(tok);
-	addEdge(graph, i, vertex);
+	if (!areNeighbor(graph,i,vertex)){
+	  addEdge(graph, i, vertex);
+	}
 	tok = strtok(NULL, " ");
       }
     }  
