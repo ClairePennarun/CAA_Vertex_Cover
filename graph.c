@@ -69,3 +69,10 @@ neighbor(Graph g, int i1){
 int size(Graph g){
   return g->numberOfVertices;
 }
+
+void displayVertices(Graph g){
+  for (int i =0; i< size(g); i++){
+    List l = neighbor(g,i);
+    display(l);
+  }
+}

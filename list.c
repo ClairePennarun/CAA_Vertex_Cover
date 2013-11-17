@@ -64,7 +64,7 @@ void list_freeElem(List l, Elem e){
 
 void list_addInFront(List l, int n){ // a renommer addInQueue ?
   Elem previous = l->last;
-  Elem e = createElem(previous, NULL, n);
+  Elem e = list_createElem(previous, NULL, n);
   if (previous != NULL)
     previous->next = e;
   else // La liste etait vide : l'element ajoute a la fin sera egalement le premier element
@@ -75,7 +75,7 @@ void list_addInFront(List l, int n){ // a renommer addInQueue ?
 
 void list_insertInHead(List l, int n){
   Elem next = l->first;
-  Elem e = createElem(NULL, next, n);
+  Elem e = list_createElem(NULL, next, n);
   if (next != NULL)
     next->previous = e;
   else // La liste etait vide : l'element ajoute en tete sera egalement le dernier element
@@ -89,7 +89,7 @@ void list_deleteFirstOccur(List l, int n){
   Elem e = l->first;
   while (e->val != n)
     e = e->next;
-  freeElem(e);
+  list_freeElem(l,e);
 }
 
 int list_size(List l){
@@ -113,18 +113,18 @@ void display(List l){
     printf("%d", e->val);
   e = e->next;
   while (e != NULL){
-    print(", %d", e->val);
+    printf(", %d", e->val);
     e = e->next;
   }
   printf("]");
 }
 
 Elem list_head(List l){
-  return list->first;
+  return l->first;
 }
 
 List list_tail(List l){
-  list_freeElem(list_head(l));
+  list_freeElem(l,list_head(l));
   return l;
 }
 
