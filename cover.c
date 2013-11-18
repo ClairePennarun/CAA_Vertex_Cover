@@ -7,8 +7,10 @@ int maxDegreeVertex(int* degrees, int size){
   int maxVertex = 0 ;
   int maxDegree = 0 ;
   for (int i=0; i < size; i++){
-    if (degrees[i] > maxDegree)
+    if (degrees[i] > maxDegree){
       maxVertex = i;
+      maxDegree = degrees[i];
+    }
   }
   return maxVertex;
 }
@@ -21,16 +23,22 @@ List greedyAlg (Graph g){
   for (int i = 0; i< size(g); i++){
     degrees[i] = list_size(neighbor(g,i));
   }
-  while(degmax !=0){
-    int v = maxDegreeVertex(degrees, size(g));
+  while(degmax !=0){ // tant que le graphe n'est pas vide
+    int v = maxDegreeVertex(degrees, size(g)); // on cherche le sommet avec deg max
     degmax = degrees[v];
-    if (degmax != 0)
-      list_insertInHead(cover, v);
-    List listNeighbors = neighbor(g,v);
-    degrees[v] = 0;
-    while (listNeighbors != NULL){
-      degrees[list_elemVal(list_head(listNeighbors))] --;
-      listNeighbors = list_tail(listNeighbors);
+    if (degmax != 0){
+      printf("on rajoute le sommet %d \n", v+1);
+      list_insertInHead(cover, v+1); // on le met dans la couverture
+      List listNeighbors = neighbor(g,v);
+      degrees[v] = 0; // on met a jour les degres
+      while (list_head(listNeighbors) != NULL){
+	Elem head = list_head(listNeighbors);
+	int val_head = list_elemVal(head);
+	List neighbors_val_head = neighbor(g,val_head-1);
+	list_deleteFirstOccur(neighbors_val_head,v+1);
+	degrees[val_head-1] --;
+	listNeighbors = list_tail(listNeighbors);
+      }
     }
   }
   return cover;

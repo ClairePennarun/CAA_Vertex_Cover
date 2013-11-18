@@ -107,17 +107,21 @@ bool list_contain(List l, int n){
 }
 
 void display(List l){
-  Elem e = l->first;
-  printf("[");
-  if (e != NULL)
-  printf("%d", e->val);
-  e = e->next;
-  while (e != NULL){
-    printf(", %d", e->val);
+  if (list_size(l) == 0)
+    printf("[ ] \n");
+  else{
+    Elem e = l->first;
+    printf("[");
+    if (e != NULL)
+      printf("%d", e->val);
     e = e->next;
+    while (e != NULL){
+      printf(", %d", e->val);
+      e = e->next;
+    }
+    printf("]");
+    printf("\n");
   }
-  printf("]");
-  printf("\n");
 }
 
 Elem list_head(List l){
