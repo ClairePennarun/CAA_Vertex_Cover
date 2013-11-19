@@ -28,6 +28,10 @@ Graph createGraph(int size){
   return newGraph;
 }
 
+Vertex* vertices(Graph g){
+  return g->allVertices;
+}
+
 int size(Graph g){
   return g->numberOfVertices;
 }
@@ -106,9 +110,17 @@ int maxDegreeVertex(Graph g){
 
 // retourne une feuille (si g est un arbre non vide il y en a toujours une)
 int findLeaf(Graph g){
+  for (int i=0; i< size(g); i++){
+    if (list_size(neighbor(g,i)) == 1)
+      return i;
+  }
+  return -1;
 }
 
 //supprime les sommets isoles du graphe g
 void deleteIsolated(Graph g){
-
+  for (int i=0; i< size(g); i++){
+    if (list_size(neighbor(g,i)) == 0)
+      vertices(g)[i] = NULL;
+  }
 }
