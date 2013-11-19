@@ -3,49 +3,35 @@
 #include "graph.h"
 #include <malloc.h>
 
-int maxDegreeVertex(int* degrees, int size){
-  int maxVertex = 0 ;
-  int maxDegree = 0 ;
-  for (int i=0; i < size; i++){
-    if (degrees[i] > maxDegree){
-      maxVertex = i;
-      maxDegree = degrees[i];
-    }
-  }
-  return maxVertex;
-}
-
 // Algorithme glouton : graphes quelconques
 List greedyAlg (Graph g){
   List cover = list_createList();
   int degmax = 1;
-  int* degrees = malloc(size(g)*sizeof(int));
-  for (int i = 0; i< size(g); i++){
-    degrees[i] = list_size(neighbor(g,i));
-  }
   while(degmax !=0){ // tant que le graphe n'est pas vide
-    int v = maxDegreeVertex(degrees, size(g)); // on cherche le sommet avec deg max
-    degmax = degrees[v];
+    int v = maxDegreeVertex(g); // on cherche le sommet avec deg max
+    degmax = list_size(neighbor(g,v));
     if (degmax != 0){
-      printf("on rajoute le sommet %d \n", v+1);
-      list_insertInHead(cover, v+1); // on le met dans la couverture
-      List listNeighbors = neighbor(g,v);
-      degrees[v] = 0; // on met a jour les degres
-      while (list_head(listNeighbors) != NULL){
-	Elem head = list_head(listNeighbors);
-	int val_head = list_elemVal(head);
-	List neighbors_val_head = neighbor(g,val_head-1);
-	list_deleteFirstOccur(neighbors_val_head,v+1);
-	degrees[val_head-1] --;
-	listNeighbors = list_tail(listNeighbors);
-      }
+      //printf("on rajoute le sommet %d \n", v+1);
+      list_addInFront(cover, v+1); // on le met dans la couverture
+      deleteEdges(g, v); // on supprime les aretes adjacentes à v  
     }
   }
   return cover;
 }
 
 // Algo optimal : arbres
-int* treeOptAlg(Graph g){
+List treeOptAlg(Graph g){
+  List cover = list_createList();
+  int degmax = 1;
+  while(degmax !=0){ // tant que le graphe n'est pas vide
+    int v = findLeaf(g);
+    int w = list_elemVal(list_head(neighbor(g,v))); // voisin (unique) de v
+    //printf("on rajoute le sommet %d \n", w);
+    list_addInFront(cover, w); // on le met dans la couverture
+    deleteEdges(g, w); // on supprime les aretes adjacentes à w
+    deleteIsolated(g);
+  }
+  return cover;
 }
 
 // Algo optimal : graphes bipartis

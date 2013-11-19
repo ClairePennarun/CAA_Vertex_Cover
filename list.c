@@ -85,11 +85,11 @@ void list_insertInHead(List l, int n){
 }
 
 void list_deleteFirstOccur(List l, int n){
-  // On suppose que cette valeur se trouve au moins une fois dans la liste l
   Elem e = l->first;
-  while (e->val != n)
+  while (e->val != n && e != NULL)
     e = e->next;
-  list_freeElem(l,e);
+  if (e->val == n)
+    list_freeElem(l,e);
 }
 
 int list_size(List l){

@@ -7,7 +7,7 @@
 List greedyAlg (Graph g); 
 
 // Algo optimal : arbres
-int* treeOptAlg(Graph g);
+List treeOptAlg(Graph g);
 
 // Algo optimal : graphes bipartis
 int* bipartiteOptAlg (Graph g);
