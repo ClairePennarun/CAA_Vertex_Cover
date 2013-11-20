@@ -32,12 +32,12 @@ List treeOptAlg(Graph g){
     if (v == -1)
       nonEmpty = 0;
     else{
-      Elem e = firstPositive(neighbor(g,v), degrees);
+      Elem e = firstPositive(neighbor(g,v), degrees); // on cherche un voisin de v de degre non nul
       int w = list_elemVal(e);
       list_addInFront(cover, w); // on le met dans la couverture
-      degrees[w-1]= 0;
+      degrees[w-1]= 0; // on met a jour son degre
       List listNeighbors = neighbor(g,w-1);
-      while (list_head(listNeighbors) != NULL){
+      while (list_head(listNeighbors) != NULL){ // on met a jour les degres de ses voisins
   	Elem head = list_head(listNeighbors);
   	int val_head = list_elemVal(head);
   	List neighbors_val_head = neighbor(g,val_head-1);
@@ -58,7 +58,17 @@ int* spanningTreeAlg(Graph g){
 }
 
 // Algo 2-approche par elimination d'aretes
-int* edgesDeletionAlg(Graph g){
+List edgesDeletionAlg(Graph g){
+  List cover = list_createList();
+  int* edge = findEdge(g);
+  while(edge[0] != -1){
+    list_addInFront(cover, edge[0]);
+    list_addInFront(cover, edge[1]);
+    deleteEdges(g,edge[0]);
+    deleteEdges(g,edge[1]);
+    int* edge = findEdge(g);
+  }
+  return cover;
 }
 
 // Algo optimal petite couverture

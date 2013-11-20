@@ -85,6 +85,20 @@ void deleteEdges(Graph g, int v){
   }
 }
 
+int* findEdge(Graph g){
+  int* edge = malloc(2*sizeof(int));
+  edge[0] = -1;
+  edge[1] = -1;
+  for (int i =0; i< size(g); i++){
+    List list_neighbors = neighbor(g,i);
+    if (list_size(list_neighbors) > 0){
+	edge[0] = i;
+	edge[1] = list_elemVal(list_head(list_neighbors));
+    }
+  }
+  return edge;
+}
+
 // test de voisinage
 bool areNeighbor(Graph g, int i1, int i2){
   Vertex v1 = (g->allVertices)[i1-1];

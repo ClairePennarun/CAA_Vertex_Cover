@@ -16,7 +16,7 @@ int* bipartiteOptAlg (Graph g);
 int* spanningTreeAlg(Graph g);
 
 // Algo 2-approche par elimination d'aretes
-int* edgesDeletionAlg(Graph g);
+List edgesDeletionAlg(Graph g);
 
 // Algo optimal petite couverture
 int* littleCoverAlg(Graph g);
