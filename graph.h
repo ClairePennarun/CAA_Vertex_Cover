@@ -27,9 +27,7 @@ struct edge findEdge(Graph);
 
 /* *** Fonctions sur les sommets *** */
 int maxDegreeVertex(Graph);
-int findLeafGraph(Graph);
 int findLeaf(int* degrees, int size);
-void deleteIsolated(Graph);
 
 
 
