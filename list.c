@@ -106,6 +106,16 @@ bool list_contain(List l, int n){
   return false;
 }
 
+Elem firstPositive(List l, int* degrees){
+  Elem e = l->first;
+  while (e != NULL){
+    if (degrees[e->val] > 0)
+      return e;
+    e = e->next;
+  }
+  return NULL;
+}
+
 void display(List l){
   if (list_size(l) == 0)
     printf("[ ] \n");

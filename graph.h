@@ -21,7 +21,8 @@ bool areNeighbor(Graph, int i1, int i2);
 
 /* *** Fonctions sur les sommets *** */
 int maxDegreeVertex(Graph);
-int findLeaf(Graph);
+int findLeafGraph(Graph);
+int findLeaf(int* degrees, int size);
 void deleteIsolated(Graph);
 
 

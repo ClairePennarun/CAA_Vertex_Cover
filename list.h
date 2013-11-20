@@ -15,6 +15,7 @@ void list_insertInHead(List, int);
 void list_deleteFirstOccur(List, int);
 int list_size(List);
 bool list_contain(List, int);
+Elem firstPositive(List, int*);
 void display(List);
 
 Elem list_head(List);

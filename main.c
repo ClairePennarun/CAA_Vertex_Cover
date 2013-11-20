@@ -8,8 +8,8 @@
 int main(int argc, char* argv[]){
   Graph g = readFile(argv[1]);
   
-  displayVertices(g);
-  List cover = greedyAlg(g);
+  //displayVertices(g);
+  List cover = treeOptAlg(g);
   display(cover);
   return EXIT_SUCCESS;
 }

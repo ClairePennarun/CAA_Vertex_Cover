@@ -1,5 +1,5 @@
 // Module de generation aleatoire de graphes
-#include "Generation.h"
+#include "generation.h"
 
 // generation d'arbre a n sommets
 Graph treeGeneration (int n){

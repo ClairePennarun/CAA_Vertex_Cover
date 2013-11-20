@@ -109,9 +109,17 @@ int maxDegreeVertex(Graph g){
 }
 
 // retourne une feuille (si g est un arbre non vide il y en a toujours une)
-int findLeaf(Graph g){
+int findLeafGraph(Graph g){
   for (int i=0; i< size(g); i++){
     if (list_size(neighbor(g,i)) == 1)
+      return i;
+  }
+  return -1;
+}
+
+int findLeaf(int* degrees, int size){
+  for (int i=0; i<size; i++){
+    if (degrees[i] == 1)
       return i;
   }
   return -1;
