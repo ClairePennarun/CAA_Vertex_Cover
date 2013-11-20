@@ -60,13 +60,13 @@ int* spanningTreeAlg(Graph g){
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g){
   List cover = list_createList();
-  int* edge = findEdge(g);
-  while(edge[0] != -1){
-    list_addInFront(cover, edge[0]);
-    list_addInFront(cover, edge[1]);
-    deleteEdges(g,edge[0]);
-    deleteEdges(g,edge[1]);
-    int* edge = findEdge(g);
+  struct edge e = findEdge(g);
+  while(e.src != -1){
+    list_addInFront(cover, e.src);
+    list_addInFront(cover, e.tgt);
+    deleteEdges(g,e.src);
+    deleteEdges(g,e.tgt);
+    e = findEdge(g);
   }
   return cover;
 }

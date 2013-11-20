@@ -10,6 +10,6 @@ int main(int argc, char* argv[]){
   
   //displayVertices(g);
   List cover = edgesDeletionAlg(g);
-  display(cover)
+  display(cover);
   return EXIT_SUCCESS;
 }
