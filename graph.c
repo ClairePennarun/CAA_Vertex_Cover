@@ -37,8 +37,10 @@ void g_freeGraph(Graph g){
     if (g->isConstruct)
       free((g->neighborhood)[i]);
     v = g_getVertex(g,i);
-    l_freeList(v->neighbors);
-    free(v);
+    if (v != NULL){
+      l_freeList(v->neighbors);
+      free(v);
+    }
   }
 
   if (g->isConstruct)
@@ -84,7 +86,7 @@ int g_degreGraph(Graph g){
   int size = g_getSize(g);
   int deg;
   for (int i=0; i<size; i++){
-    deg = l_size(g_getNeighbors(g,i));
+    deg = g_getDegreVertex(g,i);
     if (deg > maxDegre)
       maxDegre = deg;
   }
@@ -94,14 +96,14 @@ int g_degreGraph(Graph g){
 // Retourne le sommet de degré le plus grand
 int g_maxDegreVertex(Graph g){
   int maxVertex = 0;
-  int maxDegree = 0;
+  int maxDegre = -1;
   int size = g_getSize(g);
   int deg;
   for (int i=0; i<size; i++){
-    deg = l_size(g_getNeighbors(g,i));
-    if (deg > maxDegree){
+    deg = g_getDegreVertex(g,i);
+    if (deg > maxDegre){
       maxVertex = i;
-      maxDegree = deg;
+      maxDegre = deg;
     }
   }
   return (maxVertex+1);
@@ -130,17 +132,21 @@ int g_findLeaf(int* degrees, int size){
 void g_deleteIsolated(Graph g){
   int size = g_getSize(g);
   for (int i=0; i<size; i++){
-    if (g_getDegreVertex(g,i) == 1)
+    if (g_getDegreVertex(g,i) == 0)
       g_freeVertex(g, i);
   }
 }
 
 void g_display(Graph g){
   int size = g_getSize(g);
+  printf("Graphe :\n");
   for (int i=0; i<size; i++){
     List l = g_getNeighbors(g,i);
     printf("%d: ", i);
-    l_display(l);
+    if (l != NULL)
+      l_display(l);
+    else
+      printf("NULL\n");
   }
 }
 
@@ -206,8 +212,9 @@ bool g_areNeighbor(Graph g, int i1, int i2){
 
 // test de voisinage
 bool areNeighbor(Graph g, int i1, int i2){
-  Vertex v1 = (g->allVertices)[i1-1];
-  return list_contain(v1->neighbor, i2);
+  if (g->isConstruct)
+    return l_contain(g_getNeighbors(g,i1-1), i2);
+  return ((g->neighborhood)[i1][i2] == 1);
 }
 
 /* *** Fonctions sur les sommets *** */
@@ -234,9 +241,15 @@ Vertex g_getVertex(Graph g, int i){
 }
 
 List g_getNeighbors(Graph g, int i){
-  return ((g->allVertices)[i])->neighbors;
+  Vertex v = g->allVertices[i];
+  if (v != NULL)
+    return (v->neighbors);
+  return NULL;
 }
 
 int g_getDegreVertex(Graph g, int i){
-  return l_size(((g->allVertices)[i])->neighbors);
+  Vertex v = g->allVertices[i];
+  if (v != NULL)
+    return l_size(v->neighbors);
+  return -1;
 }

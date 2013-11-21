@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.
 
-#include "list.h"
+#include "..\list.h"
 
 int main(int argc, char* argv[]){
   List l = l_createList();
