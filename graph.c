@@ -191,21 +191,24 @@ bool g_areNeighbor(Graph g, int i1, int i2){
   }
 }
 
-/*
-  int* findEdge(Graph g){
-  int* edge = malloc(2*sizeof(int));
-  edge[0] = -1;
-  edge[1] = -1;
-  for (int i=0; i<g_size(g); i++){
-    List l_neighbors = neighbor(g,i);
-    if (l_size(l_neighbors) > 0){
-	edge[0] = i;
-	edge[1] = list_elemVal(l_head(l_neighbors));
+/*struct edge findEdge(Graph g){
+  //int* edge = malloc(2*sizeof(int));
+  struct edge e = {-1, -1};
+  for (int i =0; i< size(g); i++){
+    List list_neighbors = neighbor(g,i);
+    if (list_size(list_neighbors) > 0){
+	e.src = i;
+	e.tgt = list_elemVal(list_head(list_neighbors));
     }
   }
-  return edge;
-  }
-??????????????????? */
+  return e;
+}*/
+
+// test de voisinage
+bool areNeighbor(Graph g, int i1, int i2){
+  Vertex v1 = (g->allVertices)[i1-1];
+  return list_contain(v1->neighbor, i2);
+}
 
 /* *** Fonctions sur les sommets *** */
 

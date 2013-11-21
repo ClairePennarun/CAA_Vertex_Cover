@@ -7,6 +7,11 @@
 typedef struct graph* Graph;
 typedef struct vertex* Vertex;
 
+/*struct edge{
+  int src;
+  int tgt;
+  };*/
+
 /* *** Fonctions du graphe *** */
 Graph g_createGraph(int);
 void g_freeGraph(Graph);

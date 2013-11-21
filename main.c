@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
   Graph g = readFile(argv[1]);
   
   //displayVertices(g);
-  List cover = edgesDeletionAlg(g);
-  display(cover)
+  List cover = treeOptAlg(g);
+  display(cover);
   return EXIT_SUCCESS;
 }
