@@ -7,25 +7,29 @@
 typedef struct graph* Graph;
 typedef struct vertex* Vertex;
 
-Graph createGraph(int size);
-Vertex createVertex();
-int size(Graph); // retourne le nombre de sommets du graphe
-void displayVertices(Graph);
-List neighbor(Graph, int);
+/* *** Fonctions du graphe *** */
+Graph g_createGraph(int);
+void g_freeGraph(Graph);
+int g_getSize(Graph);
+int g_degreGraph(Graph);
+int g_maxDegreVertex(Graph);
+int g_findLeafGraph(Graph);
+int g_findLeaf(int*, int);
+void g_deleteIsolated(Graph);
+void g_display(Graph);
 
 /* *** Fonctions sur les aretes *** */
-void addEdge(Graph, int i1, int i2);
-void deleteEdge(Graph, int i1, int i2);
-void deleteEdges(Graph, int v);
-bool areNeighbor(Graph, int i1, int i2);
-int* findEdge(Graph);
+void g_addEdge(Graph, int, int);
+void g_deleteEdge(Graph, int, int);
+void g_deleteEdges(Graph, int);
+bool areNeighbor(Graph, int, int);
+//int* findEdge(Graph);
 
 /* *** Fonctions sur les sommets *** */
-int maxDegreeVertex(Graph);
-int findLeafGraph(Graph);
-int findLeaf(int* degrees, int size);
-void deleteIsolated(Graph);
-
-
+Vertex g_createVertex();
+void g_freeVertex(Graph, int);
+Vertex g_getVertex(Graph, int);
+List g_getNeighbors(Graph, int);
+int g_getDegreVertex(Graph, int);
 
 #endif

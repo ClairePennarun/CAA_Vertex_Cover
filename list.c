@@ -4,28 +4,31 @@
 #include <stdbool.h>
 
 #include "list.h"
+
+struct list{
+  Elem first;
+  Elem last;
+  Elem current;
+  int size;
+};
+
 struct elem{
   int val;
   Elem previous;
   Elem next;
 };
 
-struct list{
-  Elem first;
-  Elem last;
-  int size;
-};
-
-List list_createList(){
-  List l = malloc(sizeof(List));
+List l_createList(){
+  List l = malloc(sizeof(struct list));
   assert(l);
   l->size = 0;
   l->first = NULL;
+  l->current = NULL;
   l->last = NULL;
   return l;
 }
 
-Elem list_createElem(Elem previous, Elem next, int val){
+Elem l_createElem(Elem previous, Elem next, int val){
   Elem e = malloc(sizeof(struct elem));
   assert(e);
   e->previous = previous;
@@ -34,10 +37,10 @@ Elem list_createElem(Elem previous, Elem next, int val){
   return e;
 }
 
-void list_freeList(List l){
+void l_freeList(List l){
+  Elem tmp;
   Elem e = l->first;
   if (e != NULL){
-    Elem tmp;
     while((tmp = e->next) != NULL){
       free(e);
       e = tmp;
@@ -47,7 +50,7 @@ void list_freeList(List l){
   free(l);
 }
 
-void list_freeElem(List l, Elem e){
+void l_freeElem(List l, Elem e){
   Elem previous = e->previous;
   Elem next = e->next;
   if (previous == NULL) // e etait le premier element, donc next le remplace
@@ -58,45 +61,63 @@ void list_freeElem(List l, Elem e){
     l->last = previous;
   else
     next->previous = previous;
+  if (l->current == e)
+    l->current = l->first;
   l->size = l->size - 1;
   free(e);
 }
 
-void list_addInFront(List l, int n){ // a renommer addInBack ?
+void l_addInFront(List l, int n){ // a renommer addInBack ?
   Elem previous = l->last;
-  Elem e = list_createElem(previous, NULL, n);
+  Elem e = l_createElem(previous, NULL, n);
   if (previous != NULL)
     previous->next = e;
-  else // La liste etait vide : l'element ajoute a la fin sera egalement le premier element
+  else{ // La liste etait vide : l'element ajoute a la fin sera egalement le premier element
     l->first = e;
+    l->current = e;
+  }
   l->last = e;
   l->size = l->size + 1;
 }
 
-void list_insertInHead(List l, int n){
+void l_insertInHead(List l, int n){
   Elem next = l->first;
-  Elem e = list_createElem(NULL, next, n);
+  Elem e = l_createElem(NULL, next, n);
   if (next != NULL)
     next->previous = e;
-  else // La liste etait vide : l'element ajoute en tete sera egalement le dernier element
+  else{ // La liste etait vide : l'element ajoute en tete sera egalement le dernier element
     l->last = e;
+    l->current = e;
+  }
   l->first = e;
   l->size = l->size + 1;
 }
 
-void list_deleteFirstOccur(List l, int n){
+// Je préférais l'ancienne version
+// a discuter
+void l_deleteFirstOccur(List l, int n){
   Elem e = l->first;
   while (e->val != n && e != NULL)
     e = e->next;
   if (e->val == n)
-    list_freeElem(l,e);
+    l_freeElem(l,e);
 }
 
-int list_size(List l){
-  return l->size;
+void l_head(List l){
+  l->current = l->first;
 }
 
-bool list_contain(List l, int n){
+void l_next(List l){
+  // On suppose qu'on était pas out of list (l->current != NULL)
+  Elem e = l->current;
+  l->current = e->next;
+}
+
+int l_getVal(List l){
+  return ((l->current)->val);
+}
+
+bool l_contain(List l, int n){
   Elem e = l->first;
   while (e != NULL){
     if (e->val == n)
@@ -106,18 +127,16 @@ bool list_contain(List l, int n){
   return false;
 }
 
-Elem firstPositive(List l, int* degrees){
-  Elem e = l->first;
-  while (e != NULL){
-    if (degrees[e->val] > 0)
-      return e;
-    e = e->next;
-  }
-  return NULL;
+bool l_isOutOfList(List l){
+  return (l->current == NULL);
 }
 
-void display(List l){
-  if (list_size(l) == 0)
+int l_size(List l){
+  return l->size;
+}
+
+void l_display(List l){
+  if (l_size(l) == 0)
     printf("[ ] \n");
   else{
     Elem e = l->first;
@@ -129,20 +148,24 @@ void display(List l){
       printf(", %d", e->val);
       e = e->next;
     }
-    printf("]");
-    printf("\n");
+    printf("]\n");
   }
 }
 
-Elem list_head(List l){
-  return l->first;
+// Pas ici
+
+Elem firstPositive(List l, int* degrees){
+  Elem e = l->first;
+  while (e != NULL){
+    if (degrees[e->val] > 0)
+      return e;
+    e = e->next;
+  }
+  return NULL;
 }
 
-List list_tail(List l){
-  list_freeElem(l,list_head(l));
-  return l;
-}
+// ?
 
-int list_elemVal(Elem e){
-  return e->val;
-}
+//void list_tail(List l){
+//  list_freeElem(l,list_head(l));
+//}
