@@ -7,6 +7,7 @@ typedef struct elem* Elem;
 typedef struct list* List;
 
 List l_createList();
+List l_cloneList(List);
 Elem l_createElem(Elem, Elem, int);
 void l_freeList(List);
 void l_freeElem(List, Elem);
@@ -21,7 +22,6 @@ bool l_isOutOfList(List);
 int l_size(List);
 void l_display(List);
 
-Elem firstPositive(List, int*);
 // void list_tail(List);
 
 #endif

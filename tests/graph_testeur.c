@@ -10,23 +10,27 @@ int main(int argc, char* argv[]){
   g_addEdge(g, 2, 1);
   g_addEdge(g, 5, 7);
   g_addEdge(g, 1, 8);
-  g_addEdge(g, 9, 8);
+  g_addEdge(g, 9, 0);
   g_addEdge(g, 2, 4);
   g_addEdge(g, 4, 5);
 
   g_display(g);
+  printf("\n");
 
-  printf("\nDegre du sommet 2 : %d\n", g_getDegreVertex(g, 2));
-  printf("Supression des sommets isolés\n");
-
-  g_deleteIsolated(g);
-  
-  printf("Degre du sommet 5 : %d\n", g_getDegreVertex(g, 5));
-
-  g_display(g);
-
+  g_createNeighborhood(g);
+  printf("Degre du sommet 2 : %d\n", g_getDegreVertex(g, 2));
+  printf("Degre du sommet 6 : %d\n", g_getDegreVertex(g, 6));
   printf("Degre du graphe : %d\n", g_degreGraph(g));
   printf("Sommet au plus grand degre : %d\n", g_maxDegreVertex(g)-1);
+
+  printf("\n-- Supression des sommets isolés --\n\n");
+
+  g_deleteIsolated(g);
+
+  g_display(g);
+  printf("\n");
+  
+  printf("Degre du sommet 6 : %d\n", g_getDegreVertex(g, 6));
 
   g_freeGraph(g);
 

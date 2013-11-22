@@ -30,6 +30,21 @@ Graph g_createGraph(int size){
   return newGraph;
 }
 
+Graph g_cloneGraph(Graph g){
+  int size = g_getSize(g);
+  Graph newGraph = malloc(sizeof(struct graph));
+  assert(newGraph);
+  newGraph->allVertices = malloc(sizeof(struct vertex)*size);
+  assert(newGraph->allVertices);
+  newGraph->numberOfVertices = size;
+  newGraph->isConstruct = g->isConstruct;
+  for (int i=0; i<size; i++)
+    (newGraph->allVertices)[i] = g_cloneVertex(g->allVertices[i]);
+  if (g->isConstruct)
+    g_createNeighborhood(newGraph);
+  return newGraph;
+}
+
 void g_freeGraph(Graph g){
   int nbVert = g->numberOfVertices;
   Vertex v;
@@ -49,8 +64,7 @@ void g_freeGraph(Graph g){
   free(g);
 }
 
-void
-g_createNeighborhood(Graph g){
+void g_createNeighborhood(Graph g){
   if (g->isConstruct)
     return;
   int nbVert = g->numberOfVertices;
@@ -96,7 +110,7 @@ int g_degreGraph(Graph g){
 // Retourne le sommet de degré le plus grand
 int g_maxDegreVertex(Graph g){
   int maxVertex = 0;
-  int maxDegre = -1;
+  int maxDegre = 0;
   int size = g_getSize(g);
   int deg;
   for (int i=0; i<size; i++){
@@ -106,7 +120,7 @@ int g_maxDegreVertex(Graph g){
       maxDegre = deg;
     }
   }
-  return (maxVertex+1);
+  return maxVertex;
 }
 
 // Retourne une feuille (si g est un arbre non vide il y en a toujours une)
@@ -114,7 +128,7 @@ int g_findLeafGraph(Graph g){
   int size = g_getSize(g);
   for (int i=0; i<size; i++){
     if (g_getDegreVertex(g,i) == 1)
-      return (i+1);
+      return i;
   }
   return -1;
 }
@@ -156,64 +170,53 @@ void g_display(Graph g){
 
 // Ajout d'une arête entre les sommets i1 et i2
 void g_addEdge(Graph g, int i1, int i2){
-  List l1 = g_getNeighbors(g, i1-1);
-  List l2 = g_getNeighbors(g, i2-1);
-  l_addInFront(l1, i2-1);
-  l_addInFront(l2, i1-1);
+  List l1 = g_getNeighbors(g, i1);
+  List l2 = g_getNeighbors(g, i2);
+  l_addInFront(l1, i2);
+  l_addInFront(l2, i1);
+  if (g->isConstruct){
+    (g->neighborhood)[i1][i2] = 1;
+    (g->neighborhood)[i2][i1] = 1;
+  }
 }
 
 // Suppression de l'arete entre les sommets i1 et i2
 void g_deleteEdge(Graph g, int i1, int i2){
   // Il faut que l'arête existe
   // A discuter
-  List l1 = g_getNeighbors(g, i1-1);
-  List l2 = g_getNeighbors(g, i2-1);
+  List l1 = g_getNeighbors(g, i1);
+  List l2 = g_getNeighbors(g, i2);
   l_deleteFirstOccur(l1, i2);
   l_deleteFirstOccur(l2, i1);
+  if (g->isConstruct){
+    (g->neighborhood)[i1][i2] = 0;
+    (g->neighborhood)[i2][i1] = 0;
+  }
 }
 
 // Suppression des aretes adjacentes au sommet i
 void g_deleteEdges(Graph g, int i){
-  List l = g_getNeighbors(g, i); // Voisins de i
-  List lTmp; // Voisins du sommet variable
-  int iTmp; // Indice du sommet variable
+  List l = g_getNeighbors(g, i);       // Voisins de i
+  List lTmp;                           // Voisins du sommet variable
+  int iTmp;                            // Indice du sommet variable
   l_head(l);
   while (!l_isOutOfList(l)){
     iTmp = l_getVal(l);
     lTmp = g_getNeighbors(g, iTmp);
-    l_deleteFirstOccur(lTmp, i-1); // On supprime i des voisins de iTmp
-    l_deleteFirstOccur(l, iTmp-1); // On supprime iTmp des voisins de i
-    l_next(l);
+    l_deleteFirstOccur(lTmp, i);       // On supprime i des voisins de iTmp
+    l_deleteFirstOccur(l, iTmp);       // On supprime iTmp des voisins de i
+    if (g->isConstruct){
+      (g->neighborhood)[i][iTmp] = 0;
+      (g->neighborhood)[iTmp][i] = 0;
+    }
+    l_head(l);
   }
 }
 
 // Test de voisinage
 bool g_areNeighbor(Graph g, int i1, int i2){
-  if (g->isConstruct == 1)
-    return ((g->neighborhood)[i1-1][i2-1] == 1);
-  else{
-    List l1 = ((g->allVertices)[i1-1])->neighbors;
-    return l_contain(l1, i2);
-  }
-}
-
-/*struct edge findEdge(Graph g){
-  //int* edge = malloc(2*sizeof(int));
-  struct edge e = {-1, -1};
-  for (int i =0; i< size(g); i++){
-    List list_neighbors = neighbor(g,i);
-    if (list_size(list_neighbors) > 0){
-	e.src = i;
-	e.tgt = list_elemVal(list_head(list_neighbors));
-    }
-  }
-  return e;
-}*/
-
-// test de voisinage
-bool areNeighbor(Graph g, int i1, int i2){
-  if (g->isConstruct)
-    return l_contain(g_getNeighbors(g,i1-1), i2);
+  if (!g->isConstruct)
+    return l_contain(g_getNeighbors(g,i1), i2);
   return ((g->neighborhood)[i1][i2] == 1);
 }
 
@@ -224,6 +227,13 @@ Vertex g_createVertex(){
   Vertex newVertex = malloc(sizeof(struct vertex));
   assert(newVertex);
   newVertex->neighbors = l_createList();
+  return newVertex;
+}
+
+Vertex g_cloneVertex(Vertex v){
+  Vertex newVertex = malloc(sizeof(struct vertex));
+  assert(newVertex);
+  newVertex->neighbors = l_cloneList(v->neighbors);
   return newVertex;
 }
 

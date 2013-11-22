@@ -4,16 +4,19 @@
 #include "list.h"
 #include <malloc.h>
 
+int firstPositive(List, int*);
+
 // Algorithme glouton : graphes quelconques
 List greedyAlg (Graph g){
-  List cover = list_createList();
+  List cover = l_createList();
   int degmax = 1;
-  while(degmax !=0){ // tant que le graphe n'est pas vide
-    int v = maxDegreeVertex(g); // on cherche le sommet avec deg max
-    degmax = list_size(neighbor(g,v));
+  int v;
+  while(degmax !=0){                  // Tant que le graphe n'est pas vide
+    v = g_maxDegreVertex(g);          // On cherche le sommet avec deg max
+    degmax = g_getDegreVertex(g, v);
     if (degmax != 0){
-      list_addInFront(cover, v+1); // on le met dans la couverture
-      deleteEdges(g, v); // on supprime les aretes adjacentes à v  
+      l_addInFront(cover, v);         // On le met dans la couverture
+      g_deleteEdges(g, v);            // On supprime les aretes adjacentes à v  
     }
   }
   return cover;
@@ -21,56 +24,80 @@ List greedyAlg (Graph g){
 
 // Algo optimal : arbres
 List treeOptAlg(Graph g){
-  List cover = list_createList();
+  List cover = l_createList();
   bool nonEmpty = 1;
-  int* degrees = malloc(size(g)*sizeof(int));
-  for (int i=0; i < size(g); i++){
-    degrees[i] = list_size(neighbor(g,i));
+  int size = g_getSize(g);
+  int* degrees = malloc(size*sizeof(int));
+  List listNeighbors;
+  int val_head;
+
+  for (int i=0; i<size; i++){
+    degrees[i] = g_getDegreVertex(g, i);
   }
-  while(nonEmpty == 1){ // tant que le graphe n'est pas vide
-    int v = findLeaf(degrees, size(g));
+  while(nonEmpty == 1){                                        // Tant que le graphe n'est pas vide
+    int v = g_findLeaf(degrees, size);
     if (v == -1)
       nonEmpty = 0;
     else{
-      Elem e = firstPositive(neighbor(g,v), degrees); // on cherche un voisin de v de degre non nul
-      int w = list_elemVal(e);
-      list_addInFront(cover, w); // on le met dans la couverture
-      degrees[w-1]= 0; // on met a jour son degre
-      List listNeighbors = neighbor(g,w-1);
-      while (list_head(listNeighbors) != NULL){ // on met a jour les degres de ses voisins
-  	Elem head = list_head(listNeighbors);
-  	int val_head = list_elemVal(head);
-  	List neighbors_val_head = neighbor(g,val_head-1);
-  	degrees[val_head-1] --;
-  	listNeighbors = list_tail(listNeighbors);
+      int w = firstPositive(g_getNeighbors(g, v), degrees);    // On cherche un voisin de v de degre non nul
+      l_addInFront(cover, w);                                  // On le met dans la couverture
+      degrees[w]= 0;                                           // On met a jour son degre
+      listNeighbors = g_getNeighbors(g, w);
+      l_head(listNeighbors);
+      while (!l_isOutOfList(listNeighbors)){                   // On met a jour les degres de ses voisins
+  	val_head = l_getVal(listNeighbors);
+  	degrees[val_head]--;
+  	l_deleteFirstOccur(listNeighbors, val_head);
       }
     }
   }
   return cover;
 }
 
+int firstPositive(List l, int* degrees){
+  l_head(l);
+  int val;
+  while (!l_isOutOfList(l)){
+    val = l_getVal(l);
+    if (degrees[val] > 0)
+      return (val);
+    l_next(l);
+  }
+  return -1;
+}
+
 // Algo optimal : graphes bipartis
 int* bipartiteOptAlg (Graph g){
+  return NULL;
 }
 
 // Algo 2-approche par arbres couvrants
 int* spanningTreeAlg(Graph g){
+  return NULL;
 }
 
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g){
-  List cover = list_createList();
-  struct edge e = findEdge(g);
-  while(e.src != -1){
-    list_addInFront(cover, e.src);
-    list_addInFront(cover, e.tgt);
-    deleteEdges(g,e.src);
-    deleteEdges(g,e.tgt);
-    e = findEdge(g);
+  List cover = l_createList();
+  int iVert1 = g_maxDegreVertex(g);
+  int deg1 = g_getDegreVertex(g, iVert1);
+  int iVert2;
+  List neighbors;
+  while(deg1 != 0){
+    neighbors = g_getNeighbors(g, iVert1);
+    l_head(neighbors);
+    iVert2 = l_getVal(neighbors);
+    l_addInFront(cover, iVert1);
+    l_addInFront(cover, iVert2);
+    g_deleteEdges(g, iVert1);
+    g_deleteEdges(g, iVert2);
+    iVert1 = g_maxDegreVertex(g);
+    deg1 = g_getDegreVertex(g, iVert1);
   }
   return cover;
 }
 
 // Algo optimal petite couverture
 int* littleCoverAlg(Graph g){
+  return NULL;
 }

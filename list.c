@@ -19,13 +19,28 @@ struct elem{
 };
 
 List l_createList(){
-  List l = malloc(sizeof(struct list));
-  assert(l);
-  l->size = 0;
-  l->first = NULL;
-  l->current = NULL;
-  l->last = NULL;
-  return l;
+  List newlist = malloc(sizeof(struct list));
+  assert(newlist);
+  newlist->size = 0;
+  newlist->first = NULL;
+  newlist->current = NULL;
+  newlist->last = NULL;
+  return newlist;
+}
+
+List l_cloneList(List l){
+  List newList = malloc(sizeof(struct list));
+  assert(newList);
+  newList->size = 0;
+  newList->first = NULL;
+  newList->current = NULL;
+  newList->last = NULL;
+  l_head(l);
+  while(!l_isOutOfList(l)){
+    l_addInFront(newList, l_getVal(l));
+    l_next(l);
+  }
+  return newList;
 }
 
 Elem l_createElem(Elem previous, Elem next, int val){
@@ -151,21 +166,3 @@ void l_display(List l){
     printf("]\n");
   }
 }
-
-// Pas ici
-
-Elem firstPositive(List l, int* degrees){
-  Elem e = l->first;
-  while (e != NULL){
-    if (degrees[e->val] > 0)
-      return e;
-    e = e->next;
-  }
-  return NULL;
-}
-
-// ?
-
-//void list_tail(List l){
-//  list_freeElem(l,list_head(l));
-//}

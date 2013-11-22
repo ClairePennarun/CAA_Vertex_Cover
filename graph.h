@@ -14,7 +14,9 @@ typedef struct vertex* Vertex;
 
 /* *** Fonctions du graphe *** */
 Graph g_createGraph(int);
+Graph g_cloneGraph(Graph);
 void g_freeGraph(Graph);
+void g_createNeighborhood(Graph);
 int g_getSize(Graph);
 int g_degreGraph(Graph);
 int g_maxDegreVertex(Graph);
@@ -27,11 +29,11 @@ void g_display(Graph);
 void g_addEdge(Graph, int, int);
 void g_deleteEdge(Graph, int, int);
 void g_deleteEdges(Graph, int);
-bool areNeighbor(Graph, int, int);
-//int* findEdge(Graph);
+bool g_areNeighbor(Graph, int, int);
 
 /* *** Fonctions sur les sommets *** */
 Vertex g_createVertex();
+Vertex g_cloneVertex(Vertex);
 void g_freeVertex(Graph, int);
 Vertex g_getVertex(Graph, int);
 List g_getNeighbors(Graph, int);
