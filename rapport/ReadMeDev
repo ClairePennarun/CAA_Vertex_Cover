@@ -1,0 +1,13 @@
+***** 10 novembre *****
+Début de la structure des algos et des générations de graphes.
+- Que retournent les algos ? une liste d'arêtes je suppose ? Je l'ai appelé "Cover" pour l'instant
+
+Fichier de génération aléatoire : Generation.c (et .h)
+Fichier d'algos de couverture par sommets: Cover.c (et .h)
+Fichier d'algos de tests de structure (voir si c'est vraiment nécessaire, mais je pense que oui) : Structure.c (et .h)
+
+Je pars du principe qu'un graphe est un objet Graph, si ça se modifie par la suite on suivra les modifs.
+
+Dans un Graph, je propose aussi de mettre des champs booléens pour sa structure : savoir si c'est un arbre et savoir s'il est biparti, ça sera déjà pas mal. Comme ça on sait quel algo optimal lancer dessus avec une simple vérification des booléens !
+
+
