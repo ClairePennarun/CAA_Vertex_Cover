@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include <malloc.h>
 #include <stdbool.h>

@@ -1,7 +1,9 @@
 #ifndef COVER_H
 #define COVER_H
-// Module de recherche de couverture par sommets
+
 #include "graph.h"
+
+// Module de recherche de couverture par sommets
 
 // Algorithme glouton : graphes quelconques
 List greedyAlg (Graph g); 

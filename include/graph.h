@@ -2,15 +2,11 @@
 #define GRAPH_H
 
 #include <stdbool.h>
+
 #include "list.h"
 
 typedef struct graph* Graph;
 typedef struct vertex* Vertex;
-
-/*struct edge{
-  int src;
-  int tgt;
-  };*/
 
 /* *** Fonctions du graphe *** */
 Graph g_createGraph(int);

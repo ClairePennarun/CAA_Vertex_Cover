@@ -4,12 +4,13 @@
 #include "fileReader.h"
 #include "list.h"
 #include "cover.h"
+#include "generation.h"
 
 int main(int argc, char* argv[]){
-  printf("Nom du fichier à ouvrir (avec l'extension) : ");
+
+  printf("Nom du fichier à ouvrir (avec l'extension)\n");
   char file[50];
   scanf("%49s", file);
-  printf("\n");
   Graph g = readFile(file);
   while (g == NULL){
     printf("Le fichier n'est pas lisible\n");
@@ -19,8 +20,9 @@ int main(int argc, char* argv[]){
     g = readFile(file);
   }
   
-  /* g_display(g); */
-  /* printf("\n"); */
+  printf("\n");
+  // g_display(g);
+  // printf("\n");
 
   int select = 0;
   Graph gCopy;
@@ -32,9 +34,8 @@ int main(int argc, char* argv[]){
   //printf("4. Algorithme 2-approché (1)\n");
   printf("3. Algorithme 2-approché (2)\n");
   //printf(" 6. Algorithme paramétrique optimal pour petite couverture \n");
-  printf("Sélectionner un algorithme (1-3): ");
+  printf("Sélectionner un algorithme (1-3):");
   scanf("%d", &select);
-  printf("\n");
 
 
   switch (select){
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]){
   default:
     printf("Choix invalide  \n");
     break;
-  }
+    }
 
   return EXIT_SUCCESS;
 }

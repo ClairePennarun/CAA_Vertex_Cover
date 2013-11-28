@@ -1,8 +1,12 @@
-// Module de recherche de couverture par sommets
+#include <stdlib.h>
+#include <stdio.h>
+#include <malloc.h>
+
 #include "cover.h"
 #include "graph.h"
 #include "list.h"
-#include <malloc.h>
+
+// Module de recherche de couverture par sommets
 
 int firstPositive(List, int*);
 
