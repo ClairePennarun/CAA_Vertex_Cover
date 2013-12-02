@@ -22,6 +22,4 @@ bool l_isOutOfList(List);
 int l_size(List);
 void l_display(List);
 
-// void list_tail(List);
-
 #endif

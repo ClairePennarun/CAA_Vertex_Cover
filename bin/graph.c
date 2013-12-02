@@ -102,7 +102,7 @@ int g_degreGraph(Graph g){
   int size = g_getSize(g);
   int deg;
   for (int i=0; i<size; i++){
-    deg = g_getDegreVertex(g,i);
+    deg = g_getDegreeVertex(g,i);
     if (deg > maxDegre)
       maxDegre = deg;
   }
@@ -110,13 +110,13 @@ int g_degreGraph(Graph g){
 }
 
 // Retourne le sommet de degré le plus grand
-int g_maxDegreVertex(Graph g){
+int g_maxDegreeVertex(Graph g){
   int maxVertex = 0;
   int maxDegre = 0;
   int size = g_getSize(g);
   int deg;
   for (int i=0; i<size; i++){
-    deg = g_getDegreVertex(g,i);
+    deg = g_getDegreeVertex(g,i);
     if (deg > maxDegre){
       maxVertex = i;
       maxDegre = deg;
@@ -129,16 +129,7 @@ int g_maxDegreVertex(Graph g){
 int g_findLeafGraph(Graph g){
   int size = g_getSize(g);
   for (int i=0; i<size; i++){
-    if (g_getDegreVertex(g,i) == 1)
-      return i;
-  }
-  return -1;
-}
-
-// retourne une feuille (utilise le tableau des degres)
-int g_findLeaf(int* degrees, int size){
-  for (int i=0; i<size; i++){
-    if (degrees[i] == 1)
+    if (g_getDegreeVertex(g,i) == 1)
       return i;
   }
   return -1;
@@ -148,7 +139,7 @@ int g_findLeaf(int* degrees, int size){
 void g_deleteIsolated(Graph g){
   int size = g_getSize(g);
   for (int i=0; i<size; i++){
-    if (g_getDegreVertex(g,i) == 0)
+    if (g_getDegreeVertex(g,i) == 0)
       g_freeVertex(g, i);
   }
 }
@@ -264,7 +255,7 @@ List g_getNeighbors(Graph g, int i){
   return NULL;
 }
 
-int g_getDegreVertex(Graph g, int i){
+int g_getDegreeVertex(Graph g, int i){
   Vertex v = g->allVertices[i];
   if (v != NULL)
     return l_size(v->neighbors);

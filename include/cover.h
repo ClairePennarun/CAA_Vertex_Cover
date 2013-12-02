@@ -23,4 +23,10 @@ List edgesDeletionAlg(Graph g);
 // Algo optimal petite couverture
 bool littleCoverAlg(Graph g, int k);
 
+//Fonctions annexes
+int firstPositive(List, int*);
+void deleteVertexDegrees(Graph, int*, int v);
+int findLeaf(int*, Graph g);
+
+
 #endif
