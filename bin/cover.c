@@ -51,7 +51,7 @@ List treeOptAlg(Graph g){
       while (!l_isOutOfList(listNeighbors)){                   // On met a jour les degres de ses voisins
   	val_head = l_getVal(listNeighbors);
   	degrees[val_head]--;
-  	l_deleteFirstOccur(listNeighbors, val_head);
+  	l_deleteFirstOccur(listNeighbors, val_head); // necessaire ?
       }
     }
   }
@@ -83,7 +83,7 @@ int* spanningTreeAlg(Graph g){
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g){
   List cover = l_createList();
-  int iVert1 = g_maxDegreVertex(g);
+  int iVert1 = g_maxDegreVertex(g); // a voir si besoin de chercher le sommet de plus haut degre
   int deg1 = g_getDegreVertex(g, iVert1);
   int iVert2;
   List neighbors;
@@ -102,6 +102,37 @@ List edgesDeletionAlg(Graph g){
 }
 
 // Algo optimal petite couverture
-int* littleCoverAlg(Graph g){
-  return NULL;
+bool littleCoverAlg(Graph g, int k){
+  int size = g_getSize(g);
+  if (size < k){
+    printf("Tous les sommets du graphe sont dans la couverture");
+    return true;
+  }
+  if (k<0){
+    printf("k est négatif. Pas de couverture trouvée");
+    return false;
+  }
+  if (g_numberOfEdges(g) > k*(size-1)){
+    printf("Le graphe a trop d'arêtes. Pas de couverture de taille %d trouvée",k);
+    return false;
+  }
+  if (g_numberOfEdges(g) == 0){
+    printf("Le graphe n'a pas d'arêtes. Tous les sommets sont dans la couverture");
+    return true; // il faut retourner la liste de tous les sommets
+  }
+  // creation liste des degres
+  int* degrees = malloc(size*sizeof(int));
+  for (int i=0; i<size; i++){
+    degrees[i] = g_getDegreVertex(g, i);
+  }
+  int u = 0;
+  while(degrees[u] == 0){
+    u++;
+  }
+  //int v = firstPositive(g_getNeighbors(g, u), degrees); // retourne un voisin de u de degre non nul (donc uv est une arete du graphe)
+  //return (littleCoverAlg(  ,k-1) || littleCoverAlg(  ,k-1));
+
+  // Pb : comment generer le graphe G moins u (ou G moins v) ???
+
+  return true;
 }

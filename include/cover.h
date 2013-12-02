@@ -21,6 +21,6 @@ int* spanningTreeAlg(Graph g);
 List edgesDeletionAlg(Graph g);
 
 // Algo optimal petite couverture
-int* littleCoverAlg(Graph g);
+bool littleCoverAlg(Graph g, int k);
 
 #endif

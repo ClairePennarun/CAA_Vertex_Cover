@@ -135,7 +135,7 @@ int g_findLeafGraph(Graph g){
   return -1;
 }
 
-// ??
+// retourne une feuille (utilise le tableau des degres)
 int g_findLeaf(int* degrees, int size){
   for (int i=0; i<size; i++){
     if (degrees[i] == 1)
@@ -144,7 +144,7 @@ int g_findLeaf(int* degrees, int size){
   return -1;
 }
 
-// Supprime les sommets isolés du graphe g
+// Supprime les sommets isoles du graphe g
 void g_deleteIsolated(Graph g){
   int size = g_getSize(g);
   for (int i=0; i<size; i++){
@@ -153,6 +153,7 @@ void g_deleteIsolated(Graph g){
   }
 }
 
+// Affiche le graphe g
 void g_display(Graph g){
   int size = g_getSize(g);
   printf("Graphe :\n");
@@ -170,7 +171,7 @@ void g_display(Graph g){
 
 // Changement des indices ? (les sommets commenceront a 1 ?)
 
-// Ajout d'une arête entre les sommets i1 et i2
+// Ajout d'une arete entre les sommets i1 et i2
 void g_addEdge(Graph g, int i1, int i2){
   List l1 = g_getNeighbors(g, i1);
   List l2 = g_getNeighbors(g, i2);
@@ -220,6 +221,10 @@ bool g_areNeighbor(Graph g, int i1, int i2){
   if (!g->isConstruct)
     return l_contain(g_getNeighbors(g,i1), i2);
   return ((g->neighborhood)[i1][i2] == 1);
+}
+
+int g_numberOfEdges(Graph g){
+  return 0; // A MODIFIER !!!!
 }
 
 /* *** Fonctions sur les sommets *** */

@@ -27,6 +27,8 @@ void g_deleteEdge(Graph, int, int);
 void g_deleteEdges(Graph, int);
 bool g_areNeighbor(Graph, int, int);
 
+int g_numberOfEdges(Graph);
+
 /* *** Fonctions sur les sommets *** */
 Vertex g_createVertex();
 Vertex g_cloneVertex(Vertex);
