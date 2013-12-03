@@ -11,6 +11,7 @@ struct graph{
   Vertex* allVertices; // Tableau des listes de voisinage
   int** neighborhood; // Matrice d'adjacence globale
   int numberOfVertices;
+  int numberOfEdges;
   bool isConstruct;
 };
 
@@ -26,6 +27,7 @@ Graph g_createGraph(int size){
   newGraph->allVertices = malloc(sizeof(struct vertex)*size);
   assert(newGraph->allVertices);
   newGraph->numberOfVertices = size;
+  newGraph->numberOfEdges = 0;
   newGraph->isConstruct = 0;
   for (int i=0; i<size; i++)
     (newGraph->allVertices)[i] = g_createVertex();
@@ -39,6 +41,7 @@ Graph g_cloneGraph(Graph g){
   newGraph->allVertices = malloc(sizeof(struct vertex)*size);
   assert(newGraph->allVertices);
   newGraph->numberOfVertices = size;
+  newGraph->numberOfEdges = g_numberOfEdges(g);
   newGraph->isConstruct = g->isConstruct;
   for (int i=0; i<size; i++)
     (newGraph->allVertices)[i] = g_cloneVertex(g->allVertices[i]);
@@ -172,6 +175,7 @@ void g_addEdge(Graph g, int i1, int i2){
     (g->neighborhood)[i1][i2] = 1;
     (g->neighborhood)[i2][i1] = 1;
   }
+  g->numberOfEdges ++;
 }
 
 // Suppression de l'arete entre les sommets i1 et i2
@@ -186,6 +190,7 @@ void g_deleteEdge(Graph g, int i1, int i2){
     (g->neighborhood)[i1][i2] = 0;
     (g->neighborhood)[i2][i1] = 0;
   }
+  g->numberOfEdges --;
 }
 
 // Suppression des aretes adjacentes au sommet i
@@ -203,6 +208,7 @@ void g_deleteEdges(Graph g, int i){
       (g->neighborhood)[i][iTmp] = 0;
       (g->neighborhood)[iTmp][i] = 0;
     }
+    g->numberOfEdges --;
     l_head(l);
   }
 }
@@ -215,7 +221,7 @@ bool g_areNeighbor(Graph g, int i1, int i2){
 }
 
 int g_numberOfEdges(Graph g){
-  return 0; // A MODIFIER !!!!
+  return g->numberOfEdges;
 }
 
 /* *** Fonctions sur les sommets *** */
@@ -231,7 +237,10 @@ Vertex g_createVertex(){
 Vertex g_cloneVertex(Vertex v){
   Vertex newVertex = malloc(sizeof(struct vertex));
   assert(newVertex);
-  newVertex->neighbors = l_cloneList(v->neighbors);
+  if (v != NULL)
+    newVertex->neighbors = l_cloneList(v->neighbors);
+  else
+    return NULL;
   return newVertex;
 }
 

@@ -21,10 +21,12 @@ int main(int argc, char* argv[]){
   }
   
   printf("\n");
-  // g_display(g);
+  g_display(g);
+  printf("%d aretes dans le graphe \n", g_numberOfEdges(g));
   // printf("\n");
 
   int select = 0;
+  int k = 0;
   Graph gCopy;
 
   printf("Sélectionner un des algorithmes suivants :\n");
@@ -33,8 +35,8 @@ int main(int argc, char* argv[]){
   //printf("3. Algorithme optimal pour les graphes bipartis\n");
   //printf("4. Algorithme 2-approché (1)\n");
   printf("3. Algorithme 2-approché (2)\n");
-  //printf(" 6. Algorithme paramétrique optimal pour petite couverture \n");
-  printf("Sélectionner un algorithme (1-3):");
+  printf("4. Algorithme paramétrique optimal pour petite couverture \n");
+  printf("Sélectionner un algorithme (1-4):");
   scanf("%d", &select);
 
 
@@ -66,6 +68,19 @@ int main(int argc, char* argv[]){
     printf("TERMINE \n");
     printf("Couverture :\n");
     l_display(coverE);
+    printf("\n");
+    break;
+
+  case 4:
+    gCopy = g_cloneGraph(g);
+    printf("quelle taille de couverture a rechercher ? :");
+    scanf("%d", &k);
+    bool res = littleCoverAlg(gCopy, k);
+    printf("TERMINE \n");
+    if (res)
+      printf("Couverture de taille %d trouvée", k);
+    else
+      printf("Couverture de taille %d non trouvée", k);
     printf("\n");
     break;
 

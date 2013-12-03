@@ -54,10 +54,12 @@ List greedyAlg (Graph g){
   for (int i = 0; i< n; i++){
     degrees[i] = l_size(g_getNeighbors(g,i));
   }
-  while(degmax !=0){ // tant que le graphe n'est pas vide
+  while(degmax >0){ // tant que le graphe n'est pas vide
     int v = g_maxDegreeVertex(g); // on cherche le sommet avec deg max
     degmax = degrees[v];
-    if (degmax != 0){
+    printf("degmax : %d \n", degmax);
+    if (degmax > 0){
+      printf("on rajoute le sommet %d \n", v);
       l_insertInHead(cover, v+1); // on le met dans la couverture
       deleteVertexDegrees(g,degrees,v);
     }
@@ -126,20 +128,21 @@ List edgesDeletionAlg(Graph g){
 // Algo optimal petite couverture
 bool littleCoverAlg(Graph g, int k){
   int size = g_getSize(g);
+  int numberOfEdges = g_numberOfEdges(g);
   if (size < k){
-    printf("Tous les sommets du graphe sont dans la couverture");
+    printf("Tous les sommets du graphe sont dans la couverture \n");
     return true;
   }
   if (k<0){
-    printf("k est négatif. Pas de couverture trouvée");
+    printf("k est négatif. Pas de couverture trouvée \n");
     return false;
   }
-  if (g_numberOfEdges(g) > k*(size-1)){
-    printf("Le graphe a trop d'arêtes. Pas de couverture de taille %d trouvée",k);
+  if (numberOfEdges > k*(size-1)){
+    printf("Le graphe a trop d'arêtes. Pas de couverture de taille %d trouvée \n",k);
     return false;
   }
-  if (g_numberOfEdges(g) == 0){
-    printf("Le graphe n'a pas d'arêtes. Tous les sommets sont dans la couverture");
+  if (numberOfEdges == 0){
+    printf("Le graphe n'a pas d'arêtes. Tous les sommets sont dans la couverture \n");
     return true; // il faut retourner la liste de tous les sommets
   }
   // creation liste des degres
@@ -148,13 +151,20 @@ bool littleCoverAlg(Graph g, int k){
     degrees[i] = g_getDegreeVertex(g, i);
   }
   int u = 0;
-  while(degrees[u] == 0){
+  while(degrees[u] < 0){
     u++;
   }
-  //int v = firstPositive(g_getNeighbors(g, u), degrees); // retourne un voisin de u de degre non nul (donc uv est une arete du graphe)
-  //return (littleCoverAlg(  ,k-1) || littleCoverAlg(  ,k-1));
+  printf("degre de u : %d \n", degrees[u]);
+  List neighbors = g_getNeighbors(g, u);
+  int v = firstPositive(neighbors, degrees); // retourne un voisin de u de degre non nul (donc uv est une arete du graphe)
+  printf ("degre de v : %d \n", degrees[v]);
+  Graph g1 = g_cloneGraph(g);
+  g_deleteEdges(g1,u);
+  g_freeVertex(g1,u);
 
-  // Pb : comment generer le graphe G moins u (ou G moins v) ???
+  Graph g2 = g_cloneGraph(g);
+  g_deleteEdges(g2,v);
+  g_freeVertex(g2,v);
 
-  return true;
+  return (littleCoverAlg(g1,k-1) || littleCoverAlg(g2,k-1));
 }
