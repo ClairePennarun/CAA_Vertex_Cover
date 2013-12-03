@@ -21,7 +21,9 @@ int* spanningTreeAlg(Graph g);
 List edgesDeletionAlg(Graph g);
 
 // Algo optimal petite couverture
-bool littleCoverAlg(Graph g, int k);
+List littleCover(Graph g, int k);
+List littleCoverAlg(Graph g, int k, int size);
+
 
 //Fonctions annexes
 int firstPositive(List, int*);

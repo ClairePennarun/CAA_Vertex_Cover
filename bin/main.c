@@ -75,12 +75,12 @@ int main(int argc, char* argv[]){
     gCopy = g_cloneGraph(g);
     printf("quelle taille de couverture a rechercher ? :");
     scanf("%d", &k);
-    bool res = littleCoverAlg(gCopy, k);
+    List littleCov = littleCover(gCopy, k);
     printf("TERMINE \n");
-    if (res)
-      printf("Couverture de taille %d trouvée", k);
-    else
-      printf("Couverture de taille %d non trouvée", k);
+    if (littleCov != NULL) {
+      printf("Couverture de taille %d trouvée : \n", k);
+      l_display(littleCov);
+    }
     printf("\n");
     break;
 
