@@ -132,34 +132,25 @@ List littleCover(Graph g, int k){
 // Algo optimal petite couverture
 List littleCoverAlg(Graph g, int k, int size){
   List cover = l_createList();
-  l_display(cover);
   int numberOfEdges = g_numberOfEdges(g);
   int sizeGraph = g_getSize(g);
-  printf("\n il y a %d aretes et %d sommets \n", numberOfEdges, size);
-  g_display(g);
+  //printf("\n il y a %d aretes et %d sommets \n", numberOfEdges, size);
+  //g_display(g);
   if (size <= k){
-    printf("Tous les sommets du graphe sont dans la couverture \n");
-    for (int i=0; i< size; i++){
+    //printf("Tous les sommets du graphe sont dans la couverture \n");
+    for (int i=0; i< size; i++)
       if (g_getNeighbors(g,i) != NULL)
 	l_addInFront(cover,i);
-    }
+    //l_display(cover);
     return cover;
   }
   if (k < 0){
-    printf("k est négatif. Pas de couverture trouvée \n");
+    //printf("k est négatif. Pas de couverture trouvée \n");
     return NULL;
   }
   if (numberOfEdges > k*(size-1)){
-    printf("Le graphe a trop d'arêtes. Pas de couverture de taille %d trouvée \n",k);
+    //printf("Le graphe a trop d'arêtes. Pas de couverture de taille %d trouvée \n",k);
     return NULL;
-  }
-  if (numberOfEdges == 0){
-    printf("Le graphe n'a pas d'arêtes. Tous les sommets sont dans la couverture \n");
-    for (int i=0; i< sizeGraph; i++){
-      if (g_getNeighbors(g,i) != NULL)
-	l_addInFront(cover,i);
-    }
-    return cover;
   }
   // creation liste des degres
   int* degrees = malloc(size*sizeof(int));
@@ -168,30 +159,45 @@ List littleCoverAlg(Graph g, int k, int size){
   }
   int u = 0;
   while(degrees[u] <= 0){
-    printf("degre de %d : %d\n",u, degrees[u]);
+    //printf("degre de %d : %d\n",u, degrees[u]);
     u++;
   }
-  printf("degre de u = %d : %d \n", u, degrees[u]);
+  //printf("degre de u = %d : %d \n", u, degrees[u]);
   List neighbors = g_getNeighbors(g, u);
   int v = firstPositive(neighbors, degrees); // retourne un voisin de u de degre non nul (donc uv est une arete du graphe)
-  printf("degre de v = %d : %d \n", v, degrees[v]);
+  //printf("degre de v = %d : %d \n", v, degrees[v]);
+
   Graph g1 = g_cloneGraph(g);
   g_deleteEdges(g1,u);
   g_freeVertex(g1,u);
+  if (g_numberOfEdges(g1) == 0){
+    l_addInFront(cover,u);
+    //l_display(cover);
+    return cover;
+  }
 
   Graph g2 = g_cloneGraph(g);
   g_deleteEdges(g2,v);
   g_freeVertex(g2,v);
-  
+  if (g_numberOfEdges(g2) == 0){
+    l_addInFront(cover,v);
+    //l_display(cover);
+    return cover;
+  }
+
   List coverU = littleCoverAlg(g1, k-1, size-1);
-  List coverV = littleCoverAlg(g2, k-1, size-1);
-  if (coverU != NULL){
+  if (coverU !=NULL && l_size(coverU) == k-1){
     cover = coverU;
     l_addInFront(cover, u);
   }
-  else if (coverV != NULL && coverU == NULL){
-    cover = coverV;
-    l_addInFront(cover, v);
+  else {
+    List coverV = littleCoverAlg(g2, k-1, size-1);
+    if (coverV != NULL && l_size(coverV) == k-1){
+      cover = coverV;
+      l_addInFront(cover, v);
+    }
   }
+  //l_display(cover);
+
   return cover;
 }

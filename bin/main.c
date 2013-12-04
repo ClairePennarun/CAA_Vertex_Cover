@@ -77,10 +77,12 @@ int main(int argc, char* argv[]){
     scanf("%d", &k);
     List littleCov = littleCover(gCopy, k);
     printf("TERMINE \n");
-    if (littleCov != NULL) {
+    if (l_size(littleCov) != 0) {
       printf("Couverture de taille %d trouvée : \n", k);
       l_display(littleCov);
     }
+    else 
+      printf("L'algorithme n'a pas trouvé de couverture de taille %d, essayez avec une valeur plus grande !\n", k);
     printf("\n");
     break;
 
