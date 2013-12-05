@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <malloc.h>
+#include <assert.h>
 
 #include "cover.h"
 #include "graph.h"
@@ -98,7 +99,7 @@ int* bipartiteOptAlg (Graph g){
 // Algo 2-approche par arbres couvrants
 
 void spanning(Graph g, int i, int** tabTree){
-  List neighbors = g_getNeighbors(g,i);
+  List listNeighbors = g_getNeighbors(g,i);
   l_head(listNeighbors);
   int val_head;
   while(!l_isOutOfList(listNeighbors)){
@@ -108,7 +109,7 @@ void spanning(Graph g, int i, int** tabTree){
 	tabTree[val_head][0] = 2;
       else 
 	tabTree[val_head][0] = 1;
-      if (tabTree[i][1] = NULL) // si i n'a pas encore de successeur, on lui en donne un
+      if (tabTree[i][1] == -1) // si i n'a pas encore de successeur, on lui en donne un
 	tabTree[i][1] = val_head;
       spanning(g,val_head,tabTree);
     }
@@ -125,11 +126,11 @@ int** spanningTree(Graph g){
     tabTree[i] = malloc(2*sizeof(int*));
     assert(tabTree[i]);
     tabTree[i][0] = 0;
-    tabTree[i][1] = NULL;
+    tabTree[i][1] = -1;
   }
-  int root = g_getVertex(g,0);
-  tabTree[root][0] = 1;
-  spanning(g, root, tabTree);
+  tabTree[0][0] = 1;
+  spanning(g, 0, tabTree);
+  return tabTree;
 }
 
 int* spanningTreeAlg(Graph g){
@@ -137,7 +138,7 @@ int* spanningTreeAlg(Graph g){
   // on colorie les sommets de A en deux couleurs
   // on choisit des aretes entre les sommets de la meme couleur les plus nombreux de A et un de leurs successeurs
   // pour chaque arete choisie, on prend une de ses extremites
-  int** tabTree = spanningTree(g);
+  //int** tabTree = spanningTree(g);
   return NULL;
 }
 
