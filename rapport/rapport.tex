@@ -1,7 +1,17 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
-\usepackage[utf8]{inputenc}
+\usepackage[french,ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\newcommand*{\itemb}{\item[$\bullet$]}
+\newcommand*{\itemt}{\item[$\blacktriangleright$]}
+\DeclareMathOperator{\degree}{degre}
+\DeclareMathOperator{\taille}{taille}
+\DeclareMathOperator{\voisin}{voisin}
+\DeclareMathOperator{\degmax}{degmax}
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\cover}{cover}
 \title{Projet CAA : couverture par sommets}
 \author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
 \date{}
@@ -31,6 +41,89 @@
  
 \subsubsection{Description}
 
+L'algorithme glouton consiste à ajouter à chaque étape le sommet qui couvrira le plus d'arêtes non couvertes. Bien que non optimal, il a l'avantage d'être rapide. 
+
+Le nombre d'arêtes couvertes par un sommet est égal à son degré, mais quand un sommet est ajouté à la couverture, il est important de ne plus tenir compte des arêtes adjacentes dans la suite. Pour connaître rapidement, le nombre d'arêtes que l'on couvrirait avec chaque sommet, nous avons choisi de créer un tableau répertoriant le degré de chaque sommet du graphe, plus facile à tenir à jour que le graphe lui-même. 
+
+L'algorithme s'arrête quand il n'est plus possible de couvrir une nouvelle arête. Le tableau des degrés ne contiendra alors plus de valeur positive, ce qui se détecte facilement, puisqu'on doit de toute façon chercher le sommet de plus haut degré à chaque itération.
+
+On obtient l'algorithme suivant :
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe défini par un tableau $\mathtt{voisin}$ de listes d'adjacence}
+\Sortie{Une couverture d'arêtes, sous forme de liste de sommets}
+\BlankLine
+
+$n=\taille(G)$
+
+$\degmax=1$
+
+création d'un tableau $\mathtt{degre}$ de taille $n$.
+
+\Pour{$i$ do 0 à $n-1$}{
+
+$\mathrm{\degree[i]\leftarrow \taille(\voisin[i])}$
+}
+
+\Tq{$\degmax\neq 0$}{
+
+$v=\argmax(\degree)$
+
+$\degmax=\degree[v]$
+
+\Si{$\degmax\neq 0$}{
+
+$\mathrm{ajouter}(\cover, v)$
+
+$\mathrm{actualiser}(\degree, v)$
+}
+}
+\Retour{$\cover$}
+\caption{Algorithme glouton}
+ 
+\end{algorithm}
+
+\vspace{0.35cm}
+Si un sommet est ajouté à la couverture, on ne couvre plus d'arête en le couvrant une seconde fois. On peut donc passer sa valeur dans le tableau $\mathtt{degre}$ à 0. De plus, chaque sommet voisin couvre une arête de moins et on peut donc diminuer leur valeur de 1. Si on baisse de 1 la valeur d'un sommet qui a déjà été ajouté, on obtient des valeurs négatives, mais ce sont des sommets qui sont déjà dans la couverture, donc il n'y a pas de conséquence. Tester à chaque fois si le sommet appartient à la couverture ou non serait une perte de temps.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Le tableau $\mathtt{voisin}$, le tableau $\mathtt{degre}$ à mettre à jour et le sommet $v$ qu'on enlève du graphe}
+\BlankLine
+$\degree[v]=0$
+
+\Pour{$i\in \voisin[v]$}{
+
+décrémenter $\voisin[i]$ de 1
+}
+\caption{Actualiser}
+ 
+\end{algorithm}
+
+\subsubsection{Complexité}
+
+\begin{itemize}
+ \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 4 et 5 se fait en $O(n)$
+ \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 6, où $c$ est la taille de la couverture renvoyée. À chaque fois :
+\begin{itemize}
+\itemt Déterminer le sommet de degré maximum (ligne 7) se fait en $O(n)$
+\itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
+\end{itemize}
+\end{itemize}
+
+Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
+
+\subsubsection{Résultats}
+
+
+
+\subsection{Pour les arbres}
+
+\subsubsection{Description}
+
 % On explique le principe de l'algorithme, nos choix pour l'implémentation (ici, le tableau de degré par exemple), et on donne le pseudo-code.
 
 \subsubsection{Complexité}
@@ -40,15 +133,6 @@
 \subsubsection{Résultats}
 
 % On chronomètre sur une batteries de graphes générés aléatoirement, on commente et on interprète. Je pense que cette partie est importante, c'est ce qui justifie l'implémentation de générateurs.
-
-\subsection{Pour les arbres}
-
-\subsubsection{Description}
-
-\subsubsection{Complexité}
-
-\subsubsection{Résultats}
-
 
 \subsection{Généralisation aux graphes quelconques}
 
