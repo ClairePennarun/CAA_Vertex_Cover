@@ -1,6 +1,8 @@
 #ifndef GENERATION_H
 #define GENERATION_H
 
+#include <stdbool.h>
+
 #include "graph.h"
 
 // Module de generation aleatoire de graphes
@@ -17,8 +19,12 @@ Graph bipartiteGeneration (int n, double proba);
 // Generation de graphe avec petite couverture (pratique pour tests)
 Graph littleGeneration (int n, int k, double proba);
 
+int* getRandomVertices(int n);
+bool randomEdge(Graph g, int i1, int i2, double proba);
+void makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected);
+void swap(int* t, int i1, int i2);
 void initRandom();
-int randint(int, int);
+int randint(int a, int b);
 double random();
 
 #endif
