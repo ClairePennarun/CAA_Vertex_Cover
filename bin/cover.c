@@ -96,11 +96,48 @@ int* bipartiteOptAlg (Graph g){
 }
 
 // Algo 2-approche par arbres couvrants
+
+void spanning(Graph g, int i, int** tabTree){
+  List neighbors = g_getNeighbors(g,i);
+  l_head(listNeighbors);
+  int val_head;
+  while(!l_isOutOfList(listNeighbors)){
+    val_head = l_getVal(listNeighbors);
+    if (tabTree[i][0] == 0){
+      if (tabTree[i][0] == 1) // on alterne les couleurs des sommets
+	tabTree[val_head][0] = 2;
+      else 
+	tabTree[val_head][0] = 1;
+      if (tabTree[i][1] = NULL) // si i n'a pas encore de successeur, on lui en donne un
+	tabTree[i][1] = val_head;
+      spanning(g,val_head,tabTree);
+    }
+  }
+}
+
+// retourne un arbre couvrant du graphe G, et pour chaque sommet de l'arbre :
+// sa couleur et l'indice de l'un de ses successeurs
+int** spanningTree(Graph g){
+  int sizeGraph = g_getSize(g);
+  int** tabTree = malloc(sizeGraph*sizeof(int*));
+  assert(tabTree);
+  for (int i=0; i < sizeGraph; i++){
+    tabTree[i] = malloc(2*sizeof(int*));
+    assert(tabTree[i]);
+    tabTree[i][0] = 0;
+    tabTree[i][1] = NULL;
+  }
+  int root = g_getVertex(g,0);
+  tabTree[root][0] = 1;
+  spanning(g, root, tabTree);
+}
+
 int* spanningTreeAlg(Graph g){
   // calcul d'un arbre couvrant A du graphe G par un parcours en profondeur
   // on colorie les sommets de A en deux couleurs
   // on choisit des aretes entre les sommets de la meme couleur les plus nombreux de A et un de leurs successeurs
   // pour chaque arete choisie, on prend une de ses extremites
+  int** tabTree = spanningTree(g);
   return NULL;
 }
 
