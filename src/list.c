@@ -82,7 +82,7 @@ void l_freeElem(List l, Elem e){
   free(e);
 }
 
-void l_addInFront(List l, int n){ // a renommer addInBack ?
+void l_addInFront(List l, int n){
   Elem previous = l->last;
   Elem e = l_createElem(previous, NULL, n);
   if (previous != NULL)

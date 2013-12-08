@@ -15,7 +15,7 @@ List treeOptAlg(Graph g);
 int* bipartiteOptAlg (Graph g);
 
 // Algo 2-approche par arbres couvrants
-int* spanningTreeAlg(Graph g);
+List spanningTreeAlg(Graph g);
 
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g);

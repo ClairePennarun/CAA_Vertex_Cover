@@ -33,15 +33,15 @@ int main(int argc, char* argv[]){
   printf("1. Algorithme glouton\n");
   printf("2. Algorithme optimal pour les arbres\n");
   //printf("3. Algorithme optimal pour les graphes bipartis\n");
-  //printf("4. Algorithme 2-approché (1)\n");
-  printf("3. Algorithme 2-approché (2)\n");
-  printf("4. Algorithme paramétrique optimal pour petite couverture \n");
-  printf("Sélectionner un algorithme (1-4):");
+  printf("3. Algorithme 2-approché (arbre couvrant)\n");
+  printf("4. Algorithme 2-approché (elimination d'aretes)\n");
+  printf("5. Algorithme paramétrique optimal pour petite couverture \n");
+  printf("Sélectionner un algorithme (1-5):");
   scanf("%d", &select);
 
 
   switch (select){
-  case 1:
+  case 1: // Algo glouton
     gCopy = g_cloneGraph(g);
     printf("Calcul de la couverture (greedyAlg)... ");
     List coverG = greedyAlg(gCopy);
@@ -49,9 +49,10 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverG);
     printf("\n");
+    g_freeGraph(gCopy);
     break;
   
-  case 2:
+  case 2: // Algo optimal arbres
     gCopy = g_cloneGraph(g);
     printf("Calcul de la couverture (treeOptAlg)... ");
     List coverT = treeOptAlg(gCopy);
@@ -59,9 +60,21 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverT);
     printf("\n");
+    g_freeGraph(gCopy);
     break;
 
-  case 3:
+  case 3: // Algo 2-approx arbre couvrant
+    gCopy = g_cloneGraph(g);
+    printf("Calcul de la couverture (spanningTreeAlg)... ");
+    List coverS = spanningTreeAlg(gCopy);
+    printf("TERMINE \n");
+    printf("Couverture :\n");
+    l_display(coverS);
+    printf("\n");
+    g_freeGraph(gCopy);
+    break;
+
+  case 4: // Algo 2-approx elimination d'aretes
     gCopy = g_cloneGraph(g);
     printf("Calcul de la couverture (edgesDeletionAlg)... ");
     List coverE = edgesDeletionAlg(gCopy);
@@ -69,9 +82,10 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverE);
     printf("\n");
+    g_freeGraph(gCopy);
     break;
 
-  case 4:
+  case 5: // Algo petite couverture
     gCopy = g_cloneGraph(g);
     printf("quelle taille de couverture a rechercher ? :");
     scanf("%d", &k);
@@ -84,6 +98,7 @@ int main(int argc, char* argv[]){
     else 
       printf("L'algorithme n'a pas trouvé de couverture de taille %d, essayez avec une valeur plus grande !\n", k);
     printf("\n");
+    g_freeGraph(gCopy);
     break;
 
   default:
@@ -91,5 +106,6 @@ int main(int argc, char* argv[]){
     break;
     }
 
+  g_freeGraph(g);
   return EXIT_SUCCESS;
 }
