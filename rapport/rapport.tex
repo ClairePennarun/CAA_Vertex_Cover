@@ -22,11 +22,18 @@
 
 \section*{Introduction}
 
-% Présentation du problème de vertex cover/du projet
+Le projet consiste en l'implémentation d'algorithmes résolvant de manière approchée (en général) ou optimale (pour certaines classes de graphes) le problème Vertex-Cover.
+Les algorithmes présentés ici renvoient une liste des sommets formant une couverture du graphe. Cette couverture n'est cependant pas forcément minimale.
+
+Nous avons implémenté l'ensemble de ces algorithmes en langage C, car le groupe était plus à l'aise dans ce langage qu'en C++.
+
+Nous avons développé une structure de graphes que nous détaillerons dans la première partie de ce rapport, ainsi que les algorithmes de génération de graphes demandés.
+Dans une deuxième partie, nous décrirons les algorithmes implémentés, une estimation de leur complexité et les résultats obtenus.
+Enfin, nous présenterons l'utilisation de minisat que nous avons développé.
 
 \section{Structure de graphes}
 
-\subsection{Structure de donnés}
+\subsection{Structure de données}
 
 % On détaille l'implémentation des graphes et on explique nos choix. Surtout pour éviter de répéter la même chose au début de la description de chaque algorithme.
 
@@ -86,7 +93,7 @@ $\mathrm{actualiser}(\degree, v)$
 \end{algorithm}
 
 \vspace{0.35cm}
-Si un sommet est ajouté à la couverture, on ne couvre plus d'arête en le couvrant une seconde fois. On peut donc passer sa valeur dans le tableau $\mathtt{degre}$ à 0. De plus, chaque sommet voisin couvre une arête de moins et on peut donc diminuer leur valeur de 1. Si on baisse de 1 la valeur d'un sommet qui a déjà été ajouté, on obtient des valeurs négatives, mais ce sont des sommets qui sont déjà dans la couverture, donc il n'y a pas de conséquence. Tester à chaque fois si le sommet appartient à la couverture ou non serait une perte de temps.
+Si un sommet est ajouté à la couverture, on ne couvre plus d'arêtes en le couvrant une seconde fois. On peut donc passer sa valeur dans le tableau $\mathtt{degre}$ à 0. De plus, chaque sommet voisin couvre une arête de moins et on peut donc diminuer sa valeur de 1. Si on baisse de 1 la valeur d'un sommet qui a déjà été ajouté, on obtient des valeurs négatives, mais ce sont des sommets qui sont déjà dans la couverture, donc il n'y a pas de conséquence. Tester à chaque fois si le sommet appartient à la couverture ou non serait une perte de temps.
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -114,7 +121,9 @@ décrémenter $\voisin[i]$ de 1
 \end{itemize}
 \end{itemize}
 
-Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
+Finalement, la complexité de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
+
+Cependant, on peut remarquer que la phase de recherche du sommet de degré maximum pourrait se faire avec une complexité plus faible, par exemple en gardant les sommets dans une liste triée par rapport à leur degré.
 
 \subsubsection{Résultats}
 
@@ -134,17 +143,6 @@ Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ e
 
 % On chronomètre sur une batteries de graphes générés aléatoirement, on commente et on interprète. Je pense que cette partie est importante, c'est ce qui justifie l'implémentation de générateurs.
 
-\subsection{Généralisation aux graphes quelconques}
-
-% On s'écarte un peu de l'ordre des questions, mais je pense que c'est mieux de parler de l'approximation basée sur le parcours en profondeur directement après l'algorithme sur les arbres.
-
-\subsubsection{Description}
-
-\subsubsection{Complexité}
-
-\subsubsection{Résultats}
-
-
 \subsection{Pour les graphes bipartis}
 
 \subsubsection{Description}
@@ -154,8 +152,17 @@ Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ e
 \subsubsection{Résultats}
 
 
-\subsection{Un algorithme 2-approché}
-\ 
+\subsection{Algorithme 2-approché avec arbre couvrant}
+
+\subsubsection{Description}
+
+\subsubsection{Complexité}
+
+\subsubsection{Résultats}
+
+
+\subsection{Algorithme 2-approché avec élimination d'arêtes}
+
 \subsubsection{Description}
 
 \subsubsection{Complexité}
@@ -180,7 +187,7 @@ Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ e
 
 \subsection{Algorithme et complexité}
 
-% Je sais pas si on aura grand chose à dire sur notre implémentations des algorithmes de réduction, mais leur complexité et surtout la complexité du problème sat induit sont intéressantes.
+% Je sais pas si on aura grand chose à dire sur notre implémentation des algorithmes de réduction, mais leur complexité et surtout la complexité du problème sat induit sont intéressantes.
 
 \subsection{Résultats}
 
