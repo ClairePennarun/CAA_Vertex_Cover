@@ -31,6 +31,8 @@ Nous avons développé une structure de graphes que nous détaillerons dans la p
 Dans une deuxième partie, nous décrirons les algorithmes implémentés, une estimation de leur complexité et les résultats obtenus.
 Enfin, nous présenterons l'utilisation de minisat que nous avons développé.
 
+Notations : dans ce rapport, le graphe considéré sera généralement noté $G$. Sa taille (le nombre de ses sommets) sera notée $n$. Les ensembles de ses sommets et de ses arêtes seront respectivement notées $V(G)$ et $E(G)$.
+
 \section{Structure de graphes}
 
 \subsection{Structure de données}
@@ -82,7 +84,7 @@ $\degmax=\degree[v]$
 
 \Si{$\degmax\neq 0$}{
 
-$\mathrm{ajouter}(\cover, v)$
+$\mathrm{ajouter}(\cover, v)$ % ou "ajouter $v$ a cover" ?
 
 $\mathrm{actualiser}(\degree, v)$
 }
@@ -155,6 +157,59 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 \subsection{Algorithme 2-approché avec arbre couvrant}
 
 \subsubsection{Description}
+
+L'algorithme se base sur un parcours en profondeur du graphe $G$. Le parcours en profondeur (DFS) crée un arbre couvrant du graphe. L'ensemble des sommets de cet arbre qui ne sont pas des feuilles est retourné comme couverture du graphe.
+
+Nous avons implémenté cet algorithme en nous basant sur un algorithme récursif simple de parcours en profondeur. Chaque sommet de $G$ est "marqué" quand il est visité par le parcours. Un tableau $t$ de taille $n$ est créé au début de l'algorithme pour nous permettre de stocker ces "marques" : $t[i] = 0$ si le sommet $i$ n'a pas encore été visité, $t[i] = 1$ sinon.
+
+Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $aSuccesseur$ ($hasSuccessor$) qui vaut $False$ au début de la visite de $v$ et dont la valeur vaut $True$ quand on rencontre un de ses voisins pour la première fois. Le sommet $v$ est alors ajouté dans la couverture du graphe.
+
+Cet algorithme est 2-approché, c'est-à-dire qu'il retourne un ensemble de sommets de cardinal au pire deux fois plus grand que celui de la couverture minimale du graphe.
+
+En effet, 
+
+\begin{algorithm}[H]
+
+\Entree{le graphe $g$}
+\Sortie{Une couverture d'arêtes, sous forme de liste de sommets $cover$}
+\BlankLine
+$n \leftarrow \taille(G)$
+
+$t \leftarrow$ tableau de taille $n$
+
+pour tous les sommets $i$ de $V(G)$ : $t[i] \leftarrow 0$
+
+parcours\_profondeur(G,0,cover,t)
+
+\Retour{cover}
+\caption{Algorithme avec arbre couvrant}
+ 
+\end{algorithm}
+
+\begin{algorithm}[H]
+
+\Entree{le graphe $G$, le sommet $v$ sur lequel on fait le parcours, la couverture $cover$ de sommets actuelle, le tableau de marques $t$}
+\BlankLine
+
+\Si{t[v] = 1}{
+\Retour {}
+}
+
+aSuccesseur $\leftarrow$ False
+
+t[v] $\leftarrow$ 1
+
+\Pour{$i\in \voisin[v]$}{
+\Si{t[i] = 0 et aSuccesseur = False}{
+	aSuccesseur $\leftarrow$ True
+	
+	ajout de $v$ a $cover$
+	}	
+parcours\_profondeur(G,i,cover,t)
+}
+\caption{parcours\_profondeur}
+ 
+\end{algorithm}
 
 \subsubsection{Complexité}
 
