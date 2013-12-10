@@ -31,7 +31,7 @@ Nous avons développé une structure de graphes que nous détaillerons dans la p
 Dans une deuxième partie, nous décrirons les algorithmes implémentés, une estimation de leur complexité et les résultats obtenus.
 Enfin, nous présenterons l'utilisation de minisat que nous avons développé.
 
-Notations : dans ce rapport, le graphe considéré sera généralement noté $G$. Sa taille (le nombre de ses sommets) sera notée $n$. Les ensembles de ses sommets et de ses arêtes seront respectivement notées $V(G)$ et $E(G)$.
+Notations : dans ce rapport, le graphe considéré sera généralement noté $G$. Sa taille (le nombre de ses sommets) sera notée $n$. Les ensembles de ses sommets et de ses arêtes seront respectivement notés $V(G)$ et $E(G)$.
 
 \section{Structure de graphes}
 
@@ -125,7 +125,7 @@ décrémenter $\voisin[i]$ de 1
 
 Finalement, la complexité de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
 
-Cependant, on peut remarquer que la phase de recherche du sommet de degré maximum pourrait se faire avec une complexité plus faible, par exemple en gardant les sommets dans une liste triée par rapport à leur degré.
+Cependant, on peut remarquer que la phase de recherche du sommet de degré maximum pourrait se faire avec une complexité plus faible, car pour l'instant notre algorithme parcourt à chaque itération l'ensemble des sommets pour chercher celui de plus haut degré, et cela n'est pas efficace : à l'itération précédente, les seuls sommets qui ont changé de degré sont les voisins de celui que l'on a mis dans la couverture. Tenir à jour une liste des sommets triée en fonction de leur degré serait plus efficace : on déplacerait seulement les sommets ayant changé de degré à chaque itération.
 
 \subsubsection{Résultats}
 
@@ -166,8 +166,6 @@ Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen 
 
 Cet algorithme est 2-approché, c'est-à-dire qu'il retourne un ensemble de sommets de cardinal au pire deux fois plus grand que celui de la couverture minimale du graphe.
 
-En effet, 
-
 \begin{algorithm}[H]
 
 \Entree{le graphe $g$}
@@ -179,7 +177,7 @@ $t \leftarrow$ tableau de taille $n$
 
 pour tous les sommets $i$ de $V(G)$ : $t[i] \leftarrow 0$
 
-parcours\_profondeur(G,0,cover,t)
+parcours\_profondeur(G, 0, cover, t)
 
 \Retour{cover}
 \caption{Algorithme avec arbre couvrant}
@@ -203,9 +201,9 @@ t[v] $\leftarrow$ 1
 \Si{t[i] = 0 et aSuccesseur = False}{
 	aSuccesseur $\leftarrow$ True
 	
-	ajout de $v$ a $cover$
+	ajout de $v$ à $cover$
 	}	
-parcours\_profondeur(G,i,cover,t)
+parcours\_profondeur(G, i, cover, t)
 }
 \caption{parcours\_profondeur}
  
