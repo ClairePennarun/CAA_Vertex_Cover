@@ -287,6 +287,5 @@ List littleCoverAlg(Graph g, int k, int size){
       l_addInFront(cover, v);
     }
   }
-  free(degrees);
   return cover;
 }
