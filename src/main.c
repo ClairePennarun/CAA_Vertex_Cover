@@ -23,7 +23,6 @@ int main(int argc, char* argv[]){
   printf("\n");
   g_display(g);
   printf("%d aretes dans le graphe \n", g_numberOfEdges(g));
-  // printf("\n");
 
   int select = 0;
   int k = 0;
@@ -49,6 +48,7 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverG);
     printf("\n");
+    l_freeList(coverG);
     g_freeGraph(gCopy);
     break;
   
@@ -60,6 +60,7 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverT);
     printf("\n");
+    l_freeList(coverT);
     g_freeGraph(gCopy);
     break;
 
@@ -71,6 +72,7 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverS);
     printf("\n");
+    l_freeList(coverS);
     g_freeGraph(gCopy);
     break;
 
@@ -82,6 +84,7 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverE);
     printf("\n");
+    l_freeList(coverE);
     g_freeGraph(gCopy);
     break;
 
@@ -98,6 +101,7 @@ int main(int argc, char* argv[]){
     else 
       printf("L'algorithme n'a pas trouvé de couverture de taille %d, essayez avec une valeur plus grande !\n", k);
     printf("\n");
+    l_freeList(littleCov);
     g_freeGraph(gCopy);
     break;
 

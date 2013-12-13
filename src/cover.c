@@ -65,6 +65,7 @@ List greedyAlg (Graph g){
       deleteVertexDegrees(g,degrees,v);
     }
   }
+  free(degrees);
   return cover;
 }
 
@@ -88,6 +89,7 @@ List treeOptAlg(Graph g){
       deleteVertexDegrees(g,degrees,w);
     }
   }
+  free(degrees);
   return cover;
 }
 
@@ -215,6 +217,7 @@ List littleCover(Graph g, int k){
   }
   int k1 = k-l;
   if (k1 < 0){
+    free(tab);
     return littleCoverAlg(g,k,n);
   }
   if (j > 0){
@@ -224,8 +227,10 @@ List littleCover(Graph g, int k){
       g_freeVertex(g,u);
     }
   }
-  if (g_numberOfEdges(g) > k*k1)
+  if (g_numberOfEdges(g) > k*k1){
+    free(tab);
     return NULL;
+  }
   free(tab);
   return littleCoverAlg(g, k-l, n-l);
 }
@@ -242,13 +247,16 @@ List littleCoverAlg(Graph g, int k, int size){
     return cover;
   }
   if (k < 0){
+    free(cover);
     return NULL;
   }
   if (numberOfEdges > k*(size-1)){
+    free(cover);
     return NULL;
   }
   // creation liste des degres
-  int* degrees = malloc(size*sizeof(int));
+  int* degrees = malloc(sizeGraph*sizeof(int));
+  assert(degrees);
   for (int i=0; i<sizeGraph; i++){
     degrees[i] = g_getDegreeVertex(g, i);
   }
@@ -264,6 +272,8 @@ List littleCoverAlg(Graph g, int k, int size){
   g_freeVertex(g1,u);
   if (g_numberOfEdges(g1) == 0){
     l_addInFront(cover,u);
+    g_freeGraph(g1);
+    free(degrees);
     return cover;
   }
 
@@ -272,20 +282,28 @@ List littleCoverAlg(Graph g, int k, int size){
   g_freeVertex(g2,v);
   if (g_numberOfEdges(g2) == 0){
     l_addInFront(cover,v);
+    g_freeGraph(g1);
+    g_freeGraph(g2);
+    free(degrees);
     return cover;
   }
 
   List coverU = littleCoverAlg(g1, k-1, size-1);
   if (coverU !=NULL && l_size(coverU) == k-1){
+    l_freeList(cover);
     cover = coverU;
     l_addInFront(cover, u);
   }
   else {
     List coverV = littleCoverAlg(g2, k-1, size-1);
     if (coverV != NULL && l_size(coverV) == k-1){
+      l_freeList(cover);
       cover = coverV;
       l_addInFront(cover, v);
     }
   }
+  g_freeGraph(g1);
+  g_freeGraph(g2);
+  free(degrees);
   return cover;
 }

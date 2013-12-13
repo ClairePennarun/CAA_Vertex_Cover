@@ -59,7 +59,7 @@ void g_freeGraph(Graph g){
     v = g_getVertex(g,i);
     if (v != NULL){
       l_freeList(v->neighbors);
-      free(v);
+      free(v); 
     }
   }
 
@@ -79,7 +79,7 @@ void g_createNeighborhood(Graph g){
   assert(g->neighborhood);
   
   for (int i=0; i<nbVert; i++){
-    neighbors = malloc(sizeof(int*)*nbVert);
+    neighbors = malloc(sizeof(int)*nbVert);
     assert(neighbors);
     for (int j=0; j<nbVert; j++)
       neighbors[j] = 0;
