@@ -12,6 +12,11 @@
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\argmin}{argmin}
 \DeclareMathOperator{\cover}{cover}
+\DeclareMathOperator{\nonempty}{nonempty}
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\leaf}{leaf}
+\DeclareMathOperator{\parent}{parent}
 \title{Projet CAA : couverture par sommets}
 \author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
 \date{}
@@ -129,9 +134,68 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 
 \subsubsection{Résultats}
 
-
-
 \subsection{Pour les arbres}
+
+\subsubsection{Description}
+
+L'algorithme optimal pour les arbres fonctionne de la façon suivante : on commence par chercher une feuille, il faudra forcément couvrir l'arête qui relie la feuille à son parent. Deux options s'offrent alors : ajouter la feuille à la couverture ou son parent. Comme l'ensemble des arêtes couverte par la feuille est inclus dans l'ensemble des arêtes couvertes par son parent, il y a forcément une couverture optimale qui contient le parent. 
+
+Une fois que le parent est ajouté à la couverture, on peut supprimer toutes les arêtes qu'il couvre et les sommets orphelins, puis itérer, la terminaison étant assuré par le fait que le graphe est un arbre. Comme pour l'algorithme précédent, nous avons choisi de travailler sur un tableau contenant les degré de chaque sommet, plus facile à tenir à jour que le graphe lui-même. Les feuilles étant caractérisée par un degré égal à 1, elles sont faciles à détecter à partir de ce tableau. On obtient l'algorithme suivant :
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un arbre défini par un tableau $\mathtt{voisin}$ de listes d'adjacence}
+\Sortie{Une couverture d'arêtes, sous forme de liste de sommets}
+\BlankLine
+
+$n=\taille(G)$
+
+création d'un tableau $\mathtt{degre}$ de taille $n$.
+
+$\nonempty=\true$
+
+\Pour{$i$ do 0 à $n-1$}{
+
+$\mathrm{\degree[i]\leftarrow \taille(\voisin[i])}$
+}
+
+\Tq{$\nonempty$}{
+
+$v=\leaf(\degree)$
+
+\eSi{$v=-1$}{$\nonempty=\false$}
+{$w=\parent(v,\degree,\voisin)$
+
+$\mathrm{ajouter}(\cover, w)$
+
+$\mathrm{actualiser}(\degree, w)$}
+
+}
+
+\Retour{$\cover$}
+\caption{Algorithme optimal pour les arbres}
+ 
+\end{algorithm}
+
+Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1, et -1 s'il n'y en a pas.
+
+\subsubsection{Complexité}
+
+\begin{itemize}
+ \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 4 et 5 se fait en $O(n)$
+ \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 6, où $c$ est la taille de la couverture renvoyée. À chaque fois :
+\begin{itemize}
+\itemt La fonction $\leaf$ tourne en $O(n)$.
+\itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
+\end{itemize}
+\end{itemize}
+
+Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
+
+\subsubsection{Résultats}
+
+\subsection{Pour les graphes bipartis}
 
 \subsubsection{Description}
 
@@ -144,15 +208,6 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 \subsubsection{Résultats}
 
 % On chronomètre sur une batteries de graphes générés aléatoirement, on commente et on interprète. Je pense que cette partie est importante, c'est ce qui justifie l'implémentation de générateurs.
-
-\subsection{Pour les graphes bipartis}
-
-\subsubsection{Description}
-
-\subsubsection{Complexité}
-
-\subsubsection{Résultats}
-
 
 \subsection{Algorithme 2-approché avec arbre couvrant}
 
