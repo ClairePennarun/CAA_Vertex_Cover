@@ -194,7 +194,40 @@ List edgesDeletionAlg(Graph g){
 }
 
 List littleCover(Graph g, int k){
-  return littleCoverAlg(g, k, g_getSize(g));
+  int l = 0; // Nombre de sommets de degre trop grand
+  int m = 0; // Nombre de sommets isoles
+  int n = g_getSize(g);
+  int* tab = malloc(n*sizeof(int));
+  assert(tab);
+  int j = 0;
+  for (int i=0; i < n; i++){
+    int degree = g_getDegreeVertex(g, i);
+    if (degree > k){
+      l++;
+      tab[j] = i;
+      j++;
+    }
+    if (degree == 0){
+      m++;
+      tab[j] = i;
+      j++;
+    }
+  }
+  int k1 = k-l;
+  if (k1 < 0){
+    return littleCoverAlg(g,k,n);
+  }
+  if (j > 0){
+    for (int i = 0; i<=j; i++){
+      int u = tab[i];
+      g_deleteEdges(g,u);
+      g_freeVertex(g,u);
+    }
+  }
+  if (g_numberOfEdges(g) > k*k1)
+    return NULL;
+  free(tab);
+  return littleCoverAlg(g, k-l, n-l);
 }
 
 // Algo optimal petite couverture
@@ -254,6 +287,6 @@ List littleCoverAlg(Graph g, int k, int size){
       l_addInFront(cover, v);
     }
   }
-
+  free(degrees);
   return cover;
 }
