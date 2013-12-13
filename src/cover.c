@@ -97,34 +97,34 @@ int* bipartiteOptAlg (Graph g){
 }
 
 // Algo 2-approche par arbres couvrants
-void spanning(Graph g, int i, List cover, int* tabTree){
-  if(tabTree[i] == 1) // on a deja visité le sommet
+void dfs(Graph g, int i, List cover, int* color){
+  if(color[i] == 1) // on a deja visité le sommet
     return;
-  tabTree[i] = 1;
+  color[i] = 1;
   List listNeighbors = g_getNeighbors(g,i);
   l_head(listNeighbors);
   int val_head;
-  bool hasSuccessor = false;
+  bool isInCover = false;
   while(!l_isOutOfList(listNeighbors)){
     val_head = l_getVal(listNeighbors);
     l_next(listNeighbors);
-    if (tabTree[val_head] == 0 && !hasSuccessor){
-      hasSuccessor = true;
+    if (color[val_head] == 0 && !isInCover){
+      isInCover = true;
       l_addInFront(cover,i);
     }
-    spanning(g,val_head,cover,tabTree);
+    dfs(g,val_head,cover,color);
   }
 }
 
 List spanningTreeAlgRec(Graph g){
   List cover = l_createList();
   int sizeGraph = g_getSize(g);
-  int* tabTree = malloc(sizeGraph*sizeof(int));
-  assert(tabTree);
+  int* color = malloc(sizeGraph*sizeof(int));
+  assert(color);
   for (int i=0; i < sizeGraph; i++){
-    tabTree[i] = 0;
+    color[i] = 0;
   }
-  spanning(g, 0, cover, tabTree);
+  dfs(g, 0, cover, color);
   return cover;
 }
 

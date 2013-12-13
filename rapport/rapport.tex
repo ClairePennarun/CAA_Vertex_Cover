@@ -215,9 +215,18 @@ Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ e
 
 L'algorithme se base sur un parcours en profondeur du graphe $G$. Le parcours en profondeur (DFS) crée un arbre couvrant du graphe. L'ensemble des sommets de cet arbre qui ne sont pas des feuilles est retourné comme couverture du graphe.
 
-Nous avons implémenté cet algorithme en nous basant sur un algorithme récursif simple de parcours en profondeur. Chaque sommet de $G$ est "marqué" quand il est visité par le parcours. Un tableau $t$ de taille $n$ est créé au début de l'algorithme pour nous permettre de stocker ces "marques" : $t[i] = 0$ si le sommet $i$ n'a pas encore été visité, $t[i] = 1$ sinon.
+Nous avons implémenté cet algorithme de deux manières différentes : la première version (algorithme "spanningTreeAlgRec") en nous basant sur un algorithme récursif simple de parcours en profondeur, la deuxième version (algorithme "spanningTreeAlg") en dérécursifiant le parcours en utilisant une liste doublement chaînée comme pile.
 
-Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $aSuccesseur$ ($hasSuccessor$) qui vaut $False$ au début de la visite de $v$ et dont la valeur vaut $True$ quand on rencontre un de ses voisins pour la première fois. Le sommet $v$ est alors ajouté dans la couverture du graphe.
+Chaque sommet de $G$ est "coloré" quand il est visité par le parcours. Un tableau $color$ de taille $n$ est créé au début de l'algorithme pour nous permettre de stocker ces "couleurs" : 
+
+\begin{itemize}
+\item dans le premier algorithme : $color[i] = 0$ si le sommet $i$ n'a pas encore été visité, $color[i] = 1$ sinon.
+\item dans le second algorithme : $color[i] = 0$ si le sommet $i$ n'a pas encore été visité, $color[i] = 1$ si le sommet est a été découvert (il est voisin d'un sommet visité), et $color[i] = 2$ si le sommet a été visité.
+\end{itemize}
+
+
+
+Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $isInCover$ qui vaut $False$ au début de la visite de $v$. Quand on rencontre un de ses voisins non déjà visités pour la première fois, le sommet $v$ est ajouté dans la couverture du graphe et la valeur de $isInCover$ est mise à $True$.
 
 Cet algorithme est 2-approché, c'est-à-dire qu'il retourne un ensemble de sommets de cardinal au pire deux fois plus grand que celui de la couverture minimale du graphe.
 
@@ -230,37 +239,91 @@ $n \leftarrow \taille(G)$
 
 $t \leftarrow$ tableau de taille $n$
 
-pour tous les sommets $i$ de $V(G)$ : $t[i] \leftarrow 0$
+$cover \leftarrow$ liste
+
+pour tous les sommets $i$ de $V(G)$ : $t[i] = 0$
 
 parcours\_profondeur(G, 0, cover, t)
 
 \Retour{cover}
-\caption{Algorithme avec arbre couvrant}
+\caption{Algorithme avec arbre couvrant (récursif) - spanningTreeAlgRec}
  
 \end{algorithm}
 
 \begin{algorithm}[H]
 
-\Entree{le graphe $G$, le sommet $v$ sur lequel on fait le parcours, la couverture $cover$ de sommets actuelle, le tableau de marques $t$}
+\Entree{le graphe $G$, le sommet $v$ sur lequel on fait le parcours, la couverture $cover$ de sommets actuelle, le tableau de couleurs $t$}
 \BlankLine
 
 \Si{t[v] = 1}{
 \Retour {}
 }
 
-aSuccesseur $\leftarrow$ False
+estDansCover = False
 
-t[v] $\leftarrow$ 1
+t[v] = 1
 
 \Pour{$i\in \voisin[v]$}{
-\Si{t[i] = 0 et aSuccesseur = False}{
-	aSuccesseur $\leftarrow$ True
-	
+\Si{t[i] = 0 et estDansCover = False}{
 	ajout de $v$ à $cover$
+	
+	estDansCover = True
 	}	
 parcours\_profondeur(G, i, cover, t)
 }
-\caption{parcours\_profondeur}
+\caption{parcours\_profondeur - dfs}
+ 
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+
+\Entree{le graphe $G$}
+\BlankLine
+
+$cover \leftarrow$ liste % a voir si externe
+
+$pile \leftarrow$ liste % a voir si externe
+
+\Pour{$i \in V(G)$}{
+	color[i] = 0;
+	parent[i] = -1;
+}
+
+$u$ $\leftarrow$ racine du graphe
+
+color[u] = 1;
+
+ajout de $u$ à $pile$
+
+\Tq{$pile$ != []}{
+	estDansCover = False
+	
+	$u \leftarrow$ tete de $pile$
+	
+	\Si{color[u] != 2}{
+		color[u] = 2
+	
+		\Pour{$v \in$ voisin[u]}{
+			\Si{color[v] != 2}{
+			color[v] = 1
+			
+			parent[v] = u
+			
+			empiler $v$ dans $pile$
+			
+				\Si{estDansCover = False}{
+				ajouter $u$ dans $cover$
+				
+				estDansCover = True
+				}
+			}
+		}
+	}
+}
+\Retour{cover}
+
+\caption{Algorithme avec arbre couvrant (itératif) - spanningTreeAlg}
  
 \end{algorithm}
 
