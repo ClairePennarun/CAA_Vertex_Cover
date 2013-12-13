@@ -116,7 +116,7 @@ void spanning(Graph g, int i, List cover, int* tabTree){
   }
 }
 
-List spanningTreeAlg(Graph g){
+List spanningTreeAlgRec(Graph g){
   List cover = l_createList();
   int sizeGraph = g_getSize(g);
   int* tabTree = malloc(sizeGraph*sizeof(int));
@@ -125,6 +125,50 @@ List spanningTreeAlg(Graph g){
     tabTree[i] = 0;
   }
   spanning(g, 0, cover, tabTree);
+  return cover;
+}
+
+List spanningTreeAlg(Graph g){
+  List cover = l_createList();
+  int sizeGraph = g_getSize(g);
+  int* color = malloc(sizeGraph*sizeof(int));
+  int* parent = malloc(sizeGraph*sizeof(int));
+  List searchList = l_createList();
+  assert(color);
+  assert(parent);
+  for (int i=0; i < sizeGraph; i++){
+    color[i] = 0; // 0 = blanc
+    parent[i] = -1;
+  }
+  color[0] = 1; // 1 = gris
+  l_insertInHead(searchList,0);
+  l_head(searchList);
+  while(!l_isOutOfList(searchList)){
+    bool isInCover = false;
+    int u =  l_getVal(searchList);
+    l_deleteFirstOccur(searchList,u);
+    if (color[u] != 2){
+      color[u] = 2; // 2 = noir
+      List neighbors = g_getNeighbors(g,u);
+      l_head(neighbors);
+      int v;
+      while(!l_isOutOfList(neighbors)){
+	v = l_getVal(neighbors);
+	l_next(neighbors);
+	if (color[v] != 2){
+	  color[v] = 1;
+	  parent[v] = u;
+	  l_insertInHead(searchList, v);
+	  if (!isInCover){
+	    l_addInFront(cover, u);
+	    isInCover = true;
+	  }
+	}
+      }
+    }
+  }
+  free(color);
+  free(parent);
   return cover;
 }
 
@@ -158,22 +202,16 @@ List littleCoverAlg(Graph g, int k, int size){
   List cover = l_createList();
   int numberOfEdges = g_numberOfEdges(g);
   int sizeGraph = g_getSize(g);
-  //printf("\n il y a %d aretes et %d sommets \n", numberOfEdges, size);
-  //g_display(g);
   if (size <= k){
-    //printf("Tous les sommets du graphe sont dans la couverture \n");
     for (int i=0; i< size; i++)
       if (g_getNeighbors(g,i) != NULL)
 	l_addInFront(cover,i);
-    //l_display(cover);
     return cover;
   }
   if (k < 0){
-    //printf("k est négatif. Pas de couverture trouvée \n");
     return NULL;
   }
   if (numberOfEdges > k*(size-1)){
-    //printf("Le graphe a trop d'arêtes. Pas de couverture de taille %d trouvée \n",k);
     return NULL;
   }
   // creation liste des degres
@@ -183,20 +221,16 @@ List littleCoverAlg(Graph g, int k, int size){
   }
   int u = 0;
   while(degrees[u] <= 0){
-    //printf("degre de %d : %d\n",u, degrees[u]);
     u++;
   }
-  //printf("degre de u = %d : %d \n", u, degrees[u]);
   List neighbors = g_getNeighbors(g, u);
   int v = firstPositive(neighbors, degrees); // retourne un voisin de u de degre non nul (donc uv est une arete du graphe)
-  //printf("degre de v = %d : %d \n", v, degrees[v]);
 
   Graph g1 = g_cloneGraph(g);
   g_deleteEdges(g1,u);
   g_freeVertex(g1,u);
   if (g_numberOfEdges(g1) == 0){
     l_addInFront(cover,u);
-    //l_display(cover);
     return cover;
   }
 
@@ -205,7 +239,6 @@ List littleCoverAlg(Graph g, int k, int size){
   g_freeVertex(g2,v);
   if (g_numberOfEdges(g2) == 0){
     l_addInFront(cover,v);
-    //l_display(cover);
     return cover;
   }
 
@@ -221,7 +254,6 @@ List littleCoverAlg(Graph g, int k, int size){
       l_addInFront(cover, v);
     }
   }
-  //l_display(cover);
 
   return cover;
 }

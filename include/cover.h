@@ -15,7 +15,8 @@ List treeOptAlg(Graph g);
 int* bipartiteOptAlg (Graph g);
 
 // Algo 2-approche par arbres couvrants
-List spanningTreeAlg(Graph g);
+List spanningTreeAlg(Graph g); // Algorithme itératif avec une liste
+List spanningTreeAlgRec(Graph g); // Algorithme récursif
 
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g);
@@ -23,12 +24,6 @@ List edgesDeletionAlg(Graph g);
 // Algo optimal petite couverture
 List littleCover(Graph g, int k);
 List littleCoverAlg(Graph g, int k, int size);
-
-
-//Fonctions annexes
-int firstPositive(List, int*);
-void deleteVertexDegrees(Graph, int*, int v);
-int findLeaf(int*, Graph g);
 
 
 #endif
