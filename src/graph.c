@@ -253,9 +253,9 @@ void g_freeVertex(Graph g, int i){
   (g->allVertices)[i] = NULL;
 }
 
-int g_getExistingVertex(Graph g){
+int g_getPositiveDegreeVertex(Graph g, int j){
   Vertex v;
-  for (int i = 0; i < g_getSize(g); i++){
+  for (int i = j; i < g_getSize(g); i++){
     v = g_getVertex(g,i);
     if (l_size(v->neighbors) > 0)
     return i;

@@ -177,28 +177,24 @@ List spanningTreeAlg(Graph g){
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g){
   List cover = l_createList();
-  int iVert1 = g_getExistingVertex(g);
-  printf("valeur i1 = %d \n", iVert1);
-  if (iVert1 == -1)
+  int v1 = g_getPositiveDegreeVertex(g,0);
+  if (v1 == -1)
     return cover;
-  int deg1 = g_getDegreeVertex(g, iVert1);
-  int iVert2;
+  int deg1 = g_getDegreeVertex(g, v1);
+  int v2;
   List neighbors;
   while(deg1 > 0){
-    neighbors = g_getNeighbors(g, iVert1);
+    neighbors = g_getNeighbors(g, v1);
     l_head(neighbors);
-    iVert2 = l_getVal(neighbors);
-    printf("valeur i2 = %d \n", iVert2);
-    l_addInFront(cover, iVert1);
-    l_addInFront(cover, iVert2);
-    g_deleteEdges(g, iVert1);
-    g_deleteEdges(g, iVert2);
-    g_display(g);
-    iVert1 = g_getExistingVertex(g);
-    printf("valeur i1 = %d \n", iVert1);
-    if (iVert1 == -1)
+    v2 = l_getVal(neighbors);
+    l_addInFront(cover, v1);
+    l_addInFront(cover, v2);
+    g_deleteEdges(g, v1);
+    g_deleteEdges(g, v2);
+    v1 = g_getPositiveDegreeVertex(g, v1);
+    if (v1 == -1)
       return cover;
-    deg1 = g_getDegreeVertex(g, iVert1);
+    deg1 = g_getDegreeVertex(g, v1);
   }
   return cover;
 }
