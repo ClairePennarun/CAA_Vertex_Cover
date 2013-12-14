@@ -57,7 +57,7 @@ Notations : dans ce rapport, le graphe considéré sera généralement noté $G$
 
 L'algorithme glouton consiste à ajouter à chaque étape le sommet qui couvrira le plus d'arêtes non couvertes. Bien que non optimal, il a l'avantage d'être rapide. 
 
-Le nombre d'arêtes couvertes par un sommet est égal à son degré, mais quand un sommet est ajouté à la couverture, il est important de ne plus tenir compte des arêtes adjacentes dans la suite. Pour connaître rapidement, le nombre d'arêtes que l'on couvrirait avec chaque sommet, nous avons choisi de créer un tableau répertoriant le degré de chaque sommet du graphe, plus facile à tenir à jour que le graphe lui-même. 
+Le nombre d'arêtes couvertes par un sommet est égal à son degré, mais quand un sommet est ajouté à la couverture, il est important de ne plus tenir compte des arêtes adjacentes dans la suite. Pour connaître rapidement le nombre d'arêtes que l'on couvrirait avec chaque sommet, nous avons choisi de créer un tableau répertoriant le degré de chaque sommet du graphe, plus facile à tenir à jour que le graphe lui-même. 
 
 L'algorithme s'arrête quand il n'est plus possible de couvrir une nouvelle arête. Le tableau des degrés ne contiendra alors plus de valeur positive, ce qui se détecte facilement, puisqu'on doit de toute façon chercher le sommet de plus haut degré à chaque itération.
 
@@ -128,7 +128,7 @@ décrémenter $\voisin[i]$ de 1
 \end{itemize}
 \end{itemize}
 
-Finalement, la complexité de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
+Finalement, la complexité de l'algorithme glouton est $O(c*n)$ (où $c$ est la taille de la couverture renvoyée).
 
 Cependant, on peut remarquer que la phase de recherche du sommet de degré maximum pourrait se faire avec une complexité plus faible, car pour l'instant notre algorithme parcourt à chaque itération l'ensemble des sommets pour chercher celui de plus haut degré, et cela n'est pas efficace : à l'itération précédente, les seuls sommets qui ont changé de degré sont les voisins de celui que l'on a mis dans la couverture. Tenir à jour une liste des sommets triée en fonction de leur degré serait plus efficace : on déplacerait seulement les sommets ayant changé de degré à chaque itération.
 
@@ -138,9 +138,9 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 
 \subsubsection{Description}
 
-L'algorithme optimal pour les arbres fonctionne de la façon suivante : on commence par chercher une feuille, il faudra forcément couvrir l'arête qui relie la feuille à son parent. Deux options s'offrent alors : ajouter la feuille à la couverture ou son parent. Comme l'ensemble des arêtes couverte par la feuille est inclus dans l'ensemble des arêtes couvertes par son parent, il y a forcément une couverture optimale qui contient le parent. 
+L'algorithme optimal pour les arbres fonctionne de la façon suivante : on commence par chercher une feuille (notée $u$), il faudra forcément couvrir l'arête qui relie la feuille à son parent (noté $v$). Deux options s'offrent alors : ajouter $u$ à la couverture ou $v$. Comme l'ensemble des arêtes couverte par la feuille est inclus dans l'ensemble des arêtes couvertes par son parent, il y a forcément une couverture optimale qui contient $v$. 
 
-Une fois que le parent est ajouté à la couverture, on peut supprimer toutes les arêtes qu'il couvre et les sommets orphelins, puis itérer, la terminaison étant assuré par le fait que le graphe est un arbre. Comme pour l'algorithme précédent, nous avons choisi de travailler sur un tableau contenant les degré de chaque sommet, plus facile à tenir à jour que le graphe lui-même. Les feuilles étant caractérisée par un degré égal à 1, elles sont faciles à détecter à partir de ce tableau. On obtient l'algorithme suivant :
+Une fois que le parent est ajouté à la couverture, on peut supprimer toutes les arêtes qu'il couvre et les sommets orphelins, puis itérer, la terminaison étant assurée par le fait que le graphe est un arbre. Comme pour l'algorithme précédent, nous avons choisi de travailler sur un tableau contenant les degrés de chaque sommet, plus facile à tenir à jour que le graphe lui-même. Les feuilles étant caractérisées par un degré égal à 1, elles sont faciles à détecter à partir de ce tableau. On obtient l'algorithme suivant :
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -178,7 +178,7 @@ $\mathrm{actualiser}(\degree, w)$}
  
 \end{algorithm}
 
-Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1, et -1 s'il n'y en a pas.
+Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1 (c'est-à-dire la première feuille), et -1 s'il n'y en a pas.
 
 \subsubsection{Complexité}
 
@@ -191,7 +191,7 @@ Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1, et -1 s'
 \end{itemize}
 \end{itemize}
 
-Finalement, la complexité finale de l'algorithme glouton est $O(cn)$ (où $c$ est la taille de la couverture renvoyée).
+Finalement, la complexité finale de l'algorithme glouton est $O(c*n)$ (où $c$ est la taille de la couverture renvoyée).
 
 \subsubsection{Résultats}
 

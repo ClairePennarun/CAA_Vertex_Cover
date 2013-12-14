@@ -32,6 +32,7 @@ int g_numberOfEdges(Graph);
 Vertex g_createVertex();
 Vertex g_cloneVertex(Vertex);
 void g_freeVertex(Graph, int);
+int g_getExistingVertex(Graph);
 Vertex g_getVertex(Graph, int);
 List g_getNeighbors(Graph, int);
 int g_getDegreeVertex(Graph, int);

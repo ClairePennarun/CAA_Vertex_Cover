@@ -177,19 +177,27 @@ List spanningTreeAlg(Graph g){
 // Algo 2-approche par elimination d'aretes
 List edgesDeletionAlg(Graph g){
   List cover = l_createList();
-  int iVert1 = g_maxDegreeVertex(g); // a voir si besoin de chercher le sommet de plus haut degre
+  int iVert1 = g_getExistingVertex(g);
+  printf("valeur i1 = %d \n", iVert1);
+  if (iVert1 == -1)
+    return cover;
   int deg1 = g_getDegreeVertex(g, iVert1);
   int iVert2;
   List neighbors;
-  while(deg1 != 0){
+  while(deg1 > 0){
     neighbors = g_getNeighbors(g, iVert1);
     l_head(neighbors);
     iVert2 = l_getVal(neighbors);
+    printf("valeur i2 = %d \n", iVert2);
     l_addInFront(cover, iVert1);
     l_addInFront(cover, iVert2);
     g_deleteEdges(g, iVert1);
     g_deleteEdges(g, iVert2);
-    iVert1 = g_maxDegreeVertex(g);
+    g_display(g);
+    iVert1 = g_getExistingVertex(g);
+    printf("valeur i1 = %d \n", iVert1);
+    if (iVert1 == -1)
+      return cover;
     deg1 = g_getDegreeVertex(g, iVert1);
   }
   return cover;

@@ -40,7 +40,6 @@ Graph readFile(char* file){
     }
     //g_createNeighborhood(graph);
     fclose(tmpfile);
-    free(tmpfile);
     free(line);
     return graph;
   }
