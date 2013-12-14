@@ -8,6 +8,7 @@
 \DeclareMathOperator{\degree}{degre}
 \DeclareMathOperator{\taille}{taille}
 \DeclareMathOperator{\voisin}{voisin}
+\DeclareMathOperator{\voisins}{voisins}
 \DeclareMathOperator{\degmax}{degmax}
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\argmin}{argmin}
@@ -17,6 +18,7 @@
 \DeclareMathOperator{\false}{false}
 \DeclareMathOperator{\leaf}{leaf}
 \DeclareMathOperator{\parent}{parent}
+\DeclareMathOperator{\degrepositif}{degrePositif}
 \title{Projet CAA : couverture par sommets}
 \author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
 \date{}
@@ -74,6 +76,8 @@ $n=\taille(G)$
 
 $\degmax=1$
 
+$\cover = [\quad]$
+
 création d'un tableau $\mathtt{degre}$ de taille $n$.
 
 \Pour{$i$ do 0 à $n-1$}{
@@ -120,15 +124,15 @@ décrémenter $\voisin[i]$ de 1
 \subsubsection{Complexité}
 
 \begin{itemize}
- \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 4 et 5 se fait en $O(n)$
- \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 6, où $c$ est la taille de la couverture renvoyée. À chaque fois :
+ \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 5 et 6 se fait en $O(n)$
+ \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 7, où $c$ est la taille de la couverture renvoyée. À chaque fois :
 \begin{itemize}
-\itemt Déterminer le sommet de degré maximum (ligne 7) se fait en $O(n)$
+\itemt Déterminer le sommet de degré maximum (ligne 8) se fait en $O(n)$
 \itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
 \end{itemize}
 \end{itemize}
 
-Finalement, la complexité de l'algorithme glouton est $O(c*n)$ (où $c$ est la taille de la couverture renvoyée).
+Finalement, la complexité de l'algorithme glouton est $O(c\times n)$ (où $c$ est la taille de la couverture renvoyée).
 
 Cependant, on peut remarquer que la phase de recherche du sommet de degré maximum pourrait se faire avec une complexité plus faible, car pour l'instant notre algorithme parcourt à chaque itération l'ensemble des sommets pour chercher celui de plus haut degré, et cela n'est pas efficace : à l'itération précédente, les seuls sommets qui ont changé de degré sont les voisins de celui que l'on a mis dans la couverture. Tenir à jour une liste des sommets triée en fonction de leur degré serait plus efficace : on déplacerait seulement les sommets ayant changé de degré à chaque itération.
 
@@ -152,6 +156,8 @@ Une fois que le parent est ajouté à la couverture, on peut supprimer toutes le
 $n=\taille(G)$
 
 création d'un tableau $\mathtt{degre}$ de taille $n$.
+
+$\cover = [\quad]$
 
 $\nonempty=\true$
 
@@ -183,15 +189,15 @@ Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1 (c'est-à
 \subsubsection{Complexité}
 
 \begin{itemize}
- \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 4 et 5 se fait en $O(n)$
- \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 6, où $c$ est la taille de la couverture renvoyée. À chaque fois :
+ \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 5 et 6 se fait en $O(n)$
+ \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 7, où $c$ est la taille de la couverture renvoyée. À chaque fois :
 \begin{itemize}
 \itemt La fonction $\leaf$ tourne en $O(n)$.
 \itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
 \end{itemize}
 \end{itemize}
 
-Finalement, la complexité finale de l'algorithme glouton est $O(c*n)$ (où $c$ est la taille de la couverture renvoyée).
+Finalement, la complexité finale de l'algorithme glouton est $O(c\times n)$ (où $c$ est la taille de la couverture renvoyée).
 
 \subsubsection{Résultats}
 
@@ -230,6 +236,7 @@ Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen 
 
 Cet algorithme est 2-approché, c'est-à-dire qu'il retourne un ensemble de sommets de cardinal au pire deux fois plus grand que celui de la couverture minimale du graphe.
 
+\vspace{0.35cm}
 \begin{algorithm}[H]
 
 \Entree{le graphe $g$}
@@ -250,6 +257,7 @@ parcours\_profondeur(G, 0, cover, t)
  
 \end{algorithm}
 
+\vspace{0.35cm}
 \begin{algorithm}[H]
 
 \Entree{le graphe $G$, le sommet $v$ sur lequel on fait le parcours, la couverture $cover$ de sommets actuelle, le tableau de couleurs $t$}
@@ -275,7 +283,7 @@ parcours\_profondeur(G, i, cover, t)
  
 \end{algorithm}
 
-
+\vspace{0.35cm}
 \begin{algorithm}[H]
 
 \Entree{le graphe $G$}
@@ -332,11 +340,98 @@ ajout de $u$ à $pile$
 \subsubsection{Résultats}
 
 
-\subsection{Algorithme 2-approché avec élimination d'arêtes}
+\subsection{Algorithme 2-approché par élimination d'arêtes}
 
 \subsubsection{Description}
 
+L'idée de cet algorithme est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirés à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence}
+\Sortie{Une couverture d'arêtes, sous forme de liste de sommets}
+\BlankLine
+
+$n=\taille(G)$
+
+$v_1=\degrepositif(G,0)$
+
+\Si{$v_1=0$}{\Retour{$\cover$}}
+
+$\deg_1=\deg(v_1)$
+
+\Tq{$\deg_1>0$}{
+
+$\voisins=\voisin(v_1)$
+
+$v_2$ est le premier élément de $\voisins$
+
+$\mathrm{ajouter}(\cover,v_1)$
+
+$\mathrm{ajouter}(\cover,v_2)$
+
+$\mathrm{suppressionAretes}(G,v_1)$
+
+$\mathrm{suppressionAretes}(G,v_2)$
+
+$v_1=\degrepositif(G,v_1)$
+
+\Si{$v_1=0$}{\Retour{$\cover$}}
+
+$\deg_1=\deg(v_1)$
+
+}
+
+
+\Retour{$\cover$}
+\caption{Algorithme par élimination d'arêtes}
+ 
+\end{algorithm}
+
+La fonction \texttt{degrePositif} prend en argument un graphe $G$ et un indice $i$ et renvoie le premier sommet de $G$ de degré positif et d'indice supérieur à $i$, ou -1 s'il n'y en a pas. Si la dernière fois que la fonction a été appelée, le premier sommet de degré positif avait comme indice $i$, il est en effet inutile de chercher un sommet de degré positif avant l'indice $i$ puisque l'algorithme ne peut à aucun moment augmenter le degré d'un sommet.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence, un indice $i$}
+\Sortie{Le premier sommet de $G$ de degré positif et d'indice supérieur à $i$}
+\BlankLine
+
+\Pour{$j$ de $i$ à $\taille(G)-1$}{
+
+\Si{$\voisin(j)\neq [\quad]$}{\Retour{$j$}
+}
+}
+\Retour {-1}
+
+
+\caption{degrePositif}
+ 
+\end{algorithm}
+
+La fonction \texttt{suppressionAretes} prend en entrée un graphe $G$ et un sommet $v$ et supprime de $G$ toutes les arêtes adjacentes à $v$.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence, un sommet $v$}
+\BlankLine
+
+\Pour{$u\in\voisin(v)$}{
+
+$\mathrm{supprimer}(v,\voisin(u))$
+}
+
+$\voisin(v)\leftarrow [\quad]$
+
+\caption{suppressionAretes}
+ 
+\end{algorithm}
+
 \subsubsection{Complexité}
+
+
 
 \subsubsection{Résultats}
 
