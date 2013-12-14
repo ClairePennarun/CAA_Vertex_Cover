@@ -344,7 +344,7 @@ ajout de $u$ à $pile$
 
 \subsubsection{Description}
 
-L'idée de cet algorithme est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirés à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
+L'idée de cet algorithme est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirées à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -431,7 +431,9 @@ $\voisin(v)\leftarrow [\quad]$
 
 \subsubsection{Complexité}
 
+Le nombre d'appel de la fonction $\degrepositif$ importe en fait assez peu : le fait que la fonction garde en mémoire l'indice du dernier sommet trouvé assure que la somme des temps d'exécution sera en $O(n)$. La complexité de l'algorithme viendra donc des appels de la fonction $\mathrm{suppressionAretes}$, aux lignes 11 et 12. On sait que la fonction $\mathrm{suppressionAretes}$ supprimera au maximum $|E(G)|$ arêtes et que chaque suppression d'arête demandera de chercher un élément dans une liste de voisins d'un sommet, de taille majorée par $\Delta(G)$.
 
+Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe.
 
 \subsubsection{Résultats}
 
