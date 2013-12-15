@@ -21,8 +21,8 @@ int main(int argc, char* argv[]){
   }
   
   printf("\n");
-  g_display(g);
-  printf("%d aretes dans le graphe \n", g_numberOfEdges(g));
+  //g_display(g);
+  //printf("%d aretes dans le graphe \n", g_numberOfEdges(g));
 
   int select = 0;
   int k = 0;
@@ -90,18 +90,24 @@ int main(int argc, char* argv[]){
 
   case 5: // Algo petite couverture
     gCopy = g_cloneGraph(g);
-    printf("quelle taille de couverture a rechercher ? :");
+    printf("Quelle taille de couverture a rechercher ? :");
     scanf("%d", &k);
+    if (k >= g_getSize(g)){
+      printf("Tous les sommets du graphe sont dans la couverture. \n");
+      g_freeGraph(gCopy);
+      break;
+    }
     List littleCov = littleCover(gCopy, k);
     printf("TERMINE \n");
-    if (l_size(littleCov) != 0) {
+    if (littleCov != NULL && l_size(littleCov) != 0) {
       printf("Couverture de taille %d trouvée : \n", k);
       l_display(littleCov);
     }
     else 
       printf("L'algorithme n'a pas trouvé de couverture de taille %d, essayez avec une valeur plus grande !\n", k);
     printf("\n");
-    l_freeList(littleCov);
+    if(littleCov != NULL)
+      l_freeList(littleCov);
     g_freeGraph(gCopy);
     break;
 

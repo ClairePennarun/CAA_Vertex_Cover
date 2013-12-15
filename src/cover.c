@@ -58,10 +58,8 @@ List greedyAlg (Graph g){
   while(degmax >0){ // tant que le graphe n'est pas vide
     int v = g_maxDegreeVertex(g); // on cherche le sommet avec deg max
     degmax = degrees[v];
-    printf("degmax : %d \n", degmax);
     if (degmax > 0){
-      printf("on rajoute le sommet %d \n", v);
-      l_insertInHead(cover, v+1); // on le met dans la couverture
+      l_insertInHead(cover, v); // on le met dans la couverture
       deleteVertexDegrees(g,degrees,v);
     }
   }
@@ -203,40 +201,49 @@ List littleCover(Graph g, int k){
   int l = 0; // Nombre de sommets de degre trop grand
   int m = 0; // Nombre de sommets isoles
   int n = g_getSize(g);
-  int* tab = malloc(n*sizeof(int));
-  assert(tab);
-  int j = 0;
-  for (int i=0; i < n; i++){
+
+  int* bigDegrees = malloc(n*sizeof(int));
+  int* nullDegrees = malloc(n*sizeof(int));
+  assert(bigDegrees);
+  assert(nullDegrees);
+
+  for (int i = 0; i < n; i++){
     int degree = g_getDegreeVertex(g, i);
-    if (degree > k){
-      l++;
-      tab[j] = i;
-      j++;
-    }
-    if (degree == 0){
-      m++;
-      tab[j] = i;
-      j++;
-    }
+    if (degree > k)
+      bigDegrees[l++] = i;
+    if (degree == 0)
+      nullDegrees[m++] = i;
   }
   int k1 = k-l;
-  if (k1 < 0){
-    free(tab);
-    return littleCoverAlg(g,k,n); //voir si retourner NULL serait pas mieux
+  if (k1 <= 0){
+    free(bigDegrees);
+    free(nullDegrees);
+    return NULL;
   }
-  if (j > 0){
-    for (int i = 0; i<=j; i++){
-      int u = tab[i];
+  if (l > 0){
+    for (int i = 0; i<=l; i++){
+      int u = bigDegrees[i];
       g_deleteEdges(g,u);
       g_freeVertex(g,u);
     }
   }
+  if (m > 0){
+    for (int i = 0; i<=m; i++){
+      int u = nullDegrees[i];
+      g_freeVertex(g,u);
+    }
+  }
   if (g_numberOfEdges(g) > k*k1){
-    free(tab);
+    free(bigDegrees);
+    free(nullDegrees);
     return NULL;
   }
-  free(tab);
-  return littleCoverAlg(g, k-l, n-l);
+  List cover = littleCoverAlg(g, k1, n-l);
+  for (int i = 0; i<=l; i++)
+    l_addInFront(cover,bigDegrees[i]);
+  free(bigDegrees);
+  free(nullDegrees);
+  return cover;
 }
 
 // Algo optimal petite couverture
@@ -258,18 +265,15 @@ List littleCoverAlg(Graph g, int k, int size){
     free(cover);
     return NULL;
   }
-  // creation liste des degres
   int* degrees = malloc(sizeGraph*sizeof(int));
   assert(degrees);
-  for (int i=0; i<sizeGraph; i++){
+  for (int i=0; i<sizeGraph; i++)
     degrees[i] = g_getDegreeVertex(g, i);
-  }
   int u = 0;
-  while(degrees[u] <= 0){
+  while(degrees[u] <= 0)
     u++;
-  }
   List neighbors = g_getNeighbors(g, u);
-  int v = firstPositive(neighbors, degrees); // retourne un voisin de u de degre non nul (donc uv est une arete du graphe)
+  int v = firstPositive(neighbors, degrees); 
 
   Graph g1 = g_cloneGraph(g);
   g_deleteEdges(g1,u);
