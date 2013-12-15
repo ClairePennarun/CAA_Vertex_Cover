@@ -222,7 +222,7 @@ List littleCover(Graph g, int k){
   int k1 = k-l;
   if (k1 < 0){
     free(tab);
-    return littleCoverAlg(g,k,n);
+    return littleCoverAlg(g,k,n); //voir si retourner NULL serait pas mieux
   }
   if (j > 0){
     for (int i = 0; i<=j; i++){
@@ -245,7 +245,7 @@ List littleCoverAlg(Graph g, int k, int size){
   int numberOfEdges = g_numberOfEdges(g);
   int sizeGraph = g_getSize(g);
   if (size <= k){
-    for (int i=0; i< size; i++)
+    for (int i=0; i< sizeGraph; i++)
       if (g_getNeighbors(g,i) != NULL)
 	l_addInFront(cover,i);
     return cover;
