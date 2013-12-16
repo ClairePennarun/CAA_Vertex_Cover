@@ -1,8 +1,11 @@
 \documentclass[a4paper,10pt]{article}
+
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
 \usepackage[french,ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{hyperref}
+
 \newcommand*{\itemb}{\item[$\bullet$]}
 \newcommand*{\itemt}{\item[$\blacktriangleright$]}
 \DeclareMathOperator{\degree}{degre}
@@ -19,6 +22,7 @@
 \DeclareMathOperator{\leaf}{leaf}
 \DeclareMathOperator{\parent}{parent}
 \DeclareMathOperator{\degrepositif}{degrePositif}
+
 \title{Projet CAA : couverture par sommets}
 \author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
 \date{}
@@ -39,6 +43,8 @@ Dans une deuxième partie, nous décrirons les algorithmes implémentés, une es
 Enfin, nous présenterons l'utilisation de minisat que nous avons développé.
 
 Notations : dans ce rapport, le graphe considéré sera généralement noté $G$. Sa taille (le nombre de ses sommets) sera notée $n$. Les ensembles de ses sommets et de ses arêtes seront respectivement notés $V(G)$ et $E(G)$.
+
+Le code est disponible à l'adresse \url{http://github.com/ClairePennarun/CAA_Vertex_Cover }.
 
 \section{Structure de graphes}
 
@@ -463,46 +469,57 @@ l = 0 \tcp*{nombre de sommets de degré trop grand}
 
 m = 0 \tcp*{nombre de sommets isolés}
 
-U = tableau de sommets a supprimer
+n = taille(G)
 
-j = 0
+gdDegres \tcp*{tableau de sommets de degré trop grand}
+
+degreNul \tcp*{tableau de sommets de degré nul}
 
 \Pour{$v \in V(G)$}{
 	\Si{deg(v) $>$ k}{
+		U[l] = v
+		
 		l = l+1
-		
-		U[j] = v
-		
-		j = j+1
 	}
 	\Si{deg(v) = 0}{
+		U[m] = v
+		
 		m = m+1
-		
-		U[j] = v
-		
-		j = j+1
 	}
 }
 
 k' = k - l
 
-\Si{k' $<$ 0}{
-	!!!!!!!
-	% A voir !!!!
+\Si{k' $<=$ 0}{
+	\Retour{NULL}
 }
-\Si{j $>$ 0}{
-	\Pour{i de 0 à j}{
-		u = U[i]
+\Si{l $>$ 0}{
+	\Pour{i de 0 à l-1}{
+		u = grdDegres[i]
 		
 		suppressionAretes(G,u)
 		
 		suppressionSommet(G,u)
 	}
 }
+\Si{m $>$ 0}{
+	\Pour{i de 0 à m-1}{
+		u = degreNul[i]
+		
+		suppressionSommet(G,u)
+	}
+}
+
 \Si{nombreAretes(G) $>$ k*k'}{
 	\Retour {NULL}
 }
-\Retour {petiteCouvertureAlg(G,k',n-l)}
+cover = petiteCouvertureAlg(G,k',n-l)
+
+\Pour{i de 0 à l-1}{
+	ajouter $grdDegres[i]$ à $cover$
+}
+
+\Retour{cover}
 
 \caption{recherchePetiteCouverture - littleCover}
 \end{algorithm}
