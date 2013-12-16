@@ -5,6 +5,7 @@
 \usepackage[french,ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{hyperref}
+\hypersetup{colorlinks=true,urlcolor= blue,linkcolor= black}
 
 \newcommand*{\itemb}{\item[$\bullet$]}
 \newcommand*{\itemt}{\item[$\blacktriangleright$]}
@@ -39,12 +40,12 @@ Les algorithmes présentés ici renvoient une liste des sommets formant une couv
 Nous avons implémenté l'ensemble de ces algorithmes en langage C, car le groupe était plus à l'aise dans ce langage qu'en C++.
 
 Nous avons développé une structure de graphes que nous détaillerons dans la première partie de ce rapport, ainsi que les algorithmes de génération de graphes demandés.
-Dans une deuxième partie, nous décrirons les algorithmes implémentés, une estimation de leur complexité et les résultats obtenus.
-Enfin, nous présenterons l'utilisation de minisat que nous avons développé.
+Dans une deuxième partie, nous décrirons les algorithmes implémentés et donnerons une estimation de leur complexité et les résultats obtenus.
+Enfin, nous présenterons une solution via une réduction au problème de satisfiabilité et l'utilisation du solveur minisat.
 
 Notations : dans ce rapport, le graphe considéré sera généralement noté $G$. Sa taille (le nombre de ses sommets) sera notée $n$. Les ensembles de ses sommets et de ses arêtes seront respectivement notés $V(G)$ et $E(G)$.
 
-Le code est disponible à l'adresse \url{http://github.com/ClairePennarun/CAA_Vertex_Cover }.
+Le code est disponible à \href{http://github.com/ClairePennarun/CAA_Vertex_Cover }{l'adresse suivante}.
 
 \section{Structure de graphes}
 
@@ -238,7 +239,7 @@ Chaque sommet de $G$ est "coloré" quand il est visité par le parcours. Un tabl
 
 
 
-Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $isInCover$ qui vaut $False$ au début de la visite de $v$. Quand on rencontre un de ses voisins non déjà visités pour la première fois, le sommet $v$ est ajouté dans la couverture du graphe et la valeur de $isInCover$ est mise à $True$.
+Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $isInCover$ qui vaut $False$ au début de la visite de $v$. Quand on rencontre pour la première fois un de ses voisins non déjà visité, le sommet $v$ est ajouté dans la couverture du graphe et la valeur de $isInCover$ est mise à $True$.
 
 Cet algorithme est 2-approché, c'est-à-dire qu'il retourne un ensemble de sommets de cardinal au pire deux fois plus grand que celui de la couverture minimale du graphe.
 
@@ -270,7 +271,7 @@ parcours\_profondeur(G, 0, cover, t)
 \BlankLine
 
 \Si{t[v] = 1}{
-\Retour {}
+Fin du programme
 }
 
 estDansCover = False
@@ -310,16 +311,16 @@ color[u] = 1;
 
 ajout de $u$ à $pile$
 
-\Tq{$pile$ != []}{
+\Tq{$pile$ $\neq$ []}{
 	estDansCover = False
 	
 	$u \leftarrow$ tete de $pile$
 	
-	\Si{color[u] != 2}{
+	\Si{color[u] $\neq$ 2}{
 		color[u] = 2
 	
 		\Pour{$v \in$ voisin[u]}{
-			\Si{color[v] != 2}{
+			\Si{color[v] $\neq$ 2}{
 			color[v] = 1
 			
 			parent[v] = u
@@ -455,7 +456,7 @@ Pour cela, nous commençons par effectuer une kernelisation du problème. Soit $
 
 On recherche donc le nombre $l = |U|$ de sommets de degré strictement supérieur à $k$. 
 Si $l > k$, alors on ne pourra pas trouver de couverture de taille $k$ et on peut arrêter l'algorithme.
-Si le graphe comprend plus de $k*(k-l)$ arêtes, on peut également arrêter l'algorithme.
+Si le graphe comprend plus de $k\times(k-l)$ arêtes, on peut également arrêter l'algorithme.
 
 Si ces deux tests n'entraînent pas l'arrêt de l'algorithme, on "réduit" le graphe $G$ à $G \smallsetminus U \smallsetminus \{v \in V \mid deg(v) = 0\}$, en cherchant une couverture plus petite, de taille $k-l$.
 
@@ -510,7 +511,7 @@ k' = k - l
 	}
 }
 
-\Si{nombreAretes(G) $>$ k*k'}{
+\Si{nombreAretes(G) $> k\times k'$}{
 	\Retour {NULL}
 }
 cover = petiteCouvertureAlg(G,k',n-l)
@@ -530,7 +531,7 @@ Les tests sont :
 \begin{itemize}
 \item si $k$ est supérieur à la taille du graphe, alors tous les sommets sont dans la couverture.
 \item si $k$ est négatif, alors le graphe n'a pas de couverture de taille $k$.
-\item si le graphe comporte plus de $k*(n-1)$ arêtes, alors il n'a pas de couverture de taille $k$.
+\item si le graphe comporte plus de $k\times(n-1)$ arêtes, alors il n'a pas de couverture de taille $k$.
 \end{itemize}
 
 \bigskip
@@ -559,7 +560,7 @@ Remarque : dans cet algorithme, quand un sommet est supprimé, le graphe garde l
 	\Retour{NULL}
 }
 
-\Si{nombreAretes(G') $>$ k*(n'-1)}{
+\Si{nombreAretes(G') $> k\times(n'-1)$}{
 	\Retour{NULL}
 }
 
