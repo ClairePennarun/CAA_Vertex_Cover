@@ -221,14 +221,14 @@ List littleCover(Graph g, int k){
     return NULL;
   }
   if (l > 0){
-    for (int i = 0; i<=l; i++){
+    for (int i = 0; i<l; i++){
       int u = bigDegrees[i];
       g_deleteEdges(g,u);
       g_freeVertex(g,u);
     }
   }
   if (m > 0){
-    for (int i = 0; i<=m; i++){
+    for (int i = 0; i<m; i++){
       int u = nullDegrees[i];
       g_freeVertex(g,u);
     }
@@ -239,7 +239,7 @@ List littleCover(Graph g, int k){
     return NULL;
   }
   List cover = littleCoverAlg(g, k1, n-l);
-  for (int i = 0; i<=l; i++)
+  for (int i = 0; i<l; i++)
     l_addInFront(cover,bigDegrees[i]);
   free(bigDegrees);
   free(nullDegrees);
