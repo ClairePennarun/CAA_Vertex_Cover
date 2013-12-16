@@ -24,6 +24,7 @@ int main(int argc, char* argv[]){
     printf("5. Algorithme paramétrique optimal pour petite couverture : littleCover puis taille \n");
     printf("\nSecond paramètre : chemin vers le fichier à ouvrir (avec extension) ou appel a une fonction de generation \n");
     printf("\nTroisieme parametre : disp si vous voulez afficher le graphe de départ \n");
+    return EXIT_SUCCESS;
   }
 
   if (strcmp(argv[1],"greedy") == 0){               // Alg glouton
@@ -32,8 +33,10 @@ int main(int argc, char* argv[]){
       return EXIT_FAILURE;
     }
     Graph g = readFile(argv[2]);
-    if (g == NULL)
+    if (g == NULL){
       printf("Le fichier n'est pas lisible \n");
+      return EXIT_FAILURE;
+    }
     if (strcmp(argv[3],"disp") == 0)                // affichage
       g_display(g);
 
@@ -54,8 +57,10 @@ int main(int argc, char* argv[]){
       return EXIT_FAILURE;
     }
     Graph g = readFile(argv[2]);
-    if (g == NULL)
+    if (g == NULL){
       printf("Le fichier n'est pas lisible \n");
+      return EXIT_FAILURE;
+    }
     if (strcmp(argv[3],"disp") == 0)                // affichage
       g_display(g);
 
@@ -76,8 +81,10 @@ int main(int argc, char* argv[]){
       return EXIT_FAILURE;
     }
     Graph g = readFile(argv[2]);
-    if (g == NULL)
+    if (g == NULL){
       printf("Le fichier n'est pas lisible \n");
+      return EXIT_FAILURE;
+    }
     if (strcmp(argv[3],"disp") == 0)                // affichage
       g_display(g);
 
@@ -98,8 +105,10 @@ int main(int argc, char* argv[]){
       return EXIT_FAILURE;
     }
     Graph g = readFile(argv[2]);
-    if (g == NULL)
+    if (g == NULL){
       printf("Le fichier n'est pas lisible \n");
+      return EXIT_FAILURE;
+    }
     if (strcmp(argv[3],"disp") == 0)                // affichage
       g_display(g);
 
