@@ -150,7 +150,7 @@ void makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnecte
     g_addEdge(g, i, pos);
 }
 
-// Echange dans t les cases d'incide i1 et i2
+// Echange dans t les cases d'indice i1 et i2
 void swap(int* t, int i1, int i2){
   int tmp = t[i1];
   t[i1] = t[i2];

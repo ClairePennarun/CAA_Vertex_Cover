@@ -32,12 +32,22 @@ int main(int argc, char* argv[]){
       printf("pas assez d'arguments \n");
       return EXIT_FAILURE;
     }
-    Graph g = readFile(argv[2]);
-    if (g == NULL){
-      printf("Le fichier n'est pas lisible \n");
-      return EXIT_FAILURE;
+    
+    int i = 3; // indice de disp
+    Graph g;
+    if (strcmp(argv[2], "treeGen") == 0){
+      int k = atoi(argv[3]);
+      g = treeGeneration(k);
+      i = 4;
     }
-    if (strcmp(argv[3],"disp") == 0)                // affichage
+    else{
+      g = readFile(argv[2]);
+      if (g == NULL){
+	printf("Le fichier n'est pas lisible \n");
+	return EXIT_FAILURE;
+      }
+    }
+    if (strcmp(argv[i],"disp") == 0)                // affichage
       g_display(g);
 
     printf("Calcul de la couverture (greedyAlg)... ");
