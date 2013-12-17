@@ -6,13 +6,15 @@
 // Module de recherche de couverture par sommets
 
 // Algorithme glouton : graphes quelconques
-List greedyAlg (Graph g); 
+List greedyAlg (Graph g);
+void deleteVertexDegrees(Graph g, int* degrees, int v);
 
 // Algo optimal : arbres
 List treeOptAlg(Graph g);
 
 // Algo optimal : graphes bipartis
-int* bipartiteOptAlg (Graph g);
+List bipartiteOptAlg (Graph g);
+int** computeBiPartition(Graph g);
 
 // Algo 2-approche par arbres couvrants
 List spanningTreeAlg(Graph g); // Algorithme itératif avec une liste
@@ -24,9 +26,6 @@ List edgesDeletionAlg(Graph g);
 // Algo optimal petite couverture
 List littleCover(Graph g, int k);
 List littleCoverAlg(Graph g, int k, int size);
-
-Graph g_orientedGraph(Graph g);
-int** computeBiPartition(Graph g);
 
 
 #endif

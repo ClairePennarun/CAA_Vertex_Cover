@@ -77,11 +77,11 @@ void g_freeGraph(Graph g){
   free(g);
 }
 
-bool isOriented(Graph g){
+bool g_isOriented(Graph g){
   return (g->isOriented);
 }
 
-bool isConstruct(Graph g){
+bool g_isConstruct(Graph g){
   return (g->isConstruct);
 }
 
@@ -213,7 +213,7 @@ void g_deleteEdge(Graph g, int i1, int i2){
   g->numberOfEdges --;
 }
 
-// Suppression des aretes adjacentes au sommet i
+// Suppression des aretes adjacentes partantes du sommet i
 void g_deleteEdges(Graph g, int i){
   List l = g_getNeighbors(g, i);       // Voisins de i
   List lTmp;                           // Voisins du sommet variable
@@ -222,11 +222,13 @@ void g_deleteEdges(Graph g, int i){
   while (!l_isOutOfList(l)){
     iTmp = l_getVal(l);
     lTmp = g_getNeighbors(g, iTmp);
-    l_deleteFirstOccur(lTmp, i);       // On supprime i des voisins de iTmp
+    if (!(g->isOriented))
+      l_deleteFirstOccur(lTmp, i);       // On supprime i des voisins de iTmp
     l_deleteFirstOccur(l, iTmp);       // On supprime iTmp des voisins de i
     if (g->isConstruct){
       (g->neighborhood)[i][iTmp] = 0;
-      (g->neighborhood)[iTmp][i] = 0;
+      if (!(g->isOriented))
+	(g->neighborhood)[iTmp][i] = 0;
     }
     g->numberOfEdges --;
     l_head(l);

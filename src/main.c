@@ -12,6 +12,7 @@ void displayTab(int* tab, int size);
 int main(int argc, char* argv[]){
 
   /*Graph g = bipartiteGeneration(20, 0.3);
+  Graph g2 = g_cloneGraph(g);
 
   g_display(g);
 
@@ -21,7 +22,18 @@ int main(int argc, char* argv[]){
   displayTab(parts[0], parts[2][0]);
 
   printf("Deuxième partition : ");
-  displayTab(parts[1], parts[2][1]);*/
+  displayTab(parts[1], parts[2][1]);
+
+  List biPartCouv = bipartiteOptAlg(g);
+  printf("Couverture optimale (graphe biparti) : \n");
+  l_display(biPartCouv);
+
+  List gloutonCouv = greedyAlg(g2);
+  printf("Couverture trouvé par le glouton : \n");
+  l_display(gloutonCouv);
+  
+
+  return EXIT_SUCCESS;*/
 
   printf("Nom du fichier à ouvrir (avec l'extension)\n");
   char file[50];

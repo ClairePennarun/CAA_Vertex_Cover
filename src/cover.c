@@ -22,21 +22,6 @@ int firstPositive(List l, int* degrees){
   return -1;
 }
 
-/* On met a jour les valeurs dans le tableau des degres 
-et on supprime le sommet dans le voisinage de ses voisins
-*/
-void deleteVertexDegrees(Graph g, int* degrees, int v){
-  degrees[v] = 0;                                           // On met a jour son degre
-  List listNeighbors = g_getNeighbors(g, v);
-  l_head(listNeighbors);
-  int val_head;
-  while (!l_isOutOfList(listNeighbors)){                    // On met a jour les degres de ses voisins
-    val_head = l_getVal(listNeighbors);
-    degrees[val_head]--;
-    l_deleteFirstOccur(listNeighbors, val_head);
-  }
-}
-
 // retourne une feuille (utilise le tableau des degres)
 int findLeaf(int* degrees, Graph g){
   for (int i=0; i< g_getSize(g); i++){
@@ -67,6 +52,22 @@ List greedyAlg (Graph g){
   return cover;
 }
 
+/* On met a jour les valeurs dans le tableau des degres 
+et on supprime le sommet dans le voisinage de ses voisins
+*/
+void deleteVertexDegrees(Graph g, int* degrees, int v){
+  degrees[v] = 0;                                           // On met a jour son degre
+  List listNeighbors = g_getNeighbors(g, v);
+  l_head(listNeighbors);
+  int val;
+  while (!l_isOutOfList(listNeighbors)){                    // On met a jour les degres de ses voisins
+    val = l_getVal(listNeighbors);
+    degrees[val]--;
+    l_next(listNeighbors);
+  }
+  g_deleteEdges(g, v);
+}
+
 // Algo optimal : arbres
 List treeOptAlg(Graph g){
   List cover = l_createList();
@@ -91,29 +92,155 @@ List treeOptAlg(Graph g){
   return cover;
 }
 
+void displayTab(int* tab, int size);
+
 // Algo optimal : graphes bipartis
-int* bipartiteOptAlg (Graph g){
-  return NULL;
-}
+List bipartiteOptAlg (Graph g){
 
-// Retourne le graphe orienté H construit à partir de G pour l'algo des graphes biparti, s l'avant dernier sommet et t le dernier
-Graph orientedGraph(Graph g){
   int size = g_getSize(g);
-
-  /*int ** parts = computeBiPartition(g);
+  int ** parts = computeBiPartition(g);
   int* part1 = parts[0];
   int* part2 = parts[1];
   int size1 = parts[2][0];
   int size2 = parts[2][1];
   free(parts[2]);
-  free(parts);*/
+  free(parts);
   
-  Graph h = g_createOrientedGraph(size);
+  Graph h = g_createOrientedGraph(size+2); // Deux sommets en plus : s et t
+  Graph hInv = g_createOrientedGraph(size+2); // Le graph inverse de h
+  int s = size;
+  int t = size+1;
 
-  //free(part1);
-  //free(part2);
+  int currentVertex;
+  int tmp;
+  List neighbors;
+  for (int i=0; i<size1; i++){
+    currentVertex = part1[i];
+    neighbors = g_getNeighbors(g, currentVertex);
+    l_head(neighbors);
+    while (!l_isOutOfList(neighbors)){
+      tmp = l_getVal(neighbors);
+      // On ajoute un arrête orientée de tout sommet de part1 vers chacun de ses voisin (donc des sommets de part2)
+      g_addEdge(h, currentVertex, tmp);
+      g_addEdge(hInv, tmp, currentVertex);
+      l_next(neighbors);
+    }
+  }
+
+  // On ajoute toute les arêtes de s vers part1
+  for (int i=0; i<size1; i++){
+    g_addEdge(h, s, part1[i]);
+    g_addEdge(hInv, part1[i], s);
+  }
+  // On ajoute toute les arêtes de part2 vers t
+  for (int i=0; i<size2; i++){
+    g_addEdge(h, part2[i], t);
+    g_addEdge(hInv, t, part2[i]);
+  }
+
+  // FIN DE LA CONSTRUCTION DES DEUX GRAPHES ORIENTE h ET hInv
+  // DEBUT DE L'ALGORITHME DE Ford-Fulkerson
+
+  size = size + 2; // Il y a deux nouveaux sommets en plus
+
+  // Matrice des flux (tous initialisé à 0)
+  int** neighborhood = malloc(sizeof(int*)*size);
+  assert(neighborhood);
+  for (int i=0; i<size; i++){
+    neighborhood[i] = malloc(sizeof(int)*size);
+    assert(neighborhood[i]);
+    for (int j=0; j<size; j++)
+      neighborhood[i][j] = 0;
+  }
+  int* verticesColors = malloc(sizeof(int)*size); // 0 : white, 1 : gray, 2 : black
+  assert(verticesColors);
+
+
+  List F = l_createList();
+  l_insertInHead(F, s);
+  List childrens;
+  List parents;
+
+  int u;
+  int v;
+  int w;
+  int cnt;
+  while (!(l_isEmpty(F))){
+    cnt = 0;
+    l_freeList(F);
+    F = l_createList();
+    l_insertInHead(F, s);
+
+    for (int i=0; i<size; i++)
+      verticesColors[i] = 0;
+    verticesColors[s] = 1;
+
+    /*    printf("Début de l'algo : \n");
+    printf("-- Couleurs : ");
+    displayTab(verticesColors, size);
+    printf("-- F : ");
+    l_display(F);
+    printf("\n");*/
+    
+    while ((verticesColors[t] == 0) && !(l_isEmpty(F))){
+      cnt++;
+      v = l_getFirstVal(F);
+      l_deleteHead(F);
+      
+      childrens = g_getNeighbors(h, v);
+      l_head(childrens);
+      while (!l_isOutOfList(childrens)){
+	w = l_getVal(childrens);
+	if ((verticesColors[w] == 0) && (neighborhood[v][w] == 0)){
+	  verticesColors[w] = 1;
+	  neighborhood[v][w] = 1;
+	  l_insertInHead(F, w);
+	}
+	l_next(childrens);
+      }
+      
+      parents = g_getNeighbors(hInv, v);
+      l_head(parents);
+      while (!l_isOutOfList(parents)){
+	u = l_getVal(parents);
+	if ((verticesColors[u] == 0) && (neighborhood[u][v] == 1)){
+	  verticesColors[u] = 1;
+	  neighborhood[u][v] = 0;
+	  l_insertInHead(F, u);
+	}
+	l_next(parents);
+      }
+      
+      verticesColors[v] = 2;
+      /*printf("Etape %d : \n", cnt);
+      printf("-- Couleurs : ");
+      displayTab(verticesColors, size);
+      printf("-- F : ");
+      l_display(F);
+      printf("\n");*/
+    }
+  }
   
-  return h;
+  // FIN DE L'ALGORITHME, CONSTRUCTION DE LA COUVERTURE
+
+  List couv = l_createList();
+  for (int i=0; i<size1; i++) // Tout les sommets dans part1 (dans X)
+    if (verticesColors[part1[i]] == 0) // Coloriés en blanc (dans T)
+      l_insertInHead(couv, part1[i]); // Sont dans la couverture optimale
+  for (int i=0; i<size2; i++) // Tout les sommets dans part2 (dans Y)
+    if (verticesColors[part2[i]] == 2) // Coloriés en noirs (dans S)
+      l_insertInHead(couv, part2[i]); // SOnt dans la couverture optimale
+
+  for (int i=0; i<size; i++)
+    free(neighborhood[i]);
+  free(neighborhood);
+  free(verticesColors);
+  g_freeGraph(h);
+  g_freeGraph(hInv);
+  free(part1);
+  free(part2);
+
+  return couv;
 }
 
 int** computeBiPartition(Graph g){
