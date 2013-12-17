@@ -340,6 +340,8 @@ List spanningTreeAlgRec(Graph g){
     color[i] = 0;
   }
   dfs(g, 0, cover, color);
+  if(color != NULL)
+    free(color);
   return cover;
 }
 
@@ -382,6 +384,8 @@ List spanningTreeAlg(Graph g){
       }
     }
   }
+  if(searchList != NULL)
+    free(searchList);
   free(color);
   free(parent);
   return cover;
