@@ -74,8 +74,10 @@ int main(int argc, char* argv[]){
 	return EXIT_FAILURE;
       }
     }
-    if (strcmp(argv[i],"disp") == 0)                // affichage
-      g_display(g);
+    if (argc >= 4){
+      if (strcmp(argv[i],"disp") == 0)                // affichage
+	g_display(g);
+    }
 
     printf("Calcul de la couverture (greedyAlg)... ");
     List coverG = greedyAlg(g);
@@ -98,8 +100,10 @@ int main(int argc, char* argv[]){
       printf("Le fichier n'est pas lisible \n");
       return EXIT_FAILURE;
     }
-    if (strcmp(argv[3],"disp") == 0)                // affichage
-      g_display(g);
+    if (argc >= 4){
+      if (strcmp(argv[3],"disp") == 0)                // affichage
+	g_display(g);
+    }
 
     printf("Calcul de la couverture (treeOptAlg)... ");
     List coverG = treeOptAlg(g);
@@ -122,8 +126,10 @@ int main(int argc, char* argv[]){
       printf("Le fichier n'est pas lisible \n");
       return EXIT_FAILURE;
     }
-    if (strcmp(argv[3],"disp") == 0)                // affichage
-      g_display(g);
+    if (argc >= 4){
+      if (strcmp(argv[3],"disp") == 0)                // affichage
+	g_display(g);
+    }
 
     printf("Calcul de la couverture (spanningTreeAlg)... ");
     List coverG = spanningTreeAlg(g);
@@ -131,7 +137,8 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverG);
     printf("\n");
-    l_freeList(coverG);
+    if(coverG != NULL)
+      l_freeList(coverG);
     g_freeGraph(g);
     return EXIT_SUCCESS;
   }
@@ -146,9 +153,10 @@ int main(int argc, char* argv[]){
       printf("Le fichier n'est pas lisible \n");
       return EXIT_FAILURE;
     }
-    if (strcmp(argv[3],"disp") == 0)                // affichage
-      g_display(g);
-
+    if (argc >= 4){
+      if (strcmp(argv[3],"disp") == 0)                // affichage
+	g_display(g);
+    }
     printf("Calcul de la couverture (edgesDeletionAlg)... ");
     List coverG = edgesDeletionAlg(g);
     printf("TERMINE \n");
