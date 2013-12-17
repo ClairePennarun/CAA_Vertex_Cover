@@ -11,7 +11,7 @@
 
 // Generation d'arbre a n sommets
 Graph treeGeneration(int n){
-  initRandom();
+  //initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -43,7 +43,7 @@ Graph generation(int n, double proba){
 
 // Generation de graphes bipartis
 Graph bipartiteGeneration (int n, double proba){
-  initRandom();
+  //initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -86,7 +86,7 @@ Graph bipartiteGeneration (int n, double proba){
 // Generation de graphe avec petite couverture (pratique pour tests)
 Graph littleGeneration (int n, int k, double proba){
   assert(k<=n);
-  initRandom();
+  //initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -97,11 +97,11 @@ Graph littleGeneration (int n, int k, double proba){
 
   bool isConnected;
 
-  printf("k = %d\n", k);
-  printf("[");
-  for(int i=0; i<n; i++)
-    printf("%d, ", vertices[i]);
-  printf("]\n");
+  /* printf("k = %d\n", k); */
+  /* printf("["); */
+  /* for(int i=0; i<n; i++) */
+  /*   printf("%d, ", vertices[i]); */
+  /* printf("]\n"); */
 
   for(int gi=k; gi<n; gi++){
     isConnected = false;
@@ -112,6 +112,7 @@ Graph littleGeneration (int n, int k, double proba){
   }
   
   free(vertices);
+  g_display(g);
   return g;
 }
 
