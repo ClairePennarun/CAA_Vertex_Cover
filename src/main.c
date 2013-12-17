@@ -35,18 +35,6 @@ int main(int argc, char* argv[]){
 
   return EXIT_SUCCESS;*/
 
-  printf("Nom du fichier à ouvrir (avec l'extension)\n");
-  char file[50];
-  scanf("%49s", file);
-  Graph g = readFile(file);
-  while (g == NULL){
-    printf("Le fichier n'est pas lisible\n");
-    printf("\n");
-    printf("Nom du fichier à ouvrir (avec l'extension)\n");
-    scanf("%49s", file);
-    g = readFile(file);
-  }
-
   if (strcmp(argv[1],"help")==0){                   // aide
     printf("Premier paramètre : \n");
     printf("Sélectionner un des algorithmes suivants :\n");

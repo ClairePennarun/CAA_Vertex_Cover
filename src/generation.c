@@ -25,7 +25,7 @@ Graph treeGeneration(int n){
 
 // Generation de graphe avec proba
 Graph generation(int n, double proba){
-  initRandom();
+  //initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -155,7 +155,7 @@ void swap(int* t, int i1, int i2){
 
 // Initialise la graine et l'affiche
 void initRandom(){
-  int graine = 1387246266;//time(NULL);
+  int graine = 1387246266; //time(NULL);
   srand(graine);
   printf("La graine pour l'aléatoire est : %d\n", graine);
 }

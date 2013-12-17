@@ -40,12 +40,18 @@ testGraph: graph_test
 testList: list_test
 	rm -f $(INCDIR)*~ $(SRCDIR)*~ $(INCDIR)*~ $(TESTDIR)*~ ./*~ ./*.o
 
+testTime: time_test
+	rm -f $(INCDIR)*~ $(SRCDIR)*~ $(INCDIR)*~ $(TESTDIR)*~ ./*~ ./*.o
+
+
 vertexCoverExec: $(OBJS) main.o
 	$(CC) $(OBJS) main.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
 graph_test: $(OBJS) graph_tester.o
 	$(CC) $(OBJS) graph_tester.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
 list_test: $(OBJS) list_tester.o
 	$(CC) $(OBJS) list_tester.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
+time_test: $(OBJS) timeTests.o
+	$(CC) $(OBJS) timeTests.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
 
 main.o: $(SRCDIR)main.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)main.c
@@ -64,3 +70,5 @@ graph_tester.o: $(TESTDIR)graph_tester.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(TESTDIR)graph_tester.c
 list_tester.o: $(TESTDIR)list_tester.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(TESTDIR)list_tester.c
+timeTests.o: $(TESTDIR)timeTests.c
+	$(CC) $(CFLAGS) $(CPFLAGS) -c $(TESTDIR)timeTests.c
