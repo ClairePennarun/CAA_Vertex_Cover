@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
+#include <time.h>
+#include <emmintrin.h>
+
 #include "graph.h"
 #include "fileReader.h"
 #include "list.h"
@@ -8,15 +12,16 @@
 #include "generation.h"
 
 void displayTab(int* tab, int size);
+int getGraine();
+uint64_t rdtsc();
 
 int main(int argc, char* argv[]){
 
-  /*Graph g = bipartiteGeneration(20, 0.3);
-  Graph g2 = g_cloneGraph(g);
+  /*Graph g = bipartiteGeneration(20, 0.5);
 
   g_display(g);
 
-  int** parts = computeBiPartition(g);
+  int** parts = computeBiPartition(g_cloneGraph(g));
 
   printf("Première partition : ");
   displayTab(parts[0], parts[2][0]);
@@ -24,15 +29,15 @@ int main(int argc, char* argv[]){
   printf("Deuxième partition : ");
   displayTab(parts[1], parts[2][1]);
 
-  List biPartCouv = bipartiteOptAlg(g);
+  List biPartCouv = bipartiteOptAlg(g_cloneGraph(g));
+
   printf("Couverture optimale (graphe biparti) : \n");
   l_display(biPartCouv);
 
-  List gloutonCouv = greedyAlg(g2);
+  List gloutonCouv = greedyAlg(g_cloneGraph(g));
   printf("Couverture trouvé par le glouton : \n");
   l_display(gloutonCouv);
   
-
   return EXIT_SUCCESS;*/
 
   if (strcmp(argv[1],"help")==0){                   // aide
@@ -191,8 +196,26 @@ int main(int argc, char* argv[]){
   else{
     printf("arguments non compris \n");
     return EXIT_FAILURE;
-  }
+    }
 }
+
+int getGraine(){
+  return rdtsc();//time(NULL);
+}
+
+#ifdef __i386
+uint64_t rdtsc() {
+  uint64_t x;
+  __asm__ volatile ("rdtsc" : "=A" (x));
+  return x;
+}
+#else 
+uint64_t rdtsc() {
+  uint64_t a, d;
+  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
+  return (d<<32) | a;
+}
+#endif
 
 void displayTab(int* tab, int size){
   printf("[");

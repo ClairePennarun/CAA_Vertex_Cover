@@ -141,32 +141,30 @@ List bipartiteOptAlg (Graph g){
   // FIN DE LA CONSTRUCTION DES DEUX GRAPHES ORIENTE h ET hInv
   // DEBUT DE L'ALGORITHME DE Ford-Fulkerson
 
-  size = size + 2; // Il y a deux nouveaux sommets en plus
+  size = size + 2; // Il y a deux nouveaux sommets en plus (s et t)
 
-  // Matrice des flux (tous initialisé à 0)
-  int** neighborhood = malloc(sizeof(int*)*size);
-  assert(neighborhood);
+  int* fathers = malloc(sizeof(int)*size);
+  assert(fathers);
+  // Matrice des flux temporaires (tous initialisé à 0)
+  int** flux = malloc(sizeof(int*)*size);
+  assert(flux);
   for (int i=0; i<size; i++){
-    neighborhood[i] = malloc(sizeof(int)*size);
-    assert(neighborhood[i]);
+    flux[i] = malloc(sizeof(int)*size);
+    assert(flux[i]);
     for (int j=0; j<size; j++)
-      neighborhood[i][j] = 0;
+      flux[i][j] = 0;
   }
-  int* verticesColors = malloc(sizeof(int)*size); // 0 : white, 1 : gray, 2 : black
+  int* verticesColors = malloc(sizeof(int)*size);
+  // 0 : white, 1 : gray, 2 : black
   assert(verticesColors);
-
 
   List F = l_createList();
   l_insertInHead(F, s);
   List childrens;
   List parents;
+  int u, v, w;
 
-  int u;
-  int v;
-  int w;
-  int cnt;
   while (!(l_isEmpty(F))){
-    cnt = 0;
     l_freeList(F);
     F = l_createList();
     l_insertInHead(F, s);
@@ -174,26 +172,18 @@ List bipartiteOptAlg (Graph g){
     for (int i=0; i<size; i++)
       verticesColors[i] = 0;
     verticesColors[s] = 1;
-
-    /*    printf("Début de l'algo : \n");
-    printf("-- Couleurs : ");
-    displayTab(verticesColors, size);
-    printf("-- F : ");
-    l_display(F);
-    printf("\n");*/
     
     while ((verticesColors[t] == 0) && !(l_isEmpty(F))){
-      cnt++;
       v = l_getFirstVal(F);
       l_deleteHead(F);
-      
+
       childrens = g_getNeighbors(h, v);
       l_head(childrens);
       while (!l_isOutOfList(childrens)){
 	w = l_getVal(childrens);
-	if ((verticesColors[w] == 0) && (neighborhood[v][w] == 0)){
+	if ((verticesColors[w] == 0) && (flux[v][w] == 0)){
 	  verticesColors[w] = 1;
-	  neighborhood[v][w] = 1;
+	  fathers[w] = v;
 	  l_insertInHead(F, w);
 	}
 	l_next(childrens);
@@ -203,22 +193,27 @@ List bipartiteOptAlg (Graph g){
       l_head(parents);
       while (!l_isOutOfList(parents)){
 	u = l_getVal(parents);
-	if ((verticesColors[u] == 0) && (neighborhood[u][v] == 1)){
+	if ((verticesColors[u] == 0) && (flux[u][v] == 1)){
 	  verticesColors[u] = 1;
-	  neighborhood[u][v] = 0;
+	  fathers[u] = v;
 	  l_insertInHead(F, u);
 	}
 	l_next(parents);
       }
       
       verticesColors[v] = 2;
-      /*printf("Etape %d : \n", cnt);
-      printf("-- Couleurs : ");
-      displayTab(verticesColors, size);
-      printf("-- F : ");
-      l_display(F);
-      printf("\n");*/
     }
+
+    // Mise a jour des flux en fonciton du chemin courant trouvé
+    v = t;
+    u = fathers[v];
+    while (u != s){
+      // On inverse les flux (0 devient 1 dans le circuit normal et 1 devient 0 dans le circuit résiduel
+      flux[u][v] = 1-flux[u][v];
+      v = u;
+      u = fathers[v];
+    }
+    flux[u][v] = 1-flux[u][v];
   }
   
   // FIN DE L'ALGORITHME, CONSTRUCTION DE LA COUVERTURE
@@ -232,8 +227,8 @@ List bipartiteOptAlg (Graph g){
       l_insertInHead(couv, part2[i]); // SOnt dans la couverture optimale
 
   for (int i=0; i<size; i++)
-    free(neighborhood[i]);
-  free(neighborhood);
+    free(flux[i]);
+  free(flux);
   free(verticesColors);
   g_freeGraph(h);
   g_freeGraph(hInv);
@@ -244,10 +239,10 @@ List bipartiteOptAlg (Graph g){
 }
 
 int** computeBiPartition(Graph g){
+
   // Calcul de la bipartition de g
 
   int n = g_getSize(g);
-
   int* sizes = malloc(sizeof(int)*2);
   sizes[0] = 0;
   sizes[1] = 0;

@@ -44,17 +44,27 @@ Graph g_createOrientedGraph(int size){
 
 Graph g_cloneGraph(Graph g){
   int size = g_getSize(g);
-  Graph newGraph = malloc(sizeof(struct graph));
-  assert(newGraph);
-  newGraph->allVertices = malloc(sizeof(struct vertex)*size);
-  assert(newGraph->allVertices);
-  newGraph->numberOfVertices = size;
+  Graph newGraph = g_createGraph(size);
   newGraph->numberOfEdges = g_numberOfEdges(g);
   newGraph->isConstruct = g->isConstruct;
-  for (int i=0; i<size; i++)
-    (newGraph->allVertices)[i] = g_cloneVertex(g->allVertices[i]);
+  newGraph->isOriented = g->isOriented;
   if (g->isConstruct)
     g_createNeighborhood(newGraph);
+
+  List neighbors;
+  int vert;
+  for (int i=0; i<size-1; i++){
+    neighbors = g_getNeighbors(g, i);
+    l_head(neighbors);
+    while (!l_isOutOfList(neighbors)){
+      vert = l_getVal(neighbors);
+      // Pour ne pas ajouter deux fois les arêtes, on ajoute
+      // que les couples (a-b) avec a<b (sauf si le graphe est orienté)
+      if (!(newGraph->isOriented) || vert<i)
+	g_addEdge(newGraph, i, vert);	
+      l_next(neighbors);
+    }
+  }
   return newGraph;
 }
 
@@ -257,12 +267,11 @@ Vertex g_createVertex(){
 }
 
 Vertex g_cloneVertex(Vertex v){
+  if (v == NULL)
+    return NULL;
   Vertex newVertex = malloc(sizeof(struct vertex));
   assert(newVertex);
-  if (v != NULL)
-    newVertex->neighbors = l_cloneList(v->neighbors);
-  else
-    return NULL;
+  newVertex->neighbors = l_cloneList(v->neighbors);
   return newVertex;
 }
 

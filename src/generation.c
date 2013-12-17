@@ -11,7 +11,7 @@
 
 // Generation d'arbre a n sommets
 Graph treeGeneration(int n){
-  //initRandom();
+  initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -25,7 +25,7 @@ Graph treeGeneration(int n){
 
 // Generation de graphe avec proba
 Graph generation(int n, double proba){
-  //initRandom();
+  initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -43,7 +43,7 @@ Graph generation(int n, double proba){
 
 // Generation de graphes bipartis
 Graph bipartiteGeneration (int n, double proba){
-  //initRandom();
+  initRandom();
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
@@ -85,29 +85,24 @@ Graph bipartiteGeneration (int n, double proba){
 
 // Generation de graphe avec petite couverture (pratique pour tests)
 Graph littleGeneration (int n, int k, double proba){
-  assert(k<=n);
-  //initRandom();
+  initRandom();
+  
+  assert(k<=n/2);
+  // Tout graphe connexe admet, au pire des cas, une couverture de taille n/2
 
   Graph g = g_createGraph(n);
+  
+  // Les k premières valeurs seront la couvertureœ
   int* vertices = getRandomVertices(n);
 
-  // Les k premières valeurs seront la couverture
-  for (int i=0; i<k; i++)
-    swap(vertices, i, randint(i, n));
+  for(int ki=0; ki<k; ki++)
+    g_addEdge(g, vertices[ki], vertices[k+ki]); // Les sommets "exclusifs" sont relié a un et un seul sommet de la couverture
 
   bool isConnected;
-
-  /* printf("k = %d\n", k); */
-  /* printf("["); */
-  /* for(int i=0; i<n; i++) */
-  /*   printf("%d, ", vertices[i]); */
-  /* printf("]\n"); */
-
-  for(int gi=k; gi<n; gi++){
+  for(int gi=2*k; gi<n; gi++){
     isConnected = false;
-    for(int ki=0; ki<k; ki++){
+    for(int ki=0; ki<k; ki++)
       isConnected = randomEdge(g, vertices[gi], vertices[ki], proba) || isConnected;
-    }
     makeConnected(g, vertices[gi], vertices, 0, k, isConnected);
   }
   
@@ -156,7 +151,7 @@ void swap(int* t, int i1, int i2){
 
 // Initialise la graine et l'affiche
 void initRandom(){
-  int graine = 1387246266; //time(NULL);
+  int graine = getGraine();
   srand(graine);
   printf("La graine pour l'aléatoire est : %d\n", graine);
 }

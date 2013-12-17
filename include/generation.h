@@ -5,7 +5,7 @@
 
 #include "graph.h"
 
-// Module de generation aleatoire de graphes
+// Module de generation aléatoire de graphes
 
 // Generation d'arbre a n sommets
 Graph treeGeneration (int n);
@@ -26,5 +26,6 @@ void swap(int* t, int i1, int i2);
 void initRandom();
 int randint(int a, int b);
 double random();
+int getGraine();
 
 #endif
