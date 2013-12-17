@@ -35,6 +35,7 @@ int g_numberOfEdges(Graph);
 Vertex g_createVertex();
 Vertex g_cloneVertex(Vertex);
 void g_freeVertex(Graph, int);
+int g_getPositiveDegreeVertex(Graph,int i); // Retourne le premier sommet de degre positif apres le sommet i
 Vertex g_getVertex(Graph, int);
 List g_getNeighbors(Graph, int);
 int g_getDegreeVertex(Graph, int);

@@ -38,11 +38,12 @@ Graph readFile(char* file){
 	tok = strtok(NULL, " ");
       }
     }
-    g_createNeighborhood(graph);
+    //g_createNeighborhood(graph);
     fclose(tmpfile);
+    free(line);
     return graph;
   }
-
+  free(tmpfile);
   free(line);
   return NULL;
 }

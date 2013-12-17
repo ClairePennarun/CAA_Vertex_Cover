@@ -25,7 +25,7 @@ LDLIBS= -lm
 OUTFILE= vertexCoverExec
 
 #les fichiers objets a generer 
-OBJS= graph.o list.o fileReader.o cover.o structure.o generation.o
+OBJS= graph.o list.o fileReader.o cover.o generation.o
 
 #les dependances 
 all: $(OUTFILE)
@@ -57,8 +57,6 @@ fileReader.o: $(SRCDIR)fileReader.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)fileReader.c
 cover.o: $(SRCDIR)cover.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)cover.c
-structure.o: $(SRCDIR)structure.c
-	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)structure.c
 generation.o: $(SRCDIR)generation.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)generation.c
 
