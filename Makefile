@@ -10,13 +10,13 @@ MAINDIR = $(PREFIX)main/
 CC= gcc
 
 #les flags de compilation
-CFLAGS= -std=c99 -g -Wall -Werror
+CFLAGS= -std=c99 -g -Wall -Werror -pg
 
 #les flags du preprocesseur pour les modules et algo
 CPFLAGS= -I $(INCDIR)
 
 #les flags de l'editeur de liens 
-LDFLAGS= -L
+LDFLAGS= -L -pg -g
 
 #les librairies utilisees 
 LDLIBS= -lm
