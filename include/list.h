@@ -14,11 +14,14 @@ void l_freeElem(List, Elem);
 void l_addInFront(List, int);
 void l_insertInHead(List, int);
 void l_deleteFirstOccur(List, int);
+void l_deleteHead(List);
 void l_head(List);
 void l_next(List);
 int l_getVal(List);
+int l_getFirstVal(List);
 bool l_contain(List, int);
 bool l_isOutOfList(List);
+bool l_isEmpty(List);
 int l_size(List);
 void l_display(List);
 

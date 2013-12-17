@@ -96,6 +96,94 @@ int* bipartiteOptAlg (Graph g){
   return NULL;
 }
 
+// Retourne le graphe orienté H construit à partir de G pour l'algo des graphes biparti, s l'avant dernier sommet et t le dernier
+Graph orientedGraph(Graph g){
+  int size = g_getSize(g);
+
+  /*int ** parts = computeBiPartition(g);
+  int* part1 = parts[0];
+  int* part2 = parts[1];
+  int size1 = parts[2][0];
+  int size2 = parts[2][1];
+  free(parts[2]);
+  free(parts);*/
+  
+  Graph h = g_createOrientedGraph(size);
+
+  //free(part1);
+  //free(part2);
+  
+  return h;
+}
+
+int** computeBiPartition(Graph g){
+  // Calcul de la bipartition de g
+
+  int n = g_getSize(g);
+
+  int* sizes = malloc(sizeof(int)*2);
+  sizes[0] = 0;
+  sizes[1] = 0;
+  // Les deux premiers tableaux sont les partitions et le troisième
+  // contient les tailles respectives des deux partitions
+  int** parts = malloc(sizeof(int*)*3);
+  assert(parts);
+  parts[0] = malloc(sizeof(int)*n);
+  parts[1] = malloc(sizeof(int)*n);
+  parts[2] = sizes;
+  assert(parts[0]);
+  assert(parts[1]);
+  assert(sizes);
+  
+  bool* isVisited = malloc(sizeof(bool)*n);
+  assert(isVisited);
+  for (int i=0; i<n; i++)
+    isVisited[i] = false;
+  // Les deux listes sont synchronisées : - 'toTest' contient tout les sommets a tester (ajouter leurs voisins)
+  // - 'partOfVertices' contient les numéro des partions auquels appartiennent les sommets a tester
+  // Ex: Si 's' est a tester et est dans la partition 0, on ajoute tout ses voisins dans 'toTest' avec une partition 1
+  List toTest = l_createList();
+  List partsOfVertices = l_createList();
+  List neighbors;
+  l_addInFront(toTest, 0); // On ajoute le premier sommet
+  l_addInFront(partsOfVertices, 0); // Et on lui donne arbitrairement la partition numéro 0
+  isVisited[0] = true;
+
+  int currentVertex;
+  int currentPart;
+  int tmp;
+  while(!l_isEmpty(toTest)){
+
+    currentVertex = l_getFirstVal(toTest);
+    currentPart = l_getFirstVal(partsOfVertices);
+    l_deleteHead(toTest);
+    l_deleteHead(partsOfVertices);
+
+    neighbors = g_getNeighbors(g, currentVertex);
+    l_head(neighbors);
+
+    // On parcours tout les voisins du sommet courant
+    while (!l_isOutOfList(neighbors)){
+      tmp = l_getVal(neighbors);
+      if (!isVisited[tmp]){ // Si on a pas encore visité ce voisin
+	isVisited[tmp] = true;
+	l_addInFront(toTest, tmp); // On l'ajoute
+	l_addInFront(partsOfVertices, 1-currentPart); // Avec la partition opposée
+      }
+      l_next(neighbors);
+    }
+    // On ajoute le sommet courant dans la partition demandée
+    parts[currentPart][sizes[currentPart]] = currentVertex;
+    sizes[currentPart]++;
+  }
+
+  free(isVisited);
+  l_freeList(partsOfVertices);
+  l_freeList(toTest);
+
+  return parts;
+}
+
 // Algo 2-approche par arbres couvrants
 void spanning(Graph g, int i, List cover, int* tabTree){
   if(tabTree[i] == 1) // on a deja visité le sommet

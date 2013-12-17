@@ -24,6 +24,9 @@ List edgesDeletionAlg(Graph g);
 List littleCover(Graph g, int k);
 List littleCoverAlg(Graph g, int k, int size);
 
+Graph g_orientedGraph(Graph g);
+int** computeBiPartition(Graph g);
+
 
 //Fonctions annexes
 int firstPositive(List, int*);

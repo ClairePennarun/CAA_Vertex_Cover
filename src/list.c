@@ -108,14 +108,20 @@ void l_insertInHead(List l, int n){
   l->size = l->size + 1;
 }
 
-// Je préférais l'ancienne version
-// a discuter
 void l_deleteFirstOccur(List l, int n){
   Elem e = l->first;
   while (e->val != n && e != NULL)
     e = e->next;
   if (e->val == n)
-    l_freeElem(l,e);
+    l_freeElem(l, e);
+}
+
+// Supprime le premier élément
+void l_deleteHead(List l){
+  Elem first = l->first;
+  if (first != NULL)
+    l_freeElem(l, first);
+  l_head(l);
 }
 
 void l_head(List l){
@@ -132,6 +138,10 @@ int l_getVal(List l){
   return ((l->current)->val);
 }
 
+int l_getFirstVal(List l){
+  return ((l->first)->val);
+}
+
 bool l_contain(List l, int n){
   Elem e = l->first;
   while (e != NULL){
@@ -144,6 +154,10 @@ bool l_contain(List l, int n){
 
 bool l_isOutOfList(List l){
   return (l->current == NULL);
+}
+
+bool l_isEmpty(List l){
+  return (l->size == 0);
 }
 
 int l_size(List l){

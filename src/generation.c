@@ -47,38 +47,34 @@ Graph bipartiteGeneration (int n, double proba){
 
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
+  assert(n>=2);
   bool isConnected;
-  int size1 = 0;
-  int size2 = 0;
   int* part1 = malloc(sizeof(int)*n);
   int* part2 = malloc(sizeof(int)*n);
   assert(part1);
   assert(part2);
+  int size1 = 1;
+  int size2 = 1;
+  part1[0] = vertices[0];
+  part2[0] = vertices[1];
+  g_addEdge(g, vertices[0], vertices[1]);
 
-  for (int i=0; i<n; i++){
+  for (int i=2; i<n; i++){
     isConnected = false;
     if (random() < 0.50){ // Sommet i dans part1
      for (int j=0; j<size2; j++)
-       isConnected = randomEdge(g, i, part2[j], proba) || isConnected;
+       isConnected = randomEdge(g, vertices[i], part2[j], proba) || isConnected;
      makeConnected(g, vertices[i], part2, 0, size2, isConnected);
      part1[size1] = vertices[i];
      size1++;
     }
     else{                 // Sommet i dans part2
       for (int j=0; j<size1; j++)
-	isConnected = randomEdge(g, i, part1[j], proba) || isConnected;
+	isConnected = randomEdge(g, vertices[i], part1[j], proba) || isConnected;
       makeConnected(g, vertices[i], part1, 0, size1, isConnected);
       part2[size2] = vertices[i];
       size2++;
     }
-  }
-
-  int pos;
-  if (size1 == 0 || size2 == 0){
-    pos = randint(0, n);
-    for (int i=0; i<n; i++)
-      if (i != pos)
-	g_addEdge(g, pos, i);
   }
 
   free(vertices);
@@ -141,7 +137,7 @@ bool randomEdge(Graph g, int i1, int i2, double proba){
 
 // Si le sommet n'est pas connecté, le relie au hasard avec un sommet dans [iMin, iMax[ de tab
 void makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected){
-  if (isConnected)
+  if (isConnected || iMin >= iMax)
     return;
   int pos = randint(iMin, iMax);
   if (tab != NULL)

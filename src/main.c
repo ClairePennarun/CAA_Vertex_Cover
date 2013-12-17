@@ -6,9 +6,23 @@
 #include "cover.h"
 #include "generation.h"
 
+void displayTab(int* tab, int size);
+
 int main(int argc, char* argv[]){
 
-  printf("Nom du fichier à ouvrir (avec l'extension)\n");
+  Graph g = bipartiteGeneration(20, 0.3);
+
+  g_display(g);
+
+  int** parts = computeBiPartition(g);
+
+  printf("Première partition : ");
+  displayTab(parts[0], parts[2][0]);
+
+  printf("Deuxième partition : ");
+  displayTab(parts[1], parts[2][1]);
+
+  /*printf("Nom du fichier à ouvrir (avec l'extension)\n");
   char file[50];
   scanf("%49s", file);
   Graph g = readFile(file);
@@ -106,6 +120,16 @@ int main(int argc, char* argv[]){
     break;
     }
 
-  g_freeGraph(g);
+    g_freeGraph(g);*/
   return EXIT_SUCCESS;
+}
+
+void displayTab(int* tab, int size){
+  printf("[");
+  for (int i=0; i<size-1; i++)
+    printf("%d, ", tab[i]);
+  if (size > 0)
+    printf("%d]\n", tab[size-1]);
+  else
+    printf("]\n");
 }

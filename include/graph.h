@@ -10,8 +10,11 @@ typedef struct vertex* Vertex;
 
 /* *** Fonctions du graphe *** */
 Graph g_createGraph(int);
+Graph g_createOrientedGraph(int);
 Graph g_cloneGraph(Graph);
 void g_freeGraph(Graph);
+bool g_isOriented(Graph);
+bool g_isConstruct(Graph);
 void g_createNeighborhood(Graph);
 int g_getSize(Graph);
 int g_degreGraph(Graph);

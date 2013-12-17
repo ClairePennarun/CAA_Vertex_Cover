@@ -12,6 +12,7 @@ struct graph{
   int** neighborhood; // Matrice d'adjacence globale
   int numberOfVertices;
   int numberOfEdges;
+  bool isOriented;
   bool isConstruct;
 };
 
@@ -28,9 +29,16 @@ Graph g_createGraph(int size){
   assert(newGraph->allVertices);
   newGraph->numberOfVertices = size;
   newGraph->numberOfEdges = 0;
-  newGraph->isConstruct = 0;
+  newGraph->isOriented = false;
+  newGraph->isConstruct = false;
   for (int i=0; i<size; i++)
     (newGraph->allVertices)[i] = g_createVertex();
+  return newGraph;
+}
+
+Graph g_createOrientedGraph(int size){
+  Graph newGraph = g_createGraph(size);
+  newGraph->isOriented = true;
   return newGraph;
 }
 
@@ -67,6 +75,14 @@ void g_freeGraph(Graph g){
     free(g->neighborhood);
   free(g->allVertices);
   free(g);
+}
+
+bool isOriented(Graph g){
+  return (g->isOriented);
+}
+
+bool isConstruct(Graph g){
+  return (g->isConstruct);
 }
 
 void g_createNeighborhood(Graph g){
@@ -170,10 +186,12 @@ void g_addEdge(Graph g, int i1, int i2){
   List l1 = g_getNeighbors(g, i1);
   List l2 = g_getNeighbors(g, i2);
   l_addInFront(l1, i2);
-  l_addInFront(l2, i1);
+  if (!(g->isOriented))
+    l_addInFront(l2, i1);
   if (g->isConstruct){
     (g->neighborhood)[i1][i2] = 1;
-    (g->neighborhood)[i2][i1] = 1;
+    if (!(g->isOriented))
+      (g->neighborhood)[i2][i1] = 1;
   }
   g->numberOfEdges ++;
 }
@@ -185,10 +203,12 @@ void g_deleteEdge(Graph g, int i1, int i2){
   List l1 = g_getNeighbors(g, i1);
   List l2 = g_getNeighbors(g, i2);
   l_deleteFirstOccur(l1, i2);
-  l_deleteFirstOccur(l2, i1);
+  if (!(g->isOriented))
+    l_deleteFirstOccur(l2, i1);
   if (g->isConstruct){
     (g->neighborhood)[i1][i2] = 0;
-    (g->neighborhood)[i2][i1] = 0;
+    if (!(g->isOriented))
+      (g->neighborhood)[i2][i1] = 0;
   }
   g->numberOfEdges --;
 }
