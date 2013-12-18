@@ -11,6 +11,7 @@
 #include "cover.h"
 #include "generation.h"
 
+Graph selectGraph(int argc, char* argv[], int i);
 void displayTab(int* tab, int size);
 int getGraine();
 uint64_t rdtsc();
@@ -40,15 +41,17 @@ int main(int argc, char* argv[]){
   
   return EXIT_SUCCESS;*/
 
+  srand(time(NULL));
+
   if (strcmp(argv[1],"help")==0){                   // aide
     printf("Premier paramètre : \n");
     printf("Sélectionner un des algorithmes suivants :\n");
     printf("1. Algorithme glouton : greedy \n");
     printf("2. Algorithme optimal pour les arbres : treeOpt \n");
-    //printf("3. Algorithme optimal pour les graphes bipartis\n");
-    printf("3. Algorithme 2-approché (arbre couvrant) : spanningTree \n");
-    printf("4. Algorithme 2-approché (elimination d'aretes) : edgesDeletion \n");
-    printf("5. Algorithme paramétrique optimal pour petite couverture : littleCover puis taille \n");
+    printf("3. Algorithme optimal pour les graphes bipartis : bipartiteOpt\n");
+    printf("4. Algorithme 2-approché (arbre couvrant) : spanningTree \n");
+    printf("5. Algorithme 2-approché (elimination d'aretes) : edgesDeletion \n");
+    printf("6. Algorithme paramétrique optimal pour petite couverture : littleCover puis taille \n");
     printf("\nSecond paramètre : chemin vers le fichier à ouvrir (avec extension) ou appel a une fonction de generation \n");
     printf("\nTroisieme parametre : disp si vous voulez afficher le graphe de départ \n");
     return EXIT_SUCCESS;
@@ -59,25 +62,9 @@ int main(int argc, char* argv[]){
       printf("pas assez d'arguments \n");
       return EXIT_FAILURE;
     }
-    
-    int i = 3; // indice de disp
-    Graph g;
-    if (strcmp(argv[2], "treeGen") == 0){
-      int k = atoi(argv[3]);
-      g = treeGeneration(k);
-      i = 4;
-    }
-    else{
-      g = readFile(argv[2]);
-      if (g == NULL){
-	printf("Le fichier n'est pas lisible \n");
-	return EXIT_FAILURE;
-      }
-    }
-    if (argc >= 4){
-      if (strcmp(argv[i],"disp") == 0)                // affichage
-	g_display(g);
-    }
+    Graph g = selectGraph(argc,argv,2);
+    if(g == NULL)
+      return EXIT_FAILURE;
 
     printf("Calcul de la couverture (greedyAlg)... ");
     List coverG = greedyAlg(g);
@@ -85,6 +72,7 @@ int main(int argc, char* argv[]){
     printf("Couverture :\n");
     l_display(coverG);
     printf("\n");
+
     l_freeList(coverG);
     g_freeGraph(g);
     return EXIT_SUCCESS;
@@ -95,15 +83,10 @@ int main(int argc, char* argv[]){
       printf("pas assez d'arguments \n");
       return EXIT_FAILURE;
     }
-    Graph g = readFile(argv[2]);
-    if (g == NULL){
-      printf("Le fichier n'est pas lisible \n");
+
+    Graph g = selectGraph(argc, argv,2);
+    if(g == NULL)
       return EXIT_FAILURE;
-    }
-    if (argc >= 4){
-      if (strcmp(argv[3],"disp") == 0)                // affichage
-	g_display(g);
-    }
 
     printf("Calcul de la couverture (treeOptAlg)... ");
     List coverG = treeOptAlg(g);
@@ -121,15 +104,9 @@ int main(int argc, char* argv[]){
       printf("pas assez d'arguments \n");
       return EXIT_FAILURE;
     }
-    Graph g = readFile(argv[2]);
-    if (g == NULL){
-      printf("Le fichier n'est pas lisible \n");
+    Graph g = selectGraph(argc, argv,2);
+    if(g == NULL)
       return EXIT_FAILURE;
-    }
-    if (argc >= 4){
-      if (strcmp(argv[3],"disp") == 0)                // affichage
-	g_display(g);
-    }
 
     printf("Calcul de la couverture (spanningTreeAlg)... ");
     List coverG = spanningTreeAlg(g);
@@ -143,20 +120,38 @@ int main(int argc, char* argv[]){
     return EXIT_SUCCESS;
   }
 
+
+  if (strcmp(argv[1],"bipartiteOpt") == 0){               // Alg optimal bipartis
+    if (argc == 2){
+      printf("pas assez d'arguments \n");
+      return EXIT_FAILURE;
+    }
+
+    Graph g = selectGraph(argc,argv,2);
+    if(g == NULL)
+      return EXIT_FAILURE;
+
+    printf("Calcul de la couverture (bipartiteOptAlg)... ");
+    List coverG = bipartiteOptAlg(g);
+    printf("TERMINE \n");
+    printf("Couverture :\n");
+    l_display(coverG);
+    printf("\n");
+    l_freeList(coverG);
+    g_freeGraph(g);
+    return EXIT_SUCCESS;
+  }
+
+
   if (strcmp(argv[1],"edgesDeletion") == 0){               // Alg elimination d'aretes
     if (argc == 2){
       printf("pas assez d'arguments \n");
       return EXIT_FAILURE;
     }
-    Graph g = readFile(argv[2]);
-    if (g == NULL){
-      printf("Le fichier n'est pas lisible \n");
+    Graph g = selectGraph(argc,argv,2);
+    if (g == NULL)
       return EXIT_FAILURE;
-    }
-    if (argc >= 4){
-      if (strcmp(argv[3],"disp") == 0)                // affichage
-	g_display(g);
-    }
+
     printf("Calcul de la couverture (edgesDeletionAlg)... ");
     List coverG = edgesDeletionAlg(g);
     printf("TERMINE \n");
@@ -174,19 +169,11 @@ int main(int argc, char* argv[]){
       return EXIT_FAILURE;
     }
     int k = atoi(argv[2]);
-    Graph g = readFile(argv[3]);
-    if (g == NULL){
-      printf("Le fichier n'est pas lisible \n");
+    
+    Graph g = selectGraph(argc,argv,3);
+    if (g == NULL)
       return EXIT_FAILURE;
-    }
-    if (strcmp(argv[4],"disp") == 0){        // affichage
-      g_display(g);
-    }
-    if (k >= g_getSize(g)){
-      printf("Tous les sommets du graphe sont dans la couverture. \n");
-      g_freeGraph(g);
-      return EXIT_SUCCESS;
-    }
+
     List littleCov = littleCover(g, k);
     printf("TERMINE \n");
     if (littleCov != NULL && l_size(littleCov) != 0) {
@@ -233,4 +220,51 @@ void displayTab(int* tab, int size){
     printf("%d]\n", tab[size-1]);
   else
     printf("]\n");
+}
+
+
+Graph selectGraph(int argc, char* argv[], int i){
+    Graph g;
+    if (strcmp(argv[i], "treeGen") == 0){
+      int n = atoi(argv[i+1]);
+      g = treeGeneration(n);
+      if (argc >=i+3)
+	if (strcmp(argv[i+2],"disp") == 0)                // affichage
+	  g_display(g);
+    }
+    else if(strcmp(argv[i], "gen") == 0){
+      int n = atoi(argv[i+1]);
+      double proba = atoi(argv[i+2]);
+      g = generation(n, proba);
+      if (argc >=i+4)
+	if (strcmp(argv[i+3],"disp") == 0)                // affichage
+	  g_display(g);
+    }
+    else if(strcmp(argv[i], "bipartiteGen") == 0){
+      int n = atoi(argv[i+1]);
+      double proba = atoi(argv[i+2]);
+      g = bipartiteGeneration(n, proba);
+      if (argc >= i+4)
+	if (strcmp(argv[i+3],"disp") == 0)                // affichage
+	  g_display(g);
+    }
+    else if(strcmp(argv[i], "littleGen") == 0){
+      int n = atoi(argv[i+1]);
+      int k = atoi(argv[i+2]);
+      double proba = atoi(argv[i+3]);
+      g = littleGeneration(n, k, proba);
+      if (argc >=i+5)
+	if (strcmp(argv[i+4],"disp") == 0)                // affichage
+	  g_display(g);
+    }
+    else{
+      g = readFile(argv[i]);
+      if (g == NULL){
+	printf("Le fichier n'est pas lisible \n");
+      }
+      if (argc >=i+2)
+	if (strcmp(argv[i+1],"disp") == 0)                // affichage
+	  g_display(g);
+    }
+    return g;
 }

@@ -40,11 +40,11 @@ List greedyAlg (Graph g){
   for (int i = 0; i< n; i++){
     degrees[i] = l_size(g_getNeighbors(g,i));
   }
-  while(degmax >0){ // tant que le graphe n'est pas vide
-    int v = g_maxDegreeVertex(g); // on cherche le sommet avec deg max
+  while(degmax >0){                                        // tant que le graphe n'est pas vide
+    int v = g_maxDegreeVertex(g);                          // on cherche le sommet avec deg max
     degmax = degrees[v];
     if (degmax > 0){
-      l_insertInHead(cover, v); // on le met dans la couverture
+      l_insertInHead(cover, v);                            // on le met dans la couverture
       deleteVertexDegrees(g,degrees,v);
     }
   }
@@ -106,8 +106,8 @@ List bipartiteOptAlg (Graph g){
   free(parts[2]);
   free(parts);
   
-  Graph h = g_createOrientedGraph(size+2); // Deux sommets en plus : s et t
-  Graph hInv = g_createOrientedGraph(size+2); // Le graph inverse de h
+  Graph h = g_createOrientedGraph(size+2);                // Deux sommets en plus : s et t
+  Graph hInv = g_createOrientedGraph(size+2);             // Le graphe inverse de h
   int s = size;
   int t = size+1;
 
@@ -120,32 +120,33 @@ List bipartiteOptAlg (Graph g){
     l_head(neighbors);
     while (!l_isOutOfList(neighbors)){
       tmp = l_getVal(neighbors);
-      // On ajoute un arrête orientée de tout sommet de part1 vers chacun de ses voisin (donc des sommets de part2)
+      // On ajoute une arête orientée de tout sommet de part1 vers 
+      // chacun de ses voisins (donc des sommets de part2)
       g_addEdge(h, currentVertex, tmp);
       g_addEdge(hInv, tmp, currentVertex);
       l_next(neighbors);
     }
   }
 
-  // On ajoute toute les arêtes de s vers part1
+  // On ajoute toutes les arêtes de s vers part1
   for (int i=0; i<size1; i++){
     g_addEdge(h, s, part1[i]);
     g_addEdge(hInv, part1[i], s);
   }
-  // On ajoute toute les arêtes de part2 vers t
+  // On ajoute toutes les arêtes de part2 vers t
   for (int i=0; i<size2; i++){
     g_addEdge(h, part2[i], t);
     g_addEdge(hInv, t, part2[i]);
   }
 
-  // FIN DE LA CONSTRUCTION DES DEUX GRAPHES ORIENTE h ET hInv
+  // FIN DE LA CONSTRUCTION DES DEUX GRAPHES ORIENTES h ET hInv
   // DEBUT DE L'ALGORITHME DE Ford-Fulkerson
 
-  size = size + 2; // Il y a deux nouveaux sommets en plus (s et t)
+  size = size + 2;                            // Il y a deux nouveaux sommets en plus (s et t)
 
   int* fathers = malloc(sizeof(int)*size);
   assert(fathers);
-  // Matrice des flux temporaires (tous initialisé à 0)
+  // Matrice des flux temporaires (tous initialisés à 0)
   int** flux = malloc(sizeof(int*)*size);
   assert(flux);
   for (int i=0; i<size; i++){
@@ -154,8 +155,7 @@ List bipartiteOptAlg (Graph g){
     for (int j=0; j<size; j++)
       flux[i][j] = 0;
   }
-  int* verticesColors = malloc(sizeof(int)*size);
-  // 0 : white, 1 : gray, 2 : black
+  int* verticesColors = malloc(sizeof(int)*size); // 0 : white, 1 : gray, 2 : black
   assert(verticesColors);
 
   List F = l_createList();
@@ -204,11 +204,11 @@ List bipartiteOptAlg (Graph g){
       verticesColors[v] = 2;
     }
 
-    // Mise a jour des flux en fonciton du chemin courant trouvé
+    // Mise a jour des flux en fonction du chemin courant trouvé
     v = t;
     u = fathers[v];
     while (u != s){
-      // On inverse les flux (0 devient 1 dans le circuit normal et 1 devient 0 dans le circuit résiduel
+      // On inverse les flux (0 devient 1 dans le circuit normal et 1 devient 0 dans le circuit résiduel)
       flux[u][v] = 1-flux[u][v];
       v = u;
       u = fathers[v];
@@ -219,12 +219,12 @@ List bipartiteOptAlg (Graph g){
   // FIN DE L'ALGORITHME, CONSTRUCTION DE LA COUVERTURE
 
   List couv = l_createList();
-  for (int i=0; i<size1; i++) // Tout les sommets dans part1 (dans X)
-    if (verticesColors[part1[i]] == 0) // Coloriés en blanc (dans T)
-      l_insertInHead(couv, part1[i]); // Sont dans la couverture optimale
-  for (int i=0; i<size2; i++) // Tout les sommets dans part2 (dans Y)
-    if (verticesColors[part2[i]] == 2) // Coloriés en noirs (dans S)
-      l_insertInHead(couv, part2[i]); // SOnt dans la couverture optimale
+  for (int i=0; i<size1; i++)            // Tous les sommets dans part1 (dans X)
+    if (verticesColors[part1[i]] == 0)   // Coloriés en blanc (dans T)
+      l_insertInHead(couv, part1[i]);    // Sont dans la couverture optimale
+  for (int i=0; i<size2; i++)            // Tous les sommets dans part2 (dans Y)
+    if (verticesColors[part2[i]] == 2)   // Coloriés en noirs (dans S)
+      l_insertInHead(couv, part2[i]);    // Sont dans la couverture optimale
 
   for (int i=0; i<size; i++)
     free(flux[i]);
@@ -261,14 +261,17 @@ int** computeBiPartition(Graph g){
   assert(isVisited);
   for (int i=0; i<n; i++)
     isVisited[i] = false;
-  // Les deux listes sont synchronisées : - 'toTest' contient tout les sommets a tester (ajouter leurs voisins)
-  // - 'partOfVertices' contient les numéro des partions auquels appartiennent les sommets a tester
-  // Ex: Si 's' est a tester et est dans la partition 0, on ajoute tout ses voisins dans 'toTest' avec une partition 1
+
+  // Les deux listes sont synchronisées : 
+  // - 'toTest' contient tout les sommets a tester (ajouter leurs voisins)
+  // - 'partOfVertices' contient les numéros des partions auquels apartiennent les sommets a tester
+  // Ex: Si 's' est a tester et est dans la partition 0, on ajoute tous ses voisins 
+  // dans 'toTest' avec une partition 1
   List toTest = l_createList();
   List partsOfVertices = l_createList();
   List neighbors;
-  l_addInFront(toTest, 0); // On ajoute le premier sommet
-  l_addInFront(partsOfVertices, 0); // Et on lui donne arbitrairement la partition numéro 0
+  l_addInFront(toTest, 0);                // On ajoute le premier sommet
+  l_addInFront(partsOfVertices, 0);       // Et on lui donne arbitrairement la partition numéro 0
   isVisited[0] = true;
 
   int currentVertex;
@@ -284,7 +287,7 @@ int** computeBiPartition(Graph g){
     neighbors = g_getNeighbors(g, currentVertex);
     l_head(neighbors);
 
-    // On parcours tout les voisins du sommet courant
+    // On parcourt tous les voisins du sommet courant
     while (!l_isOutOfList(neighbors)){
       tmp = l_getVal(neighbors);
       if (!isVisited[tmp]){ // Si on a pas encore visité ce voisin
