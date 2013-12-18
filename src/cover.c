@@ -223,7 +223,7 @@ List bipartiteOptAlg (Graph g){
     if (verticesColors[part1[i]] == 0)   // Coloriés en blanc (dans T)
       l_insertInHead(couv, part1[i]);    // Sont dans la couverture optimale
   for (int i=0; i<size2; i++)            // Tous les sommets dans part2 (dans Y)
-    if (verticesColors[part2[i]] == 2)   // Coloriés en noirs (dans S)
+    if (verticesColors[part2[i]] == 2)   // Coloriés en noir (dans S)
       l_insertInHead(couv, part2[i]);    // Sont dans la couverture optimale
 
   for (int i=0; i<size; i++)
@@ -479,7 +479,6 @@ List littleCoverAlg(Graph g, int k, int size){
     return NULL;
   }
   if (numberOfEdges > k*(size-1)){
-    printf("il y a trop d'aretes \n");
     free(cover);
     return NULL;
   }

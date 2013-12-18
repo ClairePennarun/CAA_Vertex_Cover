@@ -129,17 +129,17 @@ int g_getSize(Graph g){
 }
 
 // Retourne le degré du graphe
-int g_degreGraph(Graph g){
-  int maxDegre = 0;
-  int size = g_getSize(g);
-  int deg;
-  for (int i=0; i<size; i++){
-    deg = g_getDegreeVertex(g,i);
-    if (deg > maxDegre)
-      maxDegre = deg;
-  }
-  return (maxDegre);
-}
+/* int g_degreGraph(Graph g){ */
+/*   int maxDegre = 0; */
+/*   int size = g_getSize(g); */
+/*   int deg; */
+/*   for (int i=0; i<size; i++){ */
+/*     deg = g_getDegreeVertex(g,i); */
+/*     if (deg > maxDegre) */
+/*       maxDegre = deg; */
+/*   } */
+/*   return (maxDegre); */
+/* } */
 
 // Retourne le sommet de degré le plus grand
 int g_maxDegreeVertex(Graph g){
@@ -158,23 +158,23 @@ int g_maxDegreeVertex(Graph g){
 }
 
 // Retourne une feuille (si g est un arbre non vide il y en a toujours une)
-int g_findLeafGraph(Graph g){
-  int size = g_getSize(g);
-  for (int i=0; i<size; i++){
-    if (g_getDegreeVertex(g,i) == 1)
-      return i;
-  }
-  return -1;
-}
+/* int g_findLeafGraph(Graph g){ */
+/*   int size = g_getSize(g); */
+/*   for (int i=0; i<size; i++){ */
+/*     if (g_getDegreeVertex(g,i) == 1) */
+/*       return i; */
+/*   } */
+/*   return -1; */
+/* } */
 
 // Supprime les sommets isoles du graphe g
-void g_deleteIsolated(Graph g){
-  int size = g_getSize(g);
-  for (int i=0; i<size; i++){
-    if (g_getDegreeVertex(g,i) == 0)
-      g_freeVertex(g, i);
-  }
-}
+/* void g_deleteIsolated(Graph g){ */
+/*   int size = g_getSize(g); */
+/*   for (int i=0; i<size; i++){ */
+/*     if (g_getDegreeVertex(g,i) == 0) */
+/*       g_freeVertex(g, i); */
+/*   } */
+/* } */
 
 // Affiche le graphe g
 void g_display(Graph g){
@@ -208,21 +208,21 @@ void g_addEdge(Graph g, int i1, int i2){
 }
 
 // Suppression de l'arete entre les sommets i1 et i2
-void g_deleteEdge(Graph g, int i1, int i2){
-  // Il faut que l'arête existe
-  // A discuter
-  List l1 = g_getNeighbors(g, i1);
-  List l2 = g_getNeighbors(g, i2);
-  l_deleteFirstOccur(l1, i2);
-  if (!(g->isOriented))
-    l_deleteFirstOccur(l2, i1);
-  if (g->isConstruct){
-    (g->neighborhood)[i1][i2] = 0;
-    if (!(g->isOriented))
-      (g->neighborhood)[i2][i1] = 0;
-  }
-  g->numberOfEdges --;
-}
+/* void g_deleteEdge(Graph g, int i1, int i2){ */
+/*   // Il faut que l'arête existe */
+/*   // A discuter */
+/*   List l1 = g_getNeighbors(g, i1); */
+/*   List l2 = g_getNeighbors(g, i2); */
+/*   l_deleteFirstOccur(l1, i2); */
+/*   if (!(g->isOriented)) */
+/*     l_deleteFirstOccur(l2, i1); */
+/*   if (g->isConstruct){ */
+/*     (g->neighborhood)[i1][i2] = 0; */
+/*     if (!(g->isOriented)) */
+/*       (g->neighborhood)[i2][i1] = 0; */
+/*   } */
+/*   g->numberOfEdges --; */
+/* } */
 
 // Suppression des aretes adjacentes partantes du sommet i
 void g_deleteEdges(Graph g, int i){
