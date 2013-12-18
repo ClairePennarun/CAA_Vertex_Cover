@@ -45,7 +45,7 @@ Graph g_createOrientedGraph(int size){
 Graph g_cloneGraph(Graph g){
   int size = g_getSize(g);
   Graph newGraph = g_createGraph(size);
-  newGraph->numberOfEdges = g_numberOfEdges(g);
+  newGraph->numberOfEdges = 0;
   newGraph->isConstruct = g->isConstruct;
   newGraph->isOriented = g->isOriented;
   if (g->isConstruct)
@@ -53,16 +53,20 @@ Graph g_cloneGraph(Graph g){
 
   List neighbors;
   int vert;
-  for (int i=0; i<size-1; i++){
-    neighbors = g_getNeighbors(g, i);
-    l_head(neighbors);
-    while (!l_isOutOfList(neighbors)){
-      vert = l_getVal(neighbors);
-      // Pour ne pas ajouter deux fois les arêtes, on ajoute
-      // que les couples (a-b) avec a<b (sauf si le graphe est orienté)
-      if (!(newGraph->isOriented) || vert<i)
-	g_addEdge(newGraph, i, vert);	
-      l_next(neighbors);
+  for (int i=0; i<size; i++){
+    if(g_getVertex(g,i) != NULL){
+      neighbors = g_getNeighbors(g, i);
+      l_head(neighbors);
+      while (!l_isOutOfList(neighbors)){
+	vert = l_getVal(neighbors);
+	// Pour ne pas ajouter deux fois les arêtes, on ajoute
+	// que les couples (a-b) avec a<b (sauf si le graphe est orienté)
+	//if (!(newGraph->isOriented) || vert<i)
+	if(vert<i){
+	  g_addEdge(newGraph, i, vert);	
+	}
+	l_next(neighbors);
+      }
     }
   }
   return newGraph;
@@ -103,7 +107,6 @@ void g_createNeighborhood(Graph g){
   int* neighbors;
   g->neighborhood = malloc(sizeof(int*)*nbVert);
   assert(g->neighborhood);
-  
   for (int i=0; i<nbVert; i++){
     neighbors = malloc(sizeof(int)*nbVert);
     assert(neighbors);
@@ -188,8 +191,6 @@ void g_display(Graph g){
 }
 
 /* ***  Fonctions sur les aretes *** */
-
-// Changement des indices ? (les sommets commenceront a 1 ?)
 
 // Ajout d'une arete entre les sommets i1 et i2
 void g_addEdge(Graph g, int i1, int i2){

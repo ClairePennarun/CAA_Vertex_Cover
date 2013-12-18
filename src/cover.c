@@ -469,16 +469,19 @@ List littleCoverAlg(Graph g, int k, int size){
   int numberOfEdges = g_numberOfEdges(g);
   int sizeGraph = g_getSize(g);
   if (size <= k){
+    printf("tous les sommets sont dans la couverture \n");
     for (int i=0; i< sizeGraph; i++)
       if (g_getNeighbors(g,i) != NULL)
 	l_addInFront(cover,i);
     return cover;
   }
   if (k < 0){
+    printf("on cherche une couverture de taille nulle \n");
     free(cover);
     return NULL;
   }
   if (numberOfEdges > k*(size-1)){
+    printf("il y a trop d'aretes \n");
     free(cover);
     return NULL;
   }
