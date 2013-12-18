@@ -22,6 +22,7 @@
 \DeclareMathOperator{\false}{false}
 \DeclareMathOperator{\leaf}{leaf}
 \DeclareMathOperator{\parent}{parent}
+\DeclareMathOperator{\Color}{color}
 \DeclareMathOperator{\degrepositif}{degrePositif}
 
 \title{Projet CAA : couverture par sommets}
@@ -226,22 +227,23 @@ Finalement, la complexité finale de l'algorithme glouton est $O(c\times n)$ (o�
 
 \subsubsection{Description}
 
-L'algorithme se base sur un parcours en profondeur du graphe $G$. Le parcours en profondeur (DFS) crée un arbre couvrant du graphe. L'ensemble des sommets de cet arbre qui ne sont pas des feuilles est retourné comme couverture du graphe.
+L'algorithme se base sur un parcours en profondeur du graphe $G$. Le parcours en profondeur (DFS) crée un arbre couvrant du graphe. Notons que si deux sommets sont liés par une arête, le premier des deux à être visité ne sera pas une feuille de l'arbre puisqu'il a au moins un fils qui n'a pas encore été visité. Par contraposée, il ne peut pas y avoir d'arêtes entre deux feuilles de l'arbre induit par le DFS et l'ensemble des sommets de cet arbre qui ne sont pas des feuilles est donc une couverture du graphe. 
 
-Nous avons implémenté cet algorithme de deux manières différentes : la première version (algorithme "spanningTreeAlgRec") en nous basant sur un algorithme récursif simple de parcours en profondeur, la deuxième version (algorithme "spanningTreeAlg") en dérécursifiant le parcours en utilisant une liste doublement chaînée comme pile.
+Partitionnons maintenant notre couverture en l'ensemble des nœuds de l'arbre de profondeur paire et ceux de profondeur impaire et intéressons nous à l'ensemble $E$ de plus grand cardinal. La taille de notre couverture est donc majorée par $2|E|$. En reliant chaque sommet de $E$ à son fils, on crée un ensemble d'arêtes indépendantes : en effet, notre couverture ne comportant pas de feuilles, chacun de ses sommets a un fils, et le profondeur du fils étant de parité différente de celle du père, le fils n'appartient pas à $E$. Ainsi, $|E|$ est un minorant de la taille d'une couverture de $G$. Notre algorithme est donc 2-approché.
 
-Chaque sommet de $G$ est "coloré" quand il est visité par le parcours. Un tableau $color$ de taille $n$ est créé au début de l'algorithme pour nous permettre de stocker ces "couleurs" : 
+
+Nous avons implémenté cet algorithme de deux manières différentes : la première version (algorithme \og spanningTreeAlgRec\fg) en nous basant sur un algorithme récursif simple de parcours en profondeur, la deuxième version (algorithme \og spanningTreeAlg\fg) en dérécursifiant le parcours en utilisant une liste doublement chaînée comme pile.
+
+Chaque sommet de $G$ est \og coloré\fg quand il est visité par le parcours. Un tableau $\Color$ de taille $n$ est créé au début de l'algorithme pour nous permettre de stocker ces "couleurs" : 
 
 \begin{itemize}
-\item dans le premier algorithme : $color[i] = 0$ si le sommet $i$ n'a pas encore été visité, $color[i] = 1$ sinon.
-\item dans le second algorithme : $color[i] = 0$ si le sommet $i$ n'a pas encore été visité, $color[i] = 1$ si le sommet est a été découvert (il est voisin d'un sommet visité), et $color[i] = 2$ si le sommet a été visité.
+\item dans le premier algorithme : $\Color[i] = 0$ si le sommet $i$ n'a pas encore été visité, $\Color[i] = 1$ sinon.
+\item dans le second algorithme : $\Color[i] = 0$ si le sommet $i$ n'a pas encore été visité, $\Color[i] = 1$ si le sommet est a été découvert (il est voisin d'un sommet visité), et $\Color[i] = 2$ si le sommet a été visité.
 \end{itemize}
 
 
 
-Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $isInCover$ qui vaut $False$ au début de la visite de $v$. Quand on rencontre pour la première fois un de ses voisins non déjà visité, le sommet $v$ est ajouté dans la couverture du graphe et la valeur de $isInCover$ est mise à $True$.
-
-Cet algorithme est 2-approché, c'est-à-dire qu'il retourne un ensemble de sommets de cardinal au pire deux fois plus grand que celui de la couverture minimale du graphe.
+Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen $\mathrm{isInCover}$ qui vaut $\false$ au début de la visite de $v$. Quand on rencontre pour la première fois un de ses voisins non déjà visité, le sommet $v$ est ajouté dans la couverture du graphe et la valeur de $\mathrm{isInCover}$ est mise à $\true$.
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -253,11 +255,12 @@ $n \leftarrow \taille(G)$
 
 $t \leftarrow$ tableau de taille $n$
 
-$cover \leftarrow$ liste
+$\cover \leftarrow$ liste
 
-pour tous les sommets $i$ de $V(G)$ : $t[i] = 0$
+\Pour{$i\in V(G)$}
+{$t[i] = 0$}
 
-parcours\_profondeur(G, 0, cover, t)
+parcours\_profondeur($G, 0, \cover, t$)
 
 \Retour{cover}
 \caption{Algorithme avec arbre couvrant (récursif) - spanningTreeAlgRec}
@@ -270,21 +273,21 @@ parcours\_profondeur(G, 0, cover, t)
 \Entree{le graphe $G$, le sommet $v$ sur lequel on fait le parcours, la couverture $cover$ de sommets actuelle, le tableau de couleurs $t$}
 \BlankLine
 
-\Si{t[v] = 1}{
+\Si{$t[v] = 1$}{
 Fin du programme
 }
 
 estDansCover = False
 
-t[v] = 1
+$t[v] = 1$
 
 \Pour{$i\in \voisin[v]$}{
-\Si{t[i] = 0 et estDansCover = False}{
-	ajout de $v$ à $cover$
+\Si{$t[i] = 0$ et estDansCover = False}{
+	ajout de $v$ à $\cover$
 	
 	estDansCover = True
 	}	
-parcours\_profondeur(G, i, cover, t)
+parcours\_profondeur($G$, $i$, $\cover$, $t$)
 }
 \caption{parcours\_profondeur - dfs}
  
@@ -296,39 +299,39 @@ parcours\_profondeur(G, i, cover, t)
 \Entree{le graphe $G$}
 \BlankLine
 
-$cover \leftarrow$ liste % a voir si externe
+$\cover \leftarrow$ liste % a voir si externe
 
-$pile \leftarrow$ liste % a voir si externe
+pile$ \leftarrow$ liste % a voir si externe
 
 \Pour{$i \in V(G)$}{
-	color[i] = 0;
-	parent[i] = -1;
+	$\Color[i] = 0$;
+	$\parent[i] = -1$;
 }
 
 $u$ $\leftarrow$ racine du graphe
 
-color[u] = 1;
+$\Color[u] = 1$;
 
-ajout de $u$ à $pile$
+ajout de $u$ à pile
 
-\Tq{$pile$ $\neq$ []}{
+\Tq{pile $\neq$ []}{
 	estDansCover = False
 	
-	$u \leftarrow$ tete de $pile$
+	$u \leftarrow$ tête de $pile$
 	
-	\Si{color[u] $\neq$ 2}{
-		color[u] = 2
+	\Si{$\Color[u] \neq 2$}{
+		$\Color[u] = 2$
 	
-		\Pour{$v \in$ voisin[u]}{
-			\Si{color[v] $\neq$ 2}{
-			color[v] = 1
+		\Pour{$v \in voisin[u]$}{
+			\Si{$\Color[v] \neq 2$}{
+			$\Color[v] = 1$
 			
-			parent[v] = u
+			$\parent[v] = u$
 			
-			empiler $v$ dans $pile$
+			empiler $v$ dans pile
 			
 				\Si{estDansCover = False}{
-				ajouter $u$ dans $cover$
+				ajouter $u$ dans $\cover$
 				
 				estDansCover = True
 				}
@@ -336,13 +339,15 @@ ajout de $u$ à $pile$
 		}
 	}
 }
-\Retour{cover}
+\Retour{$\cover$}
 
 \caption{Algorithme avec arbre couvrant (itératif) - spanningTreeAlg}
  
 \end{algorithm}
 
 \subsubsection{Complexité}
+
+L'algorithme présenté demande un préprocessing faisable en temps linéaire (initialiser $t$ ou $\Color$), puis une opération sur les voisins de chaque sommet, qui requiert donc un temps en $O(|E|)$. La complexité temporelle de l'algorithme est donc $O(|E|)$.
 
 \subsubsection{Résultats}
 
@@ -458,7 +463,7 @@ On recherche donc le nombre $l = |U|$ de sommets de degré strictement supérieu
 Si $l > k$, alors on ne pourra pas trouver de couverture de taille $k$ et on peut arrêter l'algorithme.
 Si le graphe comprend plus de $k\times(k-l)$ arêtes, on peut également arrêter l'algorithme.
 
-Si ces deux tests n'entraînent pas l'arrêt de l'algorithme, on "réduit" le graphe $G$ à $G \smallsetminus U \smallsetminus \{v \in V \mid deg(v) = 0\}$, en cherchant une couverture plus petite, de taille $k-l$.
+Si ces deux tests n'entraînent pas l'arrêt de l'algorithme, on \og réduit\fg le graphe $G$ à $G \smallsetminus U \smallsetminus \{v \in V \mid deg(v) = 0\}$, en cherchant une couverture plus petite, de taille $k-l$.
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -466,61 +471,61 @@ Si ces deux tests n'entraînent pas l'arrêt de l'algorithme, on "réduit" le gr
 \Entree{Un graphe $G$, la taille $k$ de la couverture recherchée}
 \BlankLine
 
-l = 0 \tcp*{nombre de sommets de degré trop grand}
+$l = 0$ \tcp*{nombre de sommets de degré trop grand}
 
-m = 0 \tcp*{nombre de sommets isolés}
+$m = 0$ \tcp*{nombre de sommets isolés}
 
-n = taille(G)
+$n = \taille(G)$
 
 gdDegres \tcp*{tableau de sommets de degré trop grand}
 
 degreNul \tcp*{tableau de sommets de degré nul}
 
 \Pour{$v \in V(G)$}{
-	\Si{deg(v) $>$ k}{
-		U[l] = v
+	\Si{$\deg(v) > k$}{
+		gdDegres[$l$] = $v$
 		
-		l = l+1
+		$l = l+1$
 	}
-	\Si{deg(v) = 0}{
-		U[m] = v
+	\Si{$\deg(v) = 0$}{
+		degreNul[$m$] = $v$
 		
-		m = m+1
+		$m = m+1$
 	}
 }
 
-k' = k - l
+$k' = k - l$
 
-\Si{k' $<=$ 0}{
+\Si{$k'\leqslant 0$}{
 	\Retour{NULL}
 }
-\Si{l $>$ 0}{
-	\Pour{i de 0 à l-1}{
-		u = grdDegres[i]
+\Si{$l>0$}{
+	\Pour{$i$ de 0 à $l-1$}{
+		$u$ = grdDegres[$i$]
 		
-		suppressionAretes(G,u)
+		suppressionAretes($G$,$u$)
 		
-		suppressionSommet(G,u)
+		suppressionSommet($G$,$u$)
 	}
 }
-\Si{m $>$ 0}{
-	\Pour{i de 0 à m-1}{
-		u = degreNul[i]
+\Si{$m>0$}{
+	\Pour{$i$ de 0 à $m-1$}{
+		$u$ = degreNul[$i$]
 		
-		suppressionSommet(G,u)
+		suppressionSommet($G$,$u$)
 	}
 }
 
-\Si{nombreAretes(G) $> k\times k'$}{
+\Si{nombreAretes($G$) $> k\times k'$}{
 	\Retour {NULL}
 }
-cover = petiteCouvertureAlg(G,k',n-l)
+$\cover$ = petiteCouvertureAlg($G$,$k'$,$n-l$)
 
-\Pour{i de 0 à l-1}{
-	ajouter $grdDegres[i]$ à $cover$
+\Pour{$i$ de 0 à $l-1$}{
+	ajouter grdDegres[$i$] à $\cover$
 }
 
-\Retour{cover}
+\Retour{$\cover$}
 
 \caption{recherchePetiteCouverture - littleCover}
 \end{algorithm}
@@ -536,9 +541,9 @@ Les tests sont :
 
 \bigskip
 
-Si les tests ne permettent pas de conclure, une arête $(u,v)$ du graphe est considérée, et l'algorithme est lancé récursivement sur $G - \{u\}$ et $G - \{v\}$, avec la recherche d'une couverture de taille $k-1$. Si l'un des deux appels récursifs (disons celui sur $G - \{u\}$) renvoie une couverture $cover$ de taille $k-1$, alors le graphe $G$ contient une couverture de taille $k$, qui s'obtient en ajoutant le sommet $u$ à cover.
+Si les tests ne permettent pas de conclure, une arête $(u,v)$ du graphe est considérée, et l'algorithme est lancé récursivement sur $G - \{u\}$ et $G - \{v\}$, avec la recherche d'une couverture de taille $k-1$. Si l'un des deux appels récursifs (disons celui sur $G - \{u\}$) renvoie une couverture $\cover$ de taille $k-1$, alors le graphe $G$ contient une couverture de taille $k$, qui s'obtient en ajoutant le sommet $u$ à $\cover$.
 
-Remarque : dans cet algorithme, quand un sommet est supprimé, le graphe garde la même taille $n$ mais ce sommet est noté "NULL". Donc il faut conserver en mémoire la taille du graphe de départ tout en travaillant sur un sous-graphe induit de taille $n'$ plus réduite.
+Remarque : dans cet algorithme, quand un sommet est supprimé, le graphe garde la même taille $n$ mais ce sommet est noté \og NULL\fg. Donc il faut conserver en mémoire la taille du graphe de départ tout en travaillant sur un sous-graphe induit de taille $n'$ plus réduite.
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -547,78 +552,89 @@ Remarque : dans cet algorithme, quand un sommet est supprimé, le graphe garde l
 \Sortie{Une couverture d'arêtes de taille $k$, sous forme de liste de sommets $cover$}
 \BlankLine
 
-\Si{n' $<$ k}{
+\Si{$n' < k$}{
 	\Pour{$v \in V(G)$}{
-		\Si{voisins[v] $\neq$ NULL}{
-			ajouter $v$ à cover
+		\Si{$\voisins[v] \neq$ NULL}{
+			ajouter $v$ à $\cover$
 		}
 	}
-	\Retour{cover}
+	\Retour{$\cover$}
 }
 
-\Si{k $<$ 0}{
+\Si{$k < 0$}{
 	\Retour{NULL}
 }
 
-\Si{nombreAretes(G') $> k\times(n'-1)$}{
+\Si{nombreAretes($G'$) $> k\times(n'-1)$}{
 	\Retour{NULL}
 }
 
 creation d'un tableau des degres de taille $n$
 
-u = degrePositif(G,0)
+$u$ = degrePositif($G$,0)
 
-v = voisin de $u$
+$v$ = voisin de $u$
 
-g1 = copie(G)
+$g_1$ = copie($G$)
 
-suppressionAretes(g1,u)
+suppressionAretes($g_1$,$u$)
 
-suppressionSommet(g1,u)
+suppressionSommet($g_1$,$u$)
 
-\Si{nombreAretes(g1) = 0}{
-	ajouter $u$ à $cover$
-	\Retour{cover}
+\Si{nombreAretes($g_1$) = 0}{
+	ajouter $u$ à $\cover$
+	\Retour{$\cover$}
 }
 
-g2 = copie(G)
+$g_2$ = copie($G$)
 
-suppressionAretes(g2,v)
+suppressionAretes($g_2$,$v$)
 
-suppressionSommet(g2,v)
+suppressionSommet($g_2$,$v$)
 
-\Si{nombreAretes(g2) = 0}{
-	ajouter $v$ à $cover$
-	\Retour{cover}
+\Si{nombreAretes($g_2$) = 0}{
+	ajouter $v$ à $\cover$
+	\Retour{$\cover$}
 }
 
-coverU = petiteCouvertureAlg(g1,k-1,n'-1)
+$\mathrm{coverU}$ = petiteCouvertureAlg($g_1$,$k-1$,$n'-1$)
 
-\Si{coverU $\neq$ NULL et taille(coverU) = k-1}{
-	cover = coverU
+\Si{coverU $\neq$ NULL et taille(coverU) = $k-1$}{
+	$\cover$ = $\mathrm{coverU}$
 	
-	ajouter $u$ à $cover$
+	ajouter $u$ à $\cover$
 }
 
 \Sinon{
-	coverV = petiteCouvertureAlg(g2,k-1,n'-1)
+	$\mathrm{coverV}$ = petiteCouvertureAlg($g_2$,$k-1$,$n'-1$)
 
-	\Si{coverV $\neq$ NULL et taille(coverV) = k-1}{
-		cover = coverV
+	\Si{$\mathrm{coverV} \neq$ NULL et taille(coverV) = $k-1$}{
+		$\cover$ = $\mathrm{coverV}$
 	
-		ajouter $v$ à $cover$
+		ajouter $v$ à $\cover$
 	}
 }
 
-\Retour{cover}
+\Retour{$\cover$}
 
 \caption{petiteCouvertureAlg - littleCoverAlg}
 \end{algorithm}
 
 \subsubsection{Complexité}
 
-\subsubsection{Résultats}
+Commençons par estimer la complexité de l'algorithme \texttt{littleCoverAlg}. À chaque appel récursif, si la condition d'arrêt n'est pas remplie, l'algorithme va :
+\begin{itemize}
+ \itemb créer les graphes $g_1$ et $g_2$. La création de ces graphes se fait en parcourant l'ensemble des arêtes, dont la taille est majorée par $k(n-1)$ (condition d'arrêt).
+ \itemb s'appeler deux fois lui-même. On obtient ainsi un arbre d'appel d'arité 2.
+ \itemb ajouter un sommet à la couverture, la profondeur de l'arbre d'appel est donc majoré par la taille $k$ de la couverture cherchée.
+\end{itemize}
 
+Ainsi, l'algorithme \texttt{littleCoverAlg} tournera en $O(2^k k\times n)$. 
+
+\vspace{0.35cm}
+Étudions maintenant l'algorithme \texttt{littleCover}. La boucle \texttt{pour} des lignes 6 à 12 demande de déterminer pour chacun des $n$ sommets si son degré est plus grand que $k$ (se fait en $O(k)$). Cette étape de preprocessing ne sera fait qu'une seule fois et sa complexité sera asymptotiquement négligeable. Après cette étape, on appellera \texttt{littleCoverAlg} sur le graphe induit par les sommets restants de degré non nul, si et seulement si ce graphe a moins de $k^2$ arêtes donc moins de $2k^2$ sommets. Comme l'algorithme tourne en $O(2^k k\times n)$, avec $n\leqslant k^2$, l'algorithme final tourne en $O(2^k k^3)$.
+
+\subsubsection{Résultats}
 
 \section{Résolution avec un sat-solver}
 
