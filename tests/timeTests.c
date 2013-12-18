@@ -16,7 +16,6 @@ int main(int argc, char* argv[]){
   srand(graine);
   printf("La graine pour l'aléatoire est : %d\n", graine);
 
-  //Graph g;
   List cover;
 
   if(strcmp(argv[2], "gen") == 0){
