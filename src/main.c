@@ -45,14 +45,18 @@ int main(int argc, char* argv[]){
 
   if (strcmp(argv[1],"help")==0){                   // aide
     printf("Premier paramètre : \n");
-    printf("Sélectionner un des algorithmes suivants :\n");
-    printf("1. Algorithme glouton : greedy \n");
-    printf("2. Algorithme optimal pour les arbres : treeOpt \n");
-    printf("3. Algorithme optimal pour les graphes bipartis : bipartiteOpt\n");
-    printf("4. Algorithme 2-approché (arbre couvrant) : spanningTree \n");
-    printf("5. Algorithme 2-approché (elimination d'aretes) : edgesDeletion \n");
-    printf("6. Algorithme paramétrique optimal pour petite couverture : littleCover puis taille \n");
-    printf("\nSecond paramètre : chemin vers le fichier à ouvrir (avec extension) ou appel a une fonction de generation \n");
+    printf("  Sélectionner un des algorithmes suivants :\n");
+    printf("    Algorithme glouton : greedy \n");
+    printf("    Algorithme optimal pour les arbres : treeOpt \n");
+    printf("    Algorithme optimal pour les graphes bipartis : bipartiteOpt\n");
+    printf("    Algorithme 2-approché (arbre couvrant) : spanningTree \n");
+    printf("    Algorithme 2-approché (elimination d'aretes) : edgesDeletion \n");
+    printf("    Algorithme paramétrique optimal pour petite couverture : littleCover puis taille \n");
+    printf("\nSecond paramètre : chemin vers le fichier à ouvrir (avec extension) ou appel a une fonction de generation (avec ses paramètres)\n");
+    printf("  Génération d'arbres de taille n : treeGen n \n");
+    printf("  Génération de graphes de taille n et proba p: gen n p \n");
+    printf("  Génération de graphes bipartis de taille n et proba p: bipartiteGen n p \n");
+    printf("  Génération de graphes de taille n, proba p et taille de couverture k : littleGen n k p \n");
     printf("\nTroisieme parametre : disp si vous voulez afficher le graphe de départ \n");
     return EXIT_SUCCESS;
   }
