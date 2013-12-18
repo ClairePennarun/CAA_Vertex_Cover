@@ -160,7 +160,7 @@ List bipartiteOptAlg (Graph g){
 
   List F = l_createList();
   l_insertInHead(F, s);
-  List childrens;
+  List children;
   List parents;
   int u, v, w;
 
@@ -177,16 +177,16 @@ List bipartiteOptAlg (Graph g){
       v = l_getFirstVal(F);
       l_deleteHead(F);
 
-      childrens = g_getNeighbors(h, v);
-      l_head(childrens);
-      while (!l_isOutOfList(childrens)){
-	w = l_getVal(childrens);
+      children = g_getNeighbors(h, v);
+      l_head(children);
+      while (!l_isOutOfList(children)){
+	w = l_getVal(children);
 	if ((verticesColors[w] == 0) && (flux[v][w] == 0)){
 	  verticesColors[w] = 1;
 	  fathers[w] = v;
 	  l_insertInHead(F, w);
 	}
-	l_next(childrens);
+	l_next(children);
       }
       
       parents = g_getNeighbors(hInv, v);
@@ -469,14 +469,12 @@ List littleCoverAlg(Graph g, int k, int size){
   int numberOfEdges = g_numberOfEdges(g);
   int sizeGraph = g_getSize(g);
   if (size <= k){
-    printf("tous les sommets sont dans la couverture \n");
     for (int i=0; i< sizeGraph; i++)
       if (g_getNeighbors(g,i) != NULL)
 	l_addInFront(cover,i);
     return cover;
   }
   if (k < 0){
-    printf("on cherche une couverture de taille nulle \n");
     free(cover);
     return NULL;
   }
