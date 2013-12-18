@@ -193,7 +193,7 @@ int main(int argc, char* argv[]){
 	Graph g = littleGeneration(atoi(argv[3]), atoi(argv[4]), 0.5);
 	start = clock();
 	cover = greedyAlg(g);
-	printf("taille de couverture trouvee : %d \n", l_size(cover));
+	//printf("taille de couverture trouvee : %d \n", l_size(cover));
 	finish = clock();
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
