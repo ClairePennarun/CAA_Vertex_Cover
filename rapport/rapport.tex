@@ -52,9 +52,87 @@ Le code est disponible à \href{http://github.com/ClairePennarun/CAA_Vertex_Cove
 
 \subsection{Structure de données}
 
-% On détaille l'implémentation des graphes et on explique nos choix. Surtout pour éviter de répéter la même chose au début de la description de chaque algorithme.
+\subsubsection{Listes}
+
+Au vu de différents algorithmes (et en prévision de la structure de graphe), nous avons choisi d'implémenter un module de liste.
+Dans ce module, deux types ont été définis : le type 'List' (qui sera manipulé) et le type 'Elem' (représentant un élément : il sera caché à l'utilisateur).
+
+Une liste contient ces champs :
+\begin{itemize}
+\itemb Sa taille
+\itemb Un pointeur vers son premier élément (NULL si liste vide)
+\itemb Un pointeur vers son dernier élément (NULL si liste vide)
+\itemb Un pointeur vers l'élément courant (possiblement à NULL si l'on est sorti de la liste)
+\end{itemize}
+~~\\
+Un élément contient ces champs :
+\begin{itemize}
+\itemb Un pointeur vers l'élément suivant
+\itemb Un pointeur vers l'élément précédent
+\itemb Sa valeur (initialement un int)
+\end{itemize}
+
+Nous avons codé ensuite une collection de primitives classiques permettant la bonne manipulation de la liste (getVal, next, head, insertInHead, contain, isEmpty, isOutOfList...)
+
+\subsubsection{Graphes}
+
+Nous nous sommes tout de suite posé une questions de représentation du graphe, et avons du faire un choix (pour un graphe G a n sommets) :
+\begin{itemize}
+\itemb Représenter le graphe par une matrice d'adjacence de taille $n^2$ :
+\begin{itemize}
+\item Avantage : sontVoisins(s1, s2) serait en temps constant
+\item Inconvénients : getListeVoisins(s1) et serait en O(n)
+\end{itemize}
+\itemb Représenter le graphe par un tableau de sommet ou chaque sommet contiendrait une liste de ses voisins :
+\begin{itemize}
+\item Avantages : getListeVoisins(s1) serait en temps constant
+\item Inconvénients : sontVoisins(s1, s2) serait en O($\Delta$(G))
+\end{itemize}
+\itemb Utiliser les deux représentations en même temps :
+\begin{itemize}
+\item Avantages : getListeVoisins(s1) et sontVoisins(s1, s2) seraient en temps constant
+\item Inconvénients : Redondance d'information en mémoire, cumul les coûts des deux structures dans l'entretient graphe
+\end{itemize}
+\end{itemize}
+
+Partant de la constatation que la fonction getListeVoisins allait être utilisée (et pas une seule fois 'sontVoisins') nous avons choisi la deuxième option.
+
+Nous avons donc deux types ('Graph' étant manipulé et 'Vertex' étant caché à l'utilisateur).
+
+Un graphe contiendra :
+\begin{itemize}
+\itemb Son nombre de sommets
+\itemb Son nombre d'arêtes
+\itemb Un tableau contenant la liste de ses sommets
+\itemb Un booléen indiquant si le graphe est orienté ou non
+\end{itemize}
+
+Un sommet, quand à lui, ne contiendra que la liste de ses voisins (liste étant implémentée grâce au module précédent).
+
+Nous avons par la suite implémenté les primitives permettant de manipuler le graphe et y collecter des informations (getDegreGraph, getDegreVertex, getSize, cloneGraph, addEdge...)
 
 \subsection{Génération aléatoire}
+
+\subsubsection{Le module}
+
+Il a fallu implémenter sous fonctions plusieurs fois utilisées :
+\begin{itemize}
+\itemb random() : Retourne un double aléatoire inclus dans [0,1[.
+\itemb randint(int a, int b) : Retourne un entier aléatoire inclus dans [a, b[.
+\itemb swap(int* t, int i1, int i2) : Echange les cases d'indice i1 et i2 dans le tableau t.
+\itemb randomEdge(Graph g, int i1, int i2, double proba) : Connecte les sommets d'indices i1 et i2 dans le graphe g avec une probabilité de 'proba'.
+\itemb makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected) : Si 'isConnected' est a false (le sommet d'indice i est isolé), alors cela le connectera avec un sommet d'indice tab[k] (où k est un entier aléatoire inclus dans [iMin, iMax[).
+\itemb getRandomVertice(int n) : Retourne un tableau d'ordre aléatoire avec des entiers allant de 0 à (n-1). Les algorithmes de générations travailleront sur ce tableau d'indices (plutôt que directement sur les vrai indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
+\end{itemize}
+
+\subsubsection{Génération de graphe quelconque}
+
+\subsubsection{Génération d'arbre}
+
+\subsubsection{Génération de graphe biparti}
+
+\subsubsection{Génération de graphe à petite couverture}
+
 
 % On explique rapidement comment fonctionne nos algorithmes de génération et quel est leur intérêt. Le plus important va être d'expliquer nos choix et ce qui aurait changé sur la fonction de répartition si on fait autrement.
 
@@ -62,10 +140,9 @@ Le code est disponible à \href{http://github.com/ClairePennarun/CAA_Vertex_Cove
 
 \subsection{Algorithme glouton}
 
- 
 \subsubsection{Description}
 
-L'algorithme glouton consiste à ajouter à chaque étape le sommet qui couvrira le plus d'arêtes non couvertes. Bien que non optimal, il a l'avantage d'être rapide. 
+L'algorithme glouton consiste à ajouter à chaque étape dans la couverture le sommet qui couvrira le plus d'arêtes non couvertes. Bien que non optimal, il a l'avantage d'être rapide. 
 
 Le nombre d'arêtes couvertes par un sommet est égal à son degré, mais quand un sommet est ajouté à la couverture, il est important de ne plus tenir compte des arêtes adjacentes dans la suite. Pour connaître rapidement le nombre d'arêtes que l'on couvrirait avec chaque sommet, nous avons choisi de créer un tableau répertoriant le degré de chaque sommet du graphe, plus facile à tenir à jour que le graphe lui-même. 
 
