@@ -25,6 +25,9 @@
 \DeclareMathOperator{\Color}{color}
 \DeclareMathOperator{\degrepositif}{degrePositif}
 
+\newcommand*{\dlor}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigvee}}}}
+\newcommand*{\dland}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigwedge}}}}
+
 \title{Projet CAA : couverture par sommets}
 \author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
 \date{}
@@ -808,9 +811,37 @@ Ainsi, l'algorithme \texttt{littleCoverAlg} tournera en $O(2^k k\times n)$.
 
 \subsection{Réduction}
 
+Nous nous proposons maintenant de trouver une couverture d'une taille donnée si elle existe, à l'aide du sat-solver Minisat, en passant donc par une réduction du problème vertex cover.
+
+Pour trouver une couverture de taille $p$ à un graphe $G$ donné à $n$ sommets, on crée les variables $(x_{i,k})_{1\leqslant i\leqslant n \atop 1\leqslant k \leqslant p}$ qui indiqueront si le sommet $i$ est le $k^{\text{ième}}$ sommet de la couverture.
+
+Nous avons donc trois contraintes à respecter :
+\begin{itemize}
+ \itemb Le même sommet $i$ ne peut pas apparaître à deux places $k$ et $l$ différentes dans la couverture.
+ \itemb Deux sommets $i$ et $j$ différents ne peuvent pas occuper la même place $k$ dans la couverture
+ \itemb Chaque arête doit avoir une extremité dans la couverture.
+\end{itemize}
+
+Ces contraintes se formulent en problème de satisfiabilité de la façon suivante 
+
+\[\varphi_1=\dland{i=1} n \quad\dland{1\leqslant k < l \leqslant p}{} (\lnot x_{i,k}) \lor (\lnot x_{i,l})\]
+
+\[\varphi_2=\dland{k=1} p \quad \dland{1\leqslant i < j \leqslant n}{} (\lnot x_{i,k}) \lor (\lnot x_{j,k})\]
+
+\[\varphi_3=\dland{(i,j)\in E(G)}{} \dlor{k=1} p  (\lnot x_{i,k}) \lor (\lnot x_{j,k})\]
+
+Le problème de satisfiabilité auquel se réduit vertex-cover est finalement $\varphi=\varphi_1\land \varphi_2\land \varphi_3$.
+
 \subsection{Algorithme et complexité}
 
-% Je sais pas si on aura grand chose à dire sur notre implémentation des algorithmes de réduction, mais leur complexité et surtout la complexité du problème sat induit sont intéressantes.
+À partir d'un graphe de $n$ sommets, on produit donc :
+\begin{itemize}
+ \itemb $\frac{np(p-1)}2$ clauses de 2 variables pour $\varphi_1$.
+ \itemb $\frac{np(n-1)}2$ clauses de 2 variables pour $\varphi_2$.
+ \itemb $|E|$ clauses de $2p$ variables pour $\varphi_3$.
+\end{itemize}
+
+On réduit ainsi la recherche d'une $p$-couverture sur $n$ sommets à un problème de $2p$-satisfiabilité à $\frac {np (n+p-2)}2 +|E|$ clauses.
 
 \subsection{Résultats}
 
