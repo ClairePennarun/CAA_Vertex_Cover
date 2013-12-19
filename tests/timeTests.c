@@ -34,6 +34,16 @@ int main(int argc, char* argv[]){
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = generation(atoi(argv[3]), 0.5);
 	start = clock();
+	cover = spanningTreeAlg(g);
+	finish = clock();
+	duration += (double)(finish - start) / CLOCKS_PER_SEC;
+	g_freeGraph(g);
+      }
+    }    
+    if(strcmp(argv[4], "spanningTreeRec") == 0){
+      for (int i = 0; i < atoi(argv[1]); i++){
+	Graph g = generation(atoi(argv[3]), 0.5);
+	start = clock();
 	cover = spanningTreeAlgRec(g);
 	finish = clock();
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
@@ -95,6 +105,16 @@ int main(int argc, char* argv[]){
 	Graph g = treeGeneration(atoi(argv[3]));
 	start = clock();
 	cover = spanningTreeAlg(g);
+	finish = clock();
+	duration += (double)(finish - start) / CLOCKS_PER_SEC;
+	g_freeGraph(g);
+      }
+    }    
+    if(strcmp(argv[4], "spanningTreeRec") == 0){
+      for (int i = 0; i < atoi(argv[1]); i++){
+	Graph g = treeGeneration(atoi(argv[3]));
+	start = clock();
+	cover = spanningTreeAlgRec(g);
 	finish = clock();
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);

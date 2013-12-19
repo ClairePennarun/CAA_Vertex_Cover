@@ -223,9 +223,8 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 
 \subsubsection{Résultats}
 
-L'algorithme a été testé sur une série de 100 graphes, générés aléatoirement avec la fonction "generation", et une probabilité d'apparition des arêtes de 0.5. 
-Les tests ont été effectués sur des machines du Cremi avec les caractéristiques techniques suivantes :
-%%% A COMPLETER
+L'algorithme a été testé sur une série de 100 graphes, générés aléatoirement avec la fonction \texttt{generation}, et une probabilité d'apparition des arêtes de 0.5. 
+Les tests ont été effectués sur une même machine.
 
 \bigskip
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
@@ -237,7 +236,13 @@ Les tests ont été effectués sur des machines du Cremi avec les caractéristiq
 \end{tabular}
 
 \bigskip
-Si on calcule le rapport $\frac{n^2}{temps(s)}$, on voit que ce rapport diminue, cela signifie que la complexité de l'algorithme est plus élevée que $O(n^2)$. Par contre, le rapport $\frac{n^3}{temps(s)}$ augmente au cours du temps, ce qui est significatif d'une complexité plus faible que $O(n^3)$. La complexité réelle de notre algorithme est donc moins bonne que la complexité estimée, et cela est peut-être dû à notre gestion du tableau des degrés, qui n'est pas optimale.
+
+On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.  %%% REVOIR TEMPS !
+
+
+% Si on calcule le rapport $\frac{n^2}{temps(s)}$, on voit que ce rapport diminue, cela signifie que la complexité de l'algorithme est plus élevée que $O(n^2)$. Par contre, le rapport $\frac{n^3}{temps(s)}$ augmente au cours du temps, ce qui est significatif d'une complexité plus faible que $O(n^3)$. 
+
+Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédits par la complexité estimée, et cela est sûrement dû à notre gestion du tableau des degrés, qui n'est pas optimale.
 
 \subsection{Pour les arbres}
 
@@ -293,25 +298,32 @@ Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1 (c'est-à
  \itemb La création du tableau $\mathtt{degre}$, incluant la boucle des lignes 5 et 6 se fait en $O(n)$
  \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 7, où $c$ est la taille de la couverture renvoyée. À chaque fois :
 \begin{itemize}
-\itemt La fonction $\leaf$ tourne en $O(n)$.
-\itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
+\itemt La fonction \texttt{leaf} tourne en $O(n)$.
+\itemt La fonction \texttt{actualiser} tourne en $O(\deg(v))$, et $\deg (v)\leqslant n$.
 \end{itemize}
 \end{itemize}
 
-Finalement, la complexité finale de l'algorithme glouton est $O(c\times n)$ (où $c$ est la taille de la couverture renvoyée).
+Finalement, la complexité finale de l'algorithme glouton est $O(c\times n)$, où $c$ est la taille de la couverture renvoyée, qui est une grandeur linéaire en $n$. La complexité estimée de l'algorithme est donc $O(n^2)$. 
 
 \subsubsection{Résultats}
 
-\bigskip
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+Les tests ont été effectués sur une même machine. Ils consistent en l'exécution de l'algorithme \texttt{treeOptAlg} consécutivement sur 100 graphes de taille $n$. Le temps est donné en secondes.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
-	nb de sommets & 200 & 300 & 500 & 1000 & 1500 & 2000 & 5000 & 10000 & 15000 & 20000 & 50000 \\
+	n & 200 & 500 & 1000 & 1500 & 2000 & 5000 & 10000 & 15000 & 20000 & 50000 \\
 	\hline
-	temps (s) & 0.01 & 0.03 & 0.06 & 0.22 & 0.41 & 0.77 & 4.38 & 16.92 & 37 & 65 & 442 \\
+	tps & 0.01 & 0.06 & 0.22 & 0.41 & 0.77 & 4.38 & 16.92 & 37 & 65 & 442 \\
 	\hline
 \end{tabular}
+\end{center}
 
-En calculant le rapport $\frac{n^2}{temps(s)}$, on voit qu'il augmente très légèrement : cela signifie que notre algorithme a une complexité légèrement meilleure que $O(n^2)$, ce qui est bien.
+On peut voir que quand la taille de l'entrée (le nombre de sommets) double, le temps de calcul est multiplié par un facteur proche de 4 :
+
+$t(2000)/t(1000) = 3.5$, $t(10000)/t(5000) = 3.86$, $t(20000)/t(10000) = 3.84$.
+
+Les temps d'exécution de notre algorithme sont donc en accord avec la complexité estimée.
 
 \subsection{Pour les graphes bipartis}
 
@@ -451,37 +463,60 @@ ajout de $u$ à pile
 
 \subsubsection{Complexité}
 
-L'algorithme présenté demande un préprocessing faisable en temps linéaire (initialiser $t$ ou $\Color$), puis une opération sur les voisins de chaque sommet, qui requiert donc un temps en $O(|E|)$. La complexité temporelle de l'algorithme est donc $O(|E|)$.
+L'algorithme présenté demande un préprocessing faisable en temps linéaire (initialiser $t$ ou $\Color$), puis une opération sur les voisins de chaque sommet, qui requiert donc un temps en $O(|E|)$. La complexité temporelle de l'algorithme est donc $O(|E|)$, ce qui revient à $O(n^2)$ dans le cas général, et à $O(n)$ si le graphe considéré est un arbre.
 
 \subsubsection{Résultats}
 
-Pour l'algorithme récursif :
+\paragraph{Comparaison des deux algorithmes}
 
-\bigskip
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
-	\hline 
-	nb de sommets & 100 & 200 & 300 & 500 & 800 & 1000 & 1500 & 2000 & 2500 \\
-	\hline
-	temps (s) &  &  &  &  &  &  &  &  & \\
-	\hline
-\end{tabular}
+Les deux versions (itérative et récur-sive) ont été exécutées sur un ensemble de 100 graphes de $n$ sommets (générés aléatoi-rement avec la fonction \texttt{generation} et une probabilité de 0.5), sur une même machine.
+Les temps sont donnés en secondes.
 
-%% A COMPLETER
-\bigskip 
 Pour l'algorithme itératif :
-
-\bigskip
+\begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
-	nb de sommets & 100 & 200 & 300 & 500 & 800 & 1000 & 1500 & 2000 & 2500 \\
+	n & 100 & 200 & 300 & 500 & 800 & 1000 & 1500 & 2000 & 2500 \\
 	\hline
-	temps (s) &  &  &  &  &  &  &  &  & \\
+	temps & 0.03 & 0.18 & 0.24 & 1.08 & 3.46 & 5.79 & 13.46 & 24.1 & 37.84 \\
 	\hline
 \end{tabular}
+\end{center}
 
-On voit que l'algorithme itératif va plus vite que sa version récursive.
-% de combien ?
-% complexité des deux versions : la même normalement !!
+Pour l'algorithme récursif :
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 100 & 200 & 300 & 500 & 800 & 1000 & 1500 & 2000 & 2500 \\
+	\hline
+	temps & 0.02 & 0.09 & 0.18 & 0.48 & 1.72 & 3 & 7.07 & 13.23 & 19.68\\
+	\hline
+\end{tabular}
+\end{center}
+
+On voit que l'algorithme récursif va environ deux fois plus vite que sa version itérative.
+
+Cependant, les temps d'exécution des deux algorithmes semblent correspondre à une même complexité : 
+\begin{itemize}
+\item pour l'algorithme itératif : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur situé entre 4 et 6, et quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur proche de 32.
+\item pour l'algorithme récursif : quand la taille de l'instance est doublée, le temps d'exécution est multiplié par un facteur proche de 5, et quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur proche de 33 (par exemple, entre $n = 200$ et $n = 1000$).
+\end{itemize}
+
+\paragraph{Comparaison des temps sur des graphes généraux et des arbres}
+
+Nous avons comparé les temps d'exécution de l'algorithme récursif sur 100 graphes de taille $n$ générés aléatoirement avec \texttt{treeGen} :
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 1000 & 2000 & 3000 & 4000 & 5000 & 8000 & 10000 & 20000 & 50000 & 100000 \\
+	\hline
+	temps & 0.03 & 0.06 & 0.09 & 0.12 & 0.18 & 0.26 & 0.29 & 0.69 & 1.77 & 4.49\\
+	\hline
+\end{tabular}
+\end{center}
+
+On voit que les résultats sont cohérents avec la complexité estimée : les graphes considérés ne sont que des arbres, ce qui permet à l'algorithme d'aller d'une part beaucoup plus vite (il traite 100 arbres de 100000 sommets en moins de 5 secondes, alors qu'il ne traite que 100 graphes généraux de moins de 1500 sommets dans le même temps), et d'autre part d'avoir un temps d'exécution à peine plus que linéaire en la taille du graphe.
+
 
 \subsection{Algorithme 2-approché par élimination d'arêtes}
 
