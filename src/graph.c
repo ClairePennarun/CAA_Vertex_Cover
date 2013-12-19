@@ -61,10 +61,8 @@ Graph g_cloneGraph(Graph g){
 	vert = l_getVal(neighbors);
 	// Pour ne pas ajouter deux fois les arêtes, on ajoute
 	// que les couples (a-b) avec a<b (sauf si le graphe est orienté)
-	//if (!(newGraph->isOriented) || vert<i)
-	if(vert<i){
+	if (!(newGraph->isOriented) || vert<i)
 	  g_addEdge(newGraph, i, vert);	
-	}
 	l_next(neighbors);
       }
     }

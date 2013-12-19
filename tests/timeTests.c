@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = generation(atoi(argv[3]), 0.5);
 	start = clock();
-	cover = spanningTreeAlg(g);
+	cover = spanningTreeAlgRec(g);
 	finish = clock();
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
@@ -140,10 +140,10 @@ int main(int argc, char* argv[]){
     }
 
     if(strcmp(argv[4], "bipartiteOpt") == 0){
-      for (int i = 0; i < atoi(argv[1]); i++){
+      for (int i = 0; i < atoi(argv[1]); i++){	
 	Graph g = bipartiteGeneration(atoi(argv[3]), 0.5);
 	start = clock();
-	cover = treeOptAlg(g);
+	cover = bipartiteOptAlg(g);
 	finish = clock();
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
@@ -204,7 +204,7 @@ int main(int argc, char* argv[]){
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = littleGeneration(atoi(argv[3]), atoi(argv[4]), 0.5);
 	start = clock();
-	cover = treeOptAlg(g);
+	cover = bipartiteOptAlg(g);
 	finish = clock();
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
