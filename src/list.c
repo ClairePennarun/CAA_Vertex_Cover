@@ -82,6 +82,7 @@ void l_freeElem(List l, Elem e){
   free(e);
 }
 
+// Insere n en fin de liste
 void l_addInFront(List l, int n){
   Elem previous = l->last;
   Elem e = l_createElem(previous, NULL, n);
@@ -95,6 +96,7 @@ void l_addInFront(List l, int n){
   l->size = l->size + 1;
 }
 
+// Insere n en tete de liste
 void l_insertInHead(List l, int n){
   Elem next = l->first;
   Elem e = l_createElem(NULL, next, n);
@@ -108,6 +110,7 @@ void l_insertInHead(List l, int n){
   l->size = l->size + 1;
 }
 
+// Supprime la premiere occurrence de n dans la liste l
 void l_deleteFirstOccur(List l, int n){
   Elem e = l->first;
   while (e->val != n && e != NULL)

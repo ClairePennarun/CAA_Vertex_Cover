@@ -9,11 +9,9 @@
 
 struct graph{
   Vertex* allVertices; // Tableau des listes de voisinage
-  int** neighborhood; // Matrice d'adjacence globale
   int numberOfVertices;
   int numberOfEdges;
   bool isOriented;
-  bool isConstruct;
 };
 
 struct vertex{
@@ -30,7 +28,6 @@ Graph g_createGraph(int size){
   newGraph->numberOfVertices = size;
   newGraph->numberOfEdges = 0;
   newGraph->isOriented = false;
-  newGraph->isConstruct = false;
   for (int i=0; i<size; i++)
     (newGraph->allVertices)[i] = g_createVertex();
   return newGraph;
@@ -46,10 +43,7 @@ Graph g_cloneGraph(Graph g){
   int size = g_getSize(g);
   Graph newGraph = g_createGraph(size);
   newGraph->numberOfEdges = 0;
-  newGraph->isConstruct = g->isConstruct;
   newGraph->isOriented = g->isOriented;
-  if (g->isConstruct)
-    g_createNeighborhood(newGraph);
 
   List neighbors;
   int vert;
@@ -74,70 +68,25 @@ void g_freeGraph(Graph g){
   int nbVert = g->numberOfVertices;
   Vertex v;
   for (int i=0; i<nbVert; i++){
-    if (g->isConstruct)
-      free((g->neighborhood)[i]);
     v = g_getVertex(g,i);
     if (v != NULL){
       l_freeList(v->neighbors);
       free(v); 
     }
   }
-
-  if (g->isConstruct)
-    free(g->neighborhood);
   free(g->allVertices);
   free(g);
 }
 
+// Retourne True si le graphe est orienté
 bool g_isOriented(Graph g){
   return (g->isOriented);
 }
 
-bool g_isConstruct(Graph g){
-  return (g->isConstruct);
-}
-
-void g_createNeighborhood(Graph g){
-  if (g->isConstruct)
-    return;
-  int nbVert = g->numberOfVertices;
-  List l;
-  int* neighbors;
-  g->neighborhood = malloc(sizeof(int*)*nbVert);
-  assert(g->neighborhood);
-  for (int i=0; i<nbVert; i++){
-    neighbors = malloc(sizeof(int)*nbVert);
-    assert(neighbors);
-    for (int j=0; j<nbVert; j++)
-      neighbors[j] = 0;
-    l = g_getNeighbors(g, i);
-    l_head(l);
-    // Suppose qu'aucun sommet n'a pour voisin un sommet inexistant
-    // (contre ex: 10 sommets, sommet 1 a pour voisin sommet 12)
-    while (!l_isOutOfList(l)){
-      neighbors[l_getVal(l)] = 1;
-      l_next(l);
-    }
-    (g->neighborhood)[i] = neighbors;
-  }
-}   
-
+// Retourne la taille du graphe g
 int g_getSize(Graph g){
   return (g->numberOfVertices);
 }
-
-// Retourne le degré du graphe
-/* int g_degreGraph(Graph g){ */
-/*   int maxDegre = 0; */
-/*   int size = g_getSize(g); */
-/*   int deg; */
-/*   for (int i=0; i<size; i++){ */
-/*     deg = g_getDegreeVertex(g,i); */
-/*     if (deg > maxDegre) */
-/*       maxDegre = deg; */
-/*   } */
-/*   return (maxDegre); */
-/* } */
 
 // Retourne le sommet de degré le plus grand
 int g_maxDegreeVertex(Graph g){
@@ -154,25 +103,6 @@ int g_maxDegreeVertex(Graph g){
   }
   return maxVertex;
 }
-
-// Retourne une feuille (si g est un arbre non vide il y en a toujours une)
-/* int g_findLeafGraph(Graph g){ */
-/*   int size = g_getSize(g); */
-/*   for (int i=0; i<size; i++){ */
-/*     if (g_getDegreeVertex(g,i) == 1) */
-/*       return i; */
-/*   } */
-/*   return -1; */
-/* } */
-
-// Supprime les sommets isoles du graphe g
-/* void g_deleteIsolated(Graph g){ */
-/*   int size = g_getSize(g); */
-/*   for (int i=0; i<size; i++){ */
-/*     if (g_getDegreeVertex(g,i) == 0) */
-/*       g_freeVertex(g, i); */
-/*   } */
-/* } */
 
 // Affiche le graphe g
 void g_display(Graph g){
@@ -197,30 +127,8 @@ void g_addEdge(Graph g, int i1, int i2){
   l_addInFront(l1, i2);
   if (!(g->isOriented))
     l_addInFront(l2, i1);
-  if (g->isConstruct){
-    (g->neighborhood)[i1][i2] = 1;
-    if (!(g->isOriented))
-      (g->neighborhood)[i2][i1] = 1;
-  }
   g->numberOfEdges ++;
 }
-
-// Suppression de l'arete entre les sommets i1 et i2
-/* void g_deleteEdge(Graph g, int i1, int i2){ */
-/*   // Il faut que l'arête existe */
-/*   // A discuter */
-/*   List l1 = g_getNeighbors(g, i1); */
-/*   List l2 = g_getNeighbors(g, i2); */
-/*   l_deleteFirstOccur(l1, i2); */
-/*   if (!(g->isOriented)) */
-/*     l_deleteFirstOccur(l2, i1); */
-/*   if (g->isConstruct){ */
-/*     (g->neighborhood)[i1][i2] = 0; */
-/*     if (!(g->isOriented)) */
-/*       (g->neighborhood)[i2][i1] = 0; */
-/*   } */
-/*   g->numberOfEdges --; */
-/* } */
 
 // Suppression des aretes adjacentes partantes du sommet i
 void g_deleteEdges(Graph g, int i){
@@ -234,11 +142,6 @@ void g_deleteEdges(Graph g, int i){
     if (!(g->isOriented))
       l_deleteFirstOccur(lTmp, i);       // On supprime i des voisins de iTmp
     l_deleteFirstOccur(l, iTmp);       // On supprime iTmp des voisins de i
-    if (g->isConstruct){
-      (g->neighborhood)[i][iTmp] = 0;
-      if (!(g->isOriented))
-	(g->neighborhood)[iTmp][i] = 0;
-    }
     g->numberOfEdges --;
     l_head(l);
   }
@@ -246,9 +149,7 @@ void g_deleteEdges(Graph g, int i){
 
 // Test de voisinage
 bool g_areNeighbor(Graph g, int i1, int i2){
-  if (!g->isConstruct)
-    return l_contain(g_getNeighbors(g,i1), i2);
-  return ((g->neighborhood)[i1][i2] == 1);
+  return l_contain(g_getNeighbors(g,i1), i2);
 }
 
 int g_numberOfEdges(Graph g){
@@ -265,6 +166,7 @@ Vertex g_createVertex(){
   return newVertex;
 }
 
+// Cloner sommet
 Vertex g_cloneVertex(Vertex v){
   if (v == NULL)
     return NULL;
@@ -283,6 +185,7 @@ void g_freeVertex(Graph g, int i){
   (g->allVertices)[i] = NULL;
 }
 
+// Retourne l'indice du premier sommet d'indice plus grand que j et de degré positif
 int g_getPositiveDegreeVertex(Graph g, int j){
   Vertex v;
   for (int i = j; i < g_getSize(g); i++){
@@ -293,10 +196,12 @@ int g_getPositiveDegreeVertex(Graph g, int j){
   return -1;
 }
 
+// Retourne le sommet d'indice i
 Vertex g_getVertex(Graph g, int i){
   return (g->allVertices)[i];
 }
 
+// Retourne la liste des voisins du sommet d'indice i
 List g_getNeighbors(Graph g, int i){
   Vertex v = g->allVertices[i];
   if (v != NULL)
@@ -304,6 +209,7 @@ List g_getNeighbors(Graph g, int i){
   return NULL;
 }
 
+// Retourne le degre du sommet d'indice i
 int g_getDegreeVertex(Graph g, int i){
   Vertex v = g->allVertices[i];
   if (v != NULL)

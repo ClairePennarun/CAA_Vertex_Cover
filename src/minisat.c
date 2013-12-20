@@ -19,26 +19,22 @@ void input(Graph g, int p){
   fprintf(file, "p cnf %d %d\n",n*p, ((n*p*(n+p-2))/2+g_numberOfEdges(g)));
   for (int i=1; i<=n; i++){
     for (int k=1; k<=p; k++){
-      for (int l=k+1; l<=p; l++){
+      for (int l=k+1; l<=p; l++)
 	fprintf(file, "%d %d 0\n",(-(p*(i-1)+k)),(-(p*(i-1)+l)));
-	}
-      for (int j=i+1; j<=n; j++){
+      for (int j=i+1; j<=n; j++)
 	fprintf(file, "%d %d 0\n",(-(p*(i-1)+k)),(-(p*(j-1)+k)));	
-	}
     }
     List listNeighbors = g_getNeighbors(g, i-1);
     l_head(listNeighbors);
     while (!l_isOutOfList(listNeighbors)){
       int j = l_getVal(listNeighbors);
       if (j>=i){
-	for (int k=1; k<=p; k++){
+	for (int k=1; k<=p; k++)
 	  fprintf(file, "%d %d ",(p*(i-1)+k),(p*(j)+k));
-	  }
 	fprintf(file, " 0\n");
       }
       l_next(listNeighbors);
     }
-    //l_freeList(listNeighbors);
   }
   fclose(file);
 }
@@ -62,9 +58,8 @@ List output(int p){
     while (tok){
       if (*tok != '-'){
 	int i = atoi(tok);
-	if(i>0){
+	if(i>0)
 	  l_addInFront(cover, ((i-1)/p));
-	}
 	if(i==0){
 	  fclose(file);
 	  return cover;

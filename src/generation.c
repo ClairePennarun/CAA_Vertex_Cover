@@ -79,7 +79,7 @@ Graph bipartiteGeneration (int n, double proba){
 
 // Generation de graphe avec petite couverture (pratique pour tests)
 Graph littleGeneration (int n, int k, double proba){
-  assert(k<=n/2);  // Tout graphe connexe admet, au pire des cas, une couverture de taille k=n/2
+  assert(k<=n/2);
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n); // Les k premières valeurs seront la couverture
 
