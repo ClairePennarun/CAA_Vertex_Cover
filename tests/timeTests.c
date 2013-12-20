@@ -10,6 +10,7 @@
 #include "generation.h"
 #include "cover.h"
 #include "list.h"
+#include "minisat.h"
 
 int getGraine();
 uint64_t rdtsc();
