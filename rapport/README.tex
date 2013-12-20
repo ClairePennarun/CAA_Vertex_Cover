@@ -104,17 +104,19 @@ README}
 	\bigskip
 	\texttt{[disp]} : argument facultatif, permettant d'afficher le graphe sur lequel l'algorithme est exécuté (pas disponible avec minisat).
 	
-	\bigskip
-	Exemple : pour lancer l'algorithme glouton sur un graphe de 17 sommets généré aléatoirement avec une couverture de 5 sommets et une probabilité de 0.7 :
+	\paragraph{Exemples}
+	\begin{itemize}
+	\item Pour lancer l'algorithme glouton sur un graphe de 17 sommets généré aléatoirement avec une couverture de 5 sommets et une probabilité de 0.7 :
 	\texttt{./vertexCoverExec greedy littleGen 17 5 0.7}
 	
-	Pour lancer chercher une couverture de taille 4 sur un arbre de taille 12 généré aléatoirement :
+	\item Pour lancer chercher une couverture de taille 4 sur un arbre de taille 12 généré aléatoirement :
 	\texttt{./vertexCoverExec littleCover 4 treeGen 12}
+	\end{itemize}
 	
 	\paragraph{Options}
 	\begin{itemize}
 	\item Pour connaître les commandes possibles : \texttt{./vertexCoverExec help}
-	\item Pour tester l'existence d'une couverture de taille $k$ sur un graphe donné avec \texttt{minisat} : \texttt{./vertexCoverExec minisat chemin/vers/graphe k}
+	
 	\end{itemize}
 
 \section{Tests}
