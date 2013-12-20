@@ -28,7 +28,7 @@
 \newcommand*{\dlor}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigvee}}}}
 \newcommand*{\dland}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigwedge}}}}
 
-\title{Projet CAA : couverture par sommets}
+\title{Projet Complexité et Algorithmique appliquée\\ Implémentation d'algorithmes pour résoudre le problème Vertex Cover}
 \author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
 \date{}
 
@@ -38,14 +38,14 @@
 
 \section*{Introduction}
 
-Le projet consiste en l'implémentation d'algorithmes résolvant de manière approchée (en général) ou optimale (pour certaines classes de graphes) le problème Vertex-Cover.
+Le projet consiste en l'implémentation d'algorithmes résolvant de manière approchée (en général) ou optimale (pour certaines classes de graphes) le problè-me Vertex-Cover.
 Les algorithmes présentés ici renvoient une liste des sommets formant une couverture du graphe. Cette couverture n'est cependant pas forcément minimale.
 
 Nous avons implémenté l'ensemble de ces algorithmes en langage C, car le groupe était plus à l'aise dans ce langage qu'en C++.
 
 Nous avons développé une structure de graphes que nous détaillerons dans la première partie de ce rapport, ainsi que les algorithmes de génération de graphes demandés.
 Dans une deuxième partie, nous décrirons les algorithmes implémentés et donnerons une estimation de leur complexité et les résultats obtenus.
-Enfin, nous présenterons une solution via une réduction au problème de satisfiabilité et l'utilisation du solveur minisat.
+Enfin, nous présenterons une solution via une réduction au problème de satisfiabilité et l'utilisation du solveur \texttt{minisat}.
 
 Notations : dans ce rapport, le graphe considéré sera généralement noté $G$. Sa taille (le nombre de ses sommets) sera notée $n$. Les ensembles de ses sommets et de ses arêtes seront respectivement notés $V(G)$ et $E(G)$.
 
@@ -226,6 +226,12 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 
 \subsubsection{Résultats}
 
+\paragraph{Taille de la couverture trouvée}
+
+Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
+%%% A COMPLETER
+
+\paragraph{Cohérence avec la complexité}
 L'algorithme a été testé sur une série de 100 graphes, générés aléatoirement avec la fonction \texttt{generation}, et une probabilité d'apparition des arêtes de 0.5. 
 Les tests ont été effectués sur une même machine.
 
@@ -242,8 +248,6 @@ Les tests ont été effectués sur une même machine.
 
 On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.  %%% REVOIR TEMPS !
 
-
-% Si on calcule le rapport $\frac{n^2}{temps(s)}$, on voit que ce rapport diminue, cela signifie que la complexité de l'algorithme est plus élevée que $O(n^2)$. Par contre, le rapport $\frac{n^3}{temps(s)}$ augmente au cours du temps, ce qui est significatif d'une complexité plus faible que $O(n^3)$. 
 
 Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédits par la complexité estimée, et cela est sûrement dû à notre gestion du tableau des degrés, qui n'est pas optimale.
 
@@ -480,6 +484,15 @@ L'algorithme présenté demande un préprocessing faisable en temps linéaire (i
 
 \subsubsection{Résultats}
 
+\paragraph{Taille de la couverture trouvée}
+
+Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
+%%% A COMPLETER
+\begin{itemize}
+\item avec l'algorithme itératif :
+\item avec l'algorithme récursif :
+\end{itemize}
+
 \paragraph{Comparaison des deux algorithmes}
 
 Les deux versions (itérative et récur-sive) ont été exécutées sur un ensemble de 100 graphes de $n$ sommets (générés aléatoi-rement avec la fonction \texttt{generation} et une probabilité de 0.5), sur une même machine.
@@ -628,6 +641,12 @@ Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le de
 
 \subsubsection{Résultats}
 
+\paragraph{Taille de la couverture trouvée}
+
+Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
+%%% A COMPLETER
+
+\paragraph{Tests}
 Pour 100 graphes générés aléatoirement avec \texttt{generation} :
 
 \begin{center}
