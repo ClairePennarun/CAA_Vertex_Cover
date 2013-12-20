@@ -226,12 +226,6 @@ Cependant, on peut remarquer que la phase de recherche du sommet de degré maxim
 
 \subsubsection{Résultats}
 
-\paragraph{Taille de la couverture trouvée}
-
-Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
-%%% A COMPLETER
-
-\paragraph{Cohérence avec la complexité}
 L'algorithme a été testé sur une série de 100 graphes, générés aléatoirement avec la fonction \texttt{generation}, et une probabilité d'apparition des arêtes de 0.5. 
 Les tests ont été effectués sur une même machine.
 
@@ -488,9 +482,8 @@ L'algorithme présenté demande un préprocessing faisable en temps linéaire (i
 \paragraph{Taille de la couverture trouvée}
 
 Nous avons comparé la taille $l$ de la couverture trouvée avec la taille $k$ de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
-%%% A COMPLETER
 \begin{itemize}
-\item avec l'algorithme itératif :
+\item avec l'algorithme itératif : l'algorithme ne se comporte pas comme il le faudrait : il retourne majoritairement des couvertures de taille plus petite que deux fois la taille de l'optimale, mais il arrive assez régulièrement qu'il retourne une couverture de taille supérieure. Nous n'avons pas réussi à comprendre quelle en était la raison.
 \item avec l'algorithme récursif : l'algorithme nous retourne des couvertures de taille $l$ avec $l \leq 2*k$, il est bien 2-approché.
 \end{itemize}
 
@@ -644,8 +637,7 @@ Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le de
 
 \paragraph{Taille de la couverture trouvée}
 
-Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
-%%% A COMPLETER
+Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}). Notre algorithme semble effectivement 2-approché : il trouve des couvertures de taille au maximum 2 fois supérieure à la taille de la couverture optimale.
 
 \paragraph{Tests}
 Nous avons testé l'algorithme par élimination d'arêtes sur des séries de 100 graphes de taille $n$ générés aléatoirement avec \texttt{generation} et une probabilité de 0.5. Les tests ont été faits sur la même machine, et les temps sont donnés en secondes.
