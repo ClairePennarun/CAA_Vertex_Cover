@@ -38,21 +38,14 @@ void input(Graph g, int p){
       }
       l_next(listNeighbors);
     }
+    l_freeList(listNeighbors);
   }
   fclose(file);
 }
 
 void minisat(){
-  system("minisat input output");
+  system("minisat input output > /dev/null");
   }
-
-int main(int argc, char* argv[]){
-  Graph g=readFile(argv[1]);
-  input(g,3);
-  minisat();
-  return EXIT_SUCCESS;
-}
-
 
 List output(int p){
   FILE* file = NULL;
@@ -60,29 +53,40 @@ List output(int p){
   size_t len = 0;
   file = fopen("output", "r");
   List cover = l_createList();
-  getline(&line, &len, file); 
-  int compare = strcmp (line, "SAT");
+  ssize_t nb = getline(&line, &len, file);
   free(line);
   char* tok;
-  if (compare == 0){
+  if (nb == 4){
     getline(&line, &len, file); 
-    while(*tok == ' '){
-      tok ++;
-    }
-    tok = strtok(tok, " ");
+    tok = strtok(line, " ");
     while (tok){
-      int i = atoi(tok);
-      if(i>0){
-	l_addInFront(cover, ((i-1)/p));
+      if (*tok != '-'){
+	int i = atoi(tok);
+	if(i>0){
+	  l_addInFront(cover, ((i-1)/p));
+	}
+	if(i==0){
+	  fclose(file);
+	  return cover;
+	}
       }
-      if(i==0){
-	fclose(file);
-	free(line);
-	return cover;
-      }
+      tok = strtok(NULL," ");
     }
   }
+  if (cover != NULL)
+    l_freeList(cover);
   fclose(file);
-  free(line);
   return NULL;
+}
+
+int main(int argc, char* argv[]){
+  Graph g=readFile(argv[1]);
+  int p = atoi(argv[2]);
+  input(g,p);
+  minisat();
+  List cover = output(p);
+  l_display(cover);
+  if (cover != NULL)
+    l_freeList(cover);
+  return EXIT_SUCCESS;
 }
