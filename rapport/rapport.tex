@@ -228,17 +228,16 @@ estConnecté $=$ false
 estConnecté $=$ randomEdge(G, ordreSommets[$i$], part2[$j$], proba) OU estConnecté
 }
 makeConnected(G, ordreSommets[$i$], part2, $0$, size2, estConnecté)
-
 ajouter(part1, ordreSommet[$i$])
-}
-{
+ }
+ {
 \Pour{$j$ de $0$ à $size1$}{
 estConnecté $=$ randomEdge(G, ordreSommets[$i$], part1[$j$], proba) OU estConnecté
 }
 makeConnected(G, ordreSommets[$i$], part1, $0$, size1, estConnecté)
 
 ajouter(part2, ordreSommet[$i$])
-}
+ }
 }
 
 \Retour{G}
