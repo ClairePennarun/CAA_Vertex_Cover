@@ -5,6 +5,7 @@
 \usepackage[french,ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{hyperref}
+\usepackage{fullpage}
 \hypersetup{colorlinks=true,urlcolor= blue,linkcolor= black}
 
 \newcommand*{\itemb}{\item[$\bullet$]}
@@ -24,6 +25,8 @@
 \DeclareMathOperator{\parent}{parent}
 \DeclareMathOperator{\Color}{color}
 \DeclareMathOperator{\degrepositif}{degrePositif}
+\DeclareMathOperator{\proba}{proba}
+\DeclareMathOperator{\size}{size}
 
 \newcommand*{\dlor}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigvee}}}}
 \newcommand*{\dland}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigwedge}}}}
@@ -38,7 +41,7 @@
 
 \section*{Introduction}
 
-Le projet consiste en l'implémentation d'algorithmes résolvant de manière approchée (en général) ou optimale (pour certaines classes de graphes) le problè-me Vertex-Cover.
+Le projet consiste en l'implémentation d'algorithmes résolvant de manière approchée (en général) ou optimale (pour certaines classes de graphes) le problème Vertex-Cover.
 Les algorithmes présentés ici renvoient une liste des sommets formant une couverture du graphe. Cette couverture n'est cependant pas forcément minimale.
 
 Nous avons implémenté l'ensemble de ces algorithmes en langage C, car le groupe était plus à l'aise dans ce langage qu'en C++.
@@ -60,19 +63,19 @@ Le code est disponible à \href{http://github.com/ClairePennarun/CAA_Vertex_Cove
 Au vu de différents algorithmes (et en prévision de la structure de graphe), nous avons choisi d'implémenter un module de liste.
 Dans ce module, deux types ont été définis : le type 'List' (qui sera manipulé) et le type 'Elem' (représentant un élément : il sera caché à l'utilisateur).
 
-Une liste contient ces champs :
+Une liste contient les champs suivants:
 \begin{itemize}
-	\itemb Sa taille
-	\itemb Un pointeur vers son premier élément (\texttt{NULL} si liste vide)
-	\itemb Un pointeur vers son dernier élément (\texttt{NULL} si liste vide)
-	\itemb Un pointeur vers l'élément courant (possiblement à \texttt{NULL} si l'on est sorti de la liste)
+	\itemb sa taille
+	\itemb un pointeur vers son premier élément (\texttt{NULL} si liste vide)
+	\itemb un pointeur vers son dernier élément (\texttt{NULL} si liste vide)
+	\itemb un pointeur vers l'élément courant (possiblement à \texttt{NULL} si l'on est sorti de la liste)
 \end{itemize}
 ~~\\
-Un élément contient ces champs :
+Un élément contient les champs suivants:
 \begin{itemize}
-	\itemb Un pointeur vers l'élément suivant
-	\itemb Un pointeur vers l'élément précédent
-	\itemb Sa valeur (initialement un int)
+	\itemb un pointeur vers l'élément suivant
+	\itemb un pointeur vers l'élément précédent
+	\itemb sa valeur (initialement un int)
 \end{itemize}
 \bigskip
 Nous avons codé ensuite une collection de primitives classiques permettant la bonne manipulation de la liste (getVal, next, head, insertInHead, contain, isEmpty, isOutOfList...)
@@ -98,27 +101,27 @@ Nous nous sommes tout de suite posé la question de la représentation du graphe
 	\end{itemize}
 \end{itemize}
 ~~\\
-Partant de la constatation que la fonction \texttt{getListeVoisins} allait être utilisée (contrairement à \texttt{sontVoisins}) nous avons choisi la deuxième option.
+Les algorithmes demandés requérant plus souvent la fonction \texttt{getListeVoisins} que \texttt{sontVoisins}, nous avons choisi la deuxième option.
 
 Nous avons donc deux types : 'Graph' est manipulé et 'Vertex' est caché à l'utilisateur.
 
 Un graphe contient :
 \begin{itemize}
-\itemb Son nombre de sommets
-\itemb Son nombre d'arêtes
-\itemb Un tableau contenant la liste de ses sommets
-\itemb Un booléen indiquant si le graphe est orienté ou non
+\itemb son nombre de sommets
+\itemb son nombre d'arêtes
+\itemb un tableau contenant la liste de ses sommets
+\itemb un booléen indiquant si le graphe est orienté ou non
 \end{itemize}
 
 Un sommet, quand à lui, ne contient que la liste de ses voisins (liste étant implémentée grâce au module précédent).
 
-Nous avons par la suite implémenté les primitives permettant de manipuler le graphe et y collecter des informations (getDegreGraph, getDegreVertex, getSize, cloneGraph, addEdge...)
+Nous avons par la suite implémenté les primitives permettant de manipuler le graphe et d'y collecter des informations (getDegreGraph, getDegreVertex, getSize, cloneGraph, addEdge...)
 
 \subsection{Génération aléatoire}
 
 \subsubsection{Le module}
 
-Il a fallu implémenter des sous-fonctions plusieurs fois utilisées, notamment pour conserver la propriété de Graphe connexe dans tout les algorithmes :
+Plusieurs sous-fonctions nous ont été utiles pour la génération de graphe, notamment pour garantir la connexité dans tout les algorithmes :
 \BlankLine
 \begin{itemize}
 	\itemb \texttt{random()} : Retourne un double aléatoire inclus dans [0,1[.
@@ -126,17 +129,17 @@ Il a fallu implémenter des sous-fonctions plusieurs fois utilisées, notamment 
 	\itemb \texttt{swap(int* t, int i1, int i2)} : Echange les cases d'indices i1 et i2 dans le tableau t.
 	\itemb \texttt{randomEdge(Graph g, int i1, int i2, double proba)} : Connecte les sommets d'indices i1 et i2 dans le graphe g avec une probabilité de 'proba', et retourne un booléen indiquant si la connexion à été faite ou non.
 	\itemb \texttt{makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected)} : Si 'isConnected' est à false (le sommet d'indice i est isolé), alors cela le connectera avec un sommet d'indice tab[k] (où k est un entier aléatoire inclus dans [iMin, iMax[).
-	\itemb \texttt{getRandomVertice(int n)} : Retourne un tableau d'ordre aléatoire avec des entiers allant de $0$ à $n-1$. Les algorithmes de génération travailleront sur ce tableau d'indices (plutôt que directement sur les vrais indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
+	\itemb \texttt{getRandomVertices(int n)} : Retourne un tableau d'ordre aléatoire avec des entiers allant de $0$ à $n-1$. Les algorithmes de génération travailleront sur ce tableau d'indices (plutôt que directement sur les vrais indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
 \end{itemize}
 
 \subsubsection{Génération de graphe quelconque}
 
 \begin{algorithm}[H]
 \caption{Algorithme de génération de graphe quelconque}
-\Entree{Un nombre de sommet $n$ à générer et une probabilité $proba$ de connexion entre tout couple de sommet}
+\Entree{Un nombre $n$ de sommets à générer et une probabilité $\proba$ de connexion entre chaque couple de sommet}
 \Sortie{Un graphe connexe quelconque généré aléatoirement}
 \BlankLine
-G $\leftarrow$ graphe de taille n
+$G$ $\leftarrow$ graphe de taille $n$
 
 ordreSommets $=$ getRandomVertices($n$)
 
@@ -148,14 +151,14 @@ estConnecté $=$ false
 
 \Pour{$j$ de $i$ à $n-1$}{
 
-estConnecté $=$ randomEdge(G, ordreSommets[$i$], ordreSommets[$j$], proba) OU estConnecté
+estConnecté $=$ randomEdge(G, ordreSommets[$i$], ordreSommets[$j$], $\proba$) OU estConnecté
 
 }
-makeConnected(G, ordreSommets[$i$], ordreSommets, $i$, $n$, estConnecté)
+makeConnected($G$, ordreSommets[$i$], ordreSommets, $i$, $n$, estConnecté)
 
 }
 
-\Retour{G}
+\Retour{$G$}
 
 \end{algorithm}
 \bigskip
@@ -170,25 +173,25 @@ Nous saurons donc (par induction) qu'une seule composante connexe va croître au
 
 \begin{algorithm}[H]
 \caption{Algorithme de génération d'arbre quelconque}
-\Entree{Un nombre de sommet $n$ à générer}
+\Entree{Un nombre $n$ de sommets à générer}
 \Sortie{Un arbre quelconque généré aléatoirement}
 \BlankLine
-G $\leftarrow$ graphe de taille n
+$G$ $\leftarrow$ graphe de taille $n$
 
 ordreSommets $=$ getRandomVertices($n$)
 
 \Pour{$i$ de $0$ à $n-1$}{
 
-ajouterArête(G, ordreSommet[$i$], ordreSommet[randint($0$, $i$)]
+ajouterArête($G$, ordreSommet[$i$], ordreSommet[randint($0$, $i$)]
 
 }
 
-\Retour{G}
+\Retour{$G$}
 
 \end{algorithm}
 \bigskip
 
-Nous connectons chaque sommet d'indice $i$ à un unique sommet d'indice $j\in[0, i[$ (ce sommet peut être vu comme le "père" de ce sommet et $j$ n'est pas une variable explicitement définit dans l'algorithme).
+Nous connectons chaque sommet d'indice $i$ à un unique sommet d'indice $j\in[0, i[$ (ce sommet peut être vu comme le "père" de ce sommet et $j$ n'est pas une variable explicitement défini dans l'algorithme).
 
 Grâce aux mêmes arguments que précédemment, nous savons que nous obtiendrons un graphe connexe. Si cette composante connexe qui croît est sans cycle, il faudrait y ajouter un sommet avec au moins deux arêtes pour en créer un.
 
@@ -198,18 +201,18 @@ Or nous n'ajoutons qu'une arête à chaque nouveau sommet, donc nous ne créons 
 
 \begin{algorithm}[H]
 \caption{Algorithme de génération de graphe biparti}
-\Entree{Un nombre de sommet $n$ à générer et une probabilité $proba$ de connexion entre tout couple de sommet}
+\Entree{Un nombre $n$ de sommets à générer et une probabilité $\proba$ de connexion entre tout couple de sommet}
 \Sortie{Un graphe connexe biparti généré aléatoirement}
 \BlankLine
-G $\leftarrow$ graphe de taille n
+$G$ $\leftarrow$ graphe de taille $n$
 
 ordreSommets $=$ getRandomVertices($n$)
 
 création d'un booléen \texttt{estConnecté}
 
-création d'un tableau extensible \texttt{part1} de taille $size1=0$
+création d'un tableau extensible \texttt{part1} de taille $\size 1=0$
 
-création d'un tableau extensible \texttt{part2} de taille $size2=0$
+création d'un tableau extensible \texttt{part2} de taille $\size 2=0$
 
 \bigskip
 ajouter(part1, ordreSommet[$0$])
@@ -218,55 +221,55 @@ ajouter(part2, ordreSommet[$1$])
 
 ajouterArête(G, ordreSommet[$0$], ordreSommet[$1$])
 
-\Pour{$i$ de 2 à $n-1$}{
+\Pour{$i$ de $2$ à $n-1$}{
 
 estConnecté $=$ false
 
 \eSi{$random() < 0.5$}
 {
 \Pour{$j$ de $0$ à $size2$}{
-estConnecté $=$ randomEdge(G, ordreSommets[$i$], part2[$j$], proba) OU estConnecté
+estConnecté $=$ randomEdge(G, ordreSommets[$i$], part2[$j$], $\proba$) OU estConnecté
 }
 makeConnected(G, ordreSommets[$i$], part2, $0$, size2, estConnecté)
 ajouter(part1, ordreSommet[$i$])
  }
  {
 \Pour{$j$ de $0$ à $size1$}{
-estConnecté $=$ randomEdge(G, ordreSommets[$i$], part1[$j$], proba) OU estConnecté
+estConnecté $=$ randomEdge($G$, ordreSommets[$i$], part1[$j$], proba) OU estConnecté
 }
-makeConnected(G, ordreSommets[$i$], part1, $0$, size1, estConnecté)
+makeConnected($G$, ordreSommets[$i$], part1, $0$, size1, estConnecté)
 
 ajouter(part2, ordreSommet[$i$])
  }
 }
 
-\Retour{G}
+\Retour{$G$}
 
 \end{algorithm}
 \bigskip
 
-Les tableaux extensibles représentent les deux partitions de G. On les initialise arbitrairement avec le sommet d'indice $0$ dans la première partition et le sommet d'indice $1$ dans la seconde, puis on les relie. (on part ainsi avec une composante connexe et deux partitions non vide).
+Les tableaux extensibles représentent les deux partitions de $G$. On les initialise arbitrairement avec le sommet d'indice $0$ dans la première partition et le sommet d'indice $1$ dans la seconde, puis on les relie (on part ainsi avec une composante connexe et deux partitions non vide).
 
-Ensuite, pour chaque nouveau sommet, on l'ajoutera aléatoirement dans la première ou dans la seconde partition (grâce au tirage \texttt{random < 0.5}). On utilisera la même méthode que précédemment pour s'assurer d'avoir des sommets connecté à la composante connexe déjà présente (\texttt{estConnecté} et \texttt{makeConnected}), tout en veillant à ne les connecter qu'à des sommets de la partition opposée.
+Ensuite, pour chaque nouveau sommet, on l'ajoutera aléatoirement dans la première ou dans la seconde partition (grâce au tirage \texttt{random} $<$ 0.5). On utilisera la même méthode que précédemment pour s'assurer d'avoir des sommets connectés à la composante connexe déjà présente (\texttt{estConnecté} et \texttt{makeConnected}), tout en veillant à ne les connecter qu'à des sommets de la partition opposée.
 
 \subsubsection{Génération de graphe à petite couverture}
 
 \begin{algorithm}[H]
 \caption{Algorithme de génération de graphe à couverture minimale de taille fixée}
-\Entree{Un nombre de sommet $n$ à générer, une probabilité $proba$ de connexion entre tout couple de sommet et en entier $k$ représentant la taille de couverture souhaitée}
-\Sortie{Un graphe connexe de couverture de taille k généré aléatoirement}
+\Entree{Un nombre $n$ de sommets à générer, une probabilité $\proba$ de connexion entre tout couple de sommet et en entier $k$ représentant la taille de couverture souhaitée}
+\Sortie{Un graphe connexe de couverture de taille $k$ généré aléatoirement}
 \BlankLine
-G $\leftarrow$ graphe de taille n
+$G$ $\leftarrow$ graphe de taille $n$
 
-ordreSommets $=$ getRandomVertices(n)
+ordreSommets $=$ getRandomVertices($n$)
 
 \Pour{$k_i$ de $0$ à $k$}{
 
-ajouterArête(G, ordreSommets[$k_i$], ordreSommets[$k+k_i$])
+ajouterArête($G$, ordreSommets[$k_i$], ordreSommets[$k+k_i$])
 
 \Pour{$k_j$ de $k_i+1$ à $k$}{
 
-randomEdge(G, ordreSommets[$k_i$], ordreSommets[$k_j$], proba)
+randomEdge($G$, ordreSommets[$k_i$], ordreSommets[$k_j$], $\proba$)
 
 }
 }
@@ -279,14 +282,14 @@ estConnecté $=$ false
 
 \Pour{$k_i$ de $0$ à $k$}{
 
-estConnecté $=$ randomEdge(G, ordreSommets[$g_i$], ordreSommets[$k_i$], proba) OU estConnecté
+estConnecté $=$ randomEdge($G$, ordreSommets[$g_i$], ordreSommets[$k_i$], proba) OU estConnecté
 
 }
-makeConnected(G, ordreSommets[$g_i$], ordreSommets, $0$, $k$, estConnecté)
+makeConnected($G$, ordreSommets[$g_i$], ordreSommets, $0$, $k$, estConnecté)
 
 }
 
-\Retour{G}
+\Retour{$G$}
 
 \end{algorithm}
 \bigskip
@@ -296,13 +299,14 @@ Durant la première boucle, nous parcourons tout les sommets de la couverture (f
 \itemb Nous les connectons à un sommet qui leur sera exclusif (il ne sera relié qu'à eux). Le voisin exclusif du sommet de la couverture $k_i$ sera le sommet $k_i+k$. Cette opération nous permettra de rendre nécessaire chaque sommet de la couverture.
 \itemb Nous connectons aléatoirement (toujours avec la probabilité \texttt{proba}) les sommets de la couverture entre eux.
 \end{itemize}
+
 \bigskip
 La deuxième boucle (commençant donc après les sommets exclusifs : à $2\times k$) connectera chaque sommet à au moins un sommet de la couverture (en utilisant toujours \texttt{estConnecté} et \texttt{makeConnected}), ce qui nous permettra de nous assurer que le graphe obtenu est connexe.
 \bigskip
 
-Note : Cette méthode nécessite de réserver un sommet exclusifs à chaque sommet de la couverture, et donc ne fonctionne qu'avec des couvertures de taille $k\leqslant n/2$.
+Note : Cette méthode nécessite de réserver un sommet exclusif à chaque sommet de la couverture, et donc ne fonctionne qu'avec des couvertures de taille $k\leqslant \frac n 2$.
 
-En fait nous générons un couplage de taille $k$ qui nous garanti qu'aucune couverture plus petite n'existe. Cependant nous avons conscience que, par cette méthode, notre algorithme ne pourra pas générer tout l'ensemble des graphes de couverture de taille $k$. De plus, il impose une borne max à la taille de la couverture (contrainte moins gênante puisqu'il est destiné à générer des graphes à petite couverture).
+En fait nous générons un couplage de taille $k$ qui nous garantit qu'aucune couverture plus petite n'existe. Cependant nous avons conscience que, par cette méthode, notre algorithme ne pourra pas générer tout l'ensemble des graphes de couverture de taille $k$. De plus, il impose une borne max à la taille de la couverture (contrainte moins gênante puisqu'il est destiné à générer des graphes à petite couverture).
 
 \section{Algorithmes réalisés}
 
@@ -414,7 +418,7 @@ Les tests ont été effectués sur une même machine.
 On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.
 
 
-Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédits par la complexité estimée, et cela est sûrement dû à notre gestion du tableau des degrés, qui n'est pas optimale.
+Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédits par la complexité estimée. C'est sûrement dû à notre gestion du tableau des degrés, qui n'est pas optimale.
 
 \subsection{Pour les arbres}
 
@@ -433,7 +437,7 @@ Une fois que le parent est ajouté à la couverture, on peut supprimer toutes le
 
 $n=\taille(G)$
 
-$\degree \leftarrow$ tableau de taille $n$.
+$\degree \leftarrow$ tableau de taille $n$
 
 $\cover \leftarrow$ liste
 
@@ -572,40 +576,37 @@ ajouter(part2, ordreSommet[$1$])
 \end{algorithm}
 \bigskip
 
-Cette algorithme calcul la bi-partition d'un graphe biparti connexe.
+Cette algorithme calcul la bi-partition d'un graphe biparti connexe. Pour ce faire, il effectue tout simplement un parcours en largeur en se rappelant quels sommets il n'a pas encore \og rangés\fg et quels sommets il a déjà \og visité\fg.
 
-Il effectue tout simplement un parcours en largeur en se rappelant quels sommets il n'a pas encore "rangés" et quels sommets il a déjà "visité".
-
-Le premier sommet ($0$) est fixé arbitrairement dans la partition 1, puis chaque voisin d'un sommet a tester sera dans sa partition opposée (1-partitionCourante).
+Le premier sommet ($0$) est fixé arbitrairement dans la partition 1, puis chaque voisin d'un sommet à tester sera dans sa partition opposée (1-partitionCourante).
 
 
-\bigskip
-\bigskip
+\vspace{0.35cm}
 \begin{algorithm}[H]
-\caption{Algorithme de construction du graphe orienté H}
-\Entree{Un graphe G biparti connexe et ses deux partition part1 et part2 de taille respective size1 et size2 (tableaux d'entiers représentant les indices)}
-\Sortie{Un graphe orienté H}
+\caption{Algorithme de construction du graphe orienté $H$}
+\Entree{Un graphe $G$ biparti connexe et ses deux partition part1 et part2 de taille respective size1 et size2 (tableaux d'entiers représentant les indices)}
+\Sortie{Un graphe orienté $H$}
 \BlankLine
-n = taille(G)
+$n$ = $\taille(G)$
 
-s = n
+$s$ = $n$
 
-t = n+1
+$t = n+1$
 
-size = n+2
+$\size = n+2$
 
-H $\leftarrow$ graphe orienté de taille \texttt{size}
+$H \leftarrow$ graphe orienté de taille \texttt{size}
 
 création des entiers \texttt{sommetCourant}, \texttt{voisinCourant}
 
 \Pour{$i$ de $0$ à $size1$}{
-	sommetCourant = part1[i]
+	sommetCourant = part1[$i$]
 	
-	ajouterArêteOrientée(H, s, sommetCourant)
+	ajouterArêteOrientée($H$, $s$, sommetCourant)
 	
-	voisins = getListeVoisins(G, sommetCourant)
+	voisins = getListeVoisins($G$, sommetCourant)
 	
-	\Tq{non(outOfList(voisins))}
+	\Tq{non(outOfList($\voisins$))}
 	{
 		voisinCourant = getValeur(voisins)
 		
@@ -616,37 +617,34 @@ création des entiers \texttt{sommetCourant}, \texttt{voisinCourant}
 }
 
 \Pour{$i$ de $0$ à $size2$}{
-	ajouterArêteOrientée(H, part2[i], t)
+	ajouterArêteOrientée($H$, part2[$i$], $t$)
 }
 
-\Retour{H}
+\Retour{$H$}
 
 \end{algorithm}
 \bigskip
 
-Si on appel X et Y les deux partitions de G, alors l'algorithme effectue le travail suivant :
+Si on appelle $X$ et $Y$ les deux partitions de $G$, alors l'algorithme effectue le travail suivant :
 \begin{itemize}
-\itemb Création du graphe orienté H de taille n+2 (deux nouveaux sommets : s et t)
-\itemb On relie s vers tout les sommets de X
-\itemb On ajoute toute les arêtes de G orientée de X vers Y
-\itemb On relie tout les sommets de Y vers t
+\itemb il crée du graphe orienté $H$ de taille $n+2$ (deux nouveaux sommets : $s$ et $t$)
+\itemb il relie $s$ vers tout les sommets de $X$
+\itemb il ajoute toute les arêtes de $G$ orientée de $X$ vers $Y$
+\itemb il relie tout les sommets de $Y$ vers $t$
 \end{itemize}
 
-Ce graphe est nécessaire pour l'algorithme de couvertures optimal pour les graphes biparti. La prochaine étape est d'y appliquer l'algorithme de Ford-Fulkerson pour trouver un flux optimal allant de s vers t (toute les arêtes ayant une capacité de 1).
-
-
-\bigskip
-\bigskip
+Ce graphe est nécessaire pour l'algorithme de couvertures optimal pour les graphes biparti. La prochaine étape est d'y appliquer l'algorithme de Ford-Fulkerson pour trouver un flux optimal allant de $s$ vers $t$ (toute les arêtes ayant une capacité de 1).
+\\
 \begin{algorithm}[H]
 \caption{Algorithme de Ford-Fulkerson}
-\Entree{Le graphe orienté H et les deux partition part1 et part2 de G de taille respective size1 et size2 (tableaux d'entiers représentant les indices)}
+\Entree{Le graphe orienté $H$ et les deux partition part1 et part2 de G de taille respective size1 et size2 (tableaux d'entiers représentant les indices)}
 \Sortie{Une couverture d'arêtes minimale \texttt{cover} sous forme de liste de sommets}
 \BlankLine
-n = taille(H)
+$n$ = taille($H$)
 
-s = n-2
+$s = n-2$
 
-t = n-1
+$t = n-1$
 
 création d'un tableau d'entiers \texttt{pères} de taille $n$
 
@@ -658,102 +656,102 @@ enfants $\leftarrow$ liste
 
 parents $\leftarrow$ liste
 
-F $\leftarrow$ liste
+$F$ $\leftarrow$ liste
 
-insérerEnTête(F, s)
+insérerEnTête($F$, $s$)
 
 création des entiers $u$, $v$, $w$
 
-\Tq{non(estVide(F))}
+\Tq{non(estVide($F$))}
 {
-	vider(F)
+	vider($F$)
 	
-	insérerEnTête(F, s)
+	insérerEnTête($F$, $s$)
 	
 	\Pour{$i$ de $0$ à $n$}{
-		couleurs[i] = 0
+		couleurs[$i$] = 0
 	}
-	couleurs[s] = 1
+	couleurs[$s$] = 1
 	
-	\Tq{couleurs[t]$=0$ ET non(estVide(F))}
+	\Tq{couleurs[$t$]$=0$ ET non(estVide($F$))}
 	{
-		v = valeurEnTête(F);
-		supprimerEnTête(F);
+		$v$ = valeurEnTête($F$);
+		supprimerEnTête($F$);
 	
-		enfants = getListeSuivants(G, sommetCourant)
+		enfants = getListeSuivants($G$, sommetCourant)
 		
 		\Tq{non(outOfList(enfants))}
 		{
-			w = getValeur(voisins)
+			$w$ = getValeur(voisins)
 			
-			\Si{couleurs[w]$=0$ ET flux[v][w] = 0}
+			\Si{couleurs[$w$]$=0$ ET flux[$v$][$w$] = 0}
 			{
-				couleurs[w] = 1
+				couleurs[$w$] = 1
 				
-				pères[w] = v
+				pères[$w$] = $v$
 				
-				insérerEnTête(F, w)
+				insérerEnTête($F$, $w$)
 			}
 			next(enfants)
 		}
 
-		parents = getListePrécédents(G, sommetCourant)
+		parents = getListePrécédents($G$, sommetCourant)
 		
 		\Tq{non(outOfList(parents))}
 		{
-			u = getValeur(parents)
+			$u$ = getValeur(parents)
 			
-			\Si{couleurs[u]$=0$ ET flux[u][v] = 1}
+			\Si{couleurs[$u$]$=0$ ET flux[$u$][$v$] = 1}
 			{
-				couleurs[u] = 1
+				couleurs[$u$] = 1
 				
-				pères[u] = v
+				pères[$u$] = $v$
 				
-				insérerEnTête(F, u)
+				insérerEnTête($F$, $u$)
 			}
 			next(parents)
 		}
 		
-		couleurs[v] = 2
+		couleurs[$v$] = 2
 	}
 	
-	v = t
+	$v = t$
 	
-	u = pères[v]
+	$u$ = pères[$v$]
 	\Tq{$u\neq v$}
 	{	
-		flux[u][v] = (1-flux[u][v])
+		flux[$u$][$v$] = (1-flux[$u$][$v$])
 		
-		v = u
+		$v = u$
 		
-		u = pères[v]
+		$u$ = pères[$v$]
 	}
-	flux[u][v] = (1-flux[u][v])
+	flux[$u$][$v$] = (1-flux[$u$][$v$])
 }
 
-cover  $\leftarrow$ liste
+$\cover  \leftarrow$ liste
 
 \Pour{$i$ de $0$ à $size1$}{
-	\Si{couleurs[part1[i]] = 0}
+	\Si{couleurs[part1[$i$]] = 0}
 	{
-		insérerEnTête(cover, part1[i]
+		insérerEnTête(cover, part1[$i$]
 	}
 }
 \Pour{$i$ de $0$ à $size2$}{
-	\Si{couleurs[part2[i]] = 2}
+	\Si{couleurs[part2[$i$]] = 2}
 	{
-		insérerEnTête(cover, part2[i]
+		insérerEnTête(cover, part2[$i$]
 	}
 }
 
-\Retour{cover}
+\Retour{$\cover$}
 
 \end{algorithm}
-\bigskip
+
 
 Le tableau de couleur utilisé représente les couleurs de l'algorithme (0 pour blanc, 1 pour gris et 2 pour noir).
 
-Chaque itération dans la boucle while principale fera trouver un chemin allant de s vers t, passant par un sommet de part1 et un sommet de part2.
+Chaque itération dans la boucle while principale fera trouver un chemin allant de $s$ vers $t$, passant par un sommet de part1 et un sommet de part2.
 
 On remarquera que l'ont pourra passer par des flux déjà à 1 mais seulement en allant d'un fils vers son père (cela correspond a trouver un chemin valide dans le graphe résiduel) ce qui permettra d'optimiser le flux.
 
@@ -761,13 +759,14 @@ Finalement, on ajoute dans la couverture tout les sommets dans la première part
 
 \subsubsection{Complexité}
 
-L'algorithme de calcul de la bipartition visitera une fois chaque sommet et lui trouvera directement sa partition. Sa complexité est donc linéaire ($O(|V(G)|)$).
+L'algorithme de calcul de la bipartition visitera une fois chaque sommet et lui trouvera directement sa partition. Sa complexité est donc linéaire $O(|V(G)|)$.
 
-La construction du graphe orientée sera également rapide. Il faudra recopier chaque sommet et orienter chaque arête, ce qui se traduira par un coût de ($O(|V(E)|+ |V(G)|)$).
+La construction du graphe orientée sera également rapide. Il faudra recopier chaque sommet et orienter chaque arête, ce qui se traduira par un coût de $O(|E(G)|+ |V(G)|)$.
 
-L'algorithme de Ford-Fulkerson a quand a lui une très bonne complexité de ($O(|V(E)|)$) puisque toute les capacité d'arêtes sont à fixée à 1.
+L'algorithme de Ford-Fulkerson a, quand à lui, une complexité de $O(|E(G)|)$ puisque toute les capacité d'arêtes sont fixée à 1.
 
-Nous pouvons donc en déduire que la complexité de l'algorithme de calcul de couverture minimale pour un graphe biparti, qui cumule ces trois algorithmes, est linéaire en la taille du graphe ($O(|V(E)|+ |V(G)|)$).
+Nous pouvons donc en déduire que la complexité de l'algorithme de calcul de couverture minimale pour un graphe biparti, qui cumule ces trois algorithmes, est %linéaire en la taille du graphe ($O(|E(G)|+ |V(G)|)$).
+en $O(|E(G)|+ |V(G)|)$.
 
 \subsubsection{Résultats}
 
@@ -783,7 +782,140 @@ Nous avons effectué des tests sur 100 graphes bipartis de taille $n$ générés
 \end{tabular}
 \end{center}
 
-On voit que les résultats sont proches de ceux attendus : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur 6.6. Quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur compris entre 50 et 85. Cela correspond bien à la complexité estimée.
+On voit que les résultats sont proches de ceux attendus : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur 6.6. Quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur compris entre 50 et 85. %Cela correspond bien à la complexité estimée.
+
+\subsection{Algorithme 2-approché par élimination d'arêtes}
+
+\subsubsection{Description}
+
+L'idée de l'algorithme par suppression d'arêtes (\texttt{edgesDeletionAlg}) est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirées à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence}
+\Sortie{Une couverture d'arêtes, sous forme de liste de sommets}
+\BlankLine
+
+$n=\taille(G)$
+
+$v_1=\degrepositif(G,0)$
+
+\Si{$v_1=0$}{\Retour{$\cover$}}
+
+$\deg_1=\deg(v_1)$
+
+\Tq{$\deg_1>0$}{
+
+$\voisins=\voisin(v_1)$
+
+$v_2$ est le premier élément de $\voisins$
+
+$\mathrm{ajouter}(\cover,v_1)$
+
+$\mathrm{ajouter}(\cover,v_2)$
+
+$\mathrm{suppressionAretes}(G,v_1)$
+
+$\mathrm{suppressionAretes}(G,v_2)$
+
+$v_1=\degrepositif(G,v_1)$
+
+\Si{$v_1=0$}{\Retour{$\cover$}}
+
+$\deg_1=\deg(v_1)$
+
+}
+
+
+\Retour{$\cover$}
+\caption{Algorithme par élimination d'arêtes - edgesDeletionAlg}
+ 
+\end{algorithm}
+
+La fonction \texttt{degrePositif} prend en argument un graphe $G$ et un indice $i$ et renvoie le premier sommet de $G$ de degré positif et d'indice supérieur à $i$, ou -1 s'il n'y en a pas. Si la dernière fois que la fonction a été appelée, le premier sommet de degré positif avait comme indice $i$, il est en effet inutile de chercher un sommet de degré positif avant l'indice $i$ puisque l'algorithme ne peut à aucun moment augmenter le degré d'un sommet.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence, un indice $i$}
+\Sortie{Le premier sommet de $G$ de degré positif et d'indice supérieur à $i$}
+\BlankLine
+
+\Pour{$j$ de $i$ à $\taille(G)-1$}{
+
+\Si{$\voisin(j)\neq [\quad]$}{\Retour{$j$}
+}
+}
+\Retour {-1}
+
+
+\caption{degrePositif}
+ 
+\end{algorithm}
+
+La fonction \texttt{suppressionAretes} prend en entrée un graphe $G$ et un sommet $v$ et supprime de $G$ toutes les arêtes adjacentes à $v$.
+
+\vspace{0.35cm}
+\begin{algorithm}[H]
+
+\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence, un sommet $v$}
+\BlankLine
+
+\Pour{$u\in\voisin(v)$}{
+
+$\mathrm{supprimer}(v,\voisin(u))$
+}
+
+$\voisin(v)\leftarrow [\quad]$
+
+\caption{suppressionAretes}
+ 
+\end{algorithm}
+
+\subsubsection{Complexité}
+
+Le nombre d'appels de la fonction \texttt{degrePositif} importe en fait assez peu : le fait que la fonction garde en mémoire l'indice du dernier sommet trouvé assure que la somme des temps d'exécution sera en $O(n)$. La complexité de l'algorithme viendra donc des appels de la fonction \texttt{suppressionAretes}, aux lignes 11 et 12. On sait que la fonction \texttt{suppressionAretes} supprimera au maximum $|E(G)|$ arêtes et que chaque suppression d'arête demandera de chercher un élément dans une liste de voisins d'un sommet, de taille majorée par $\Delta(G)$.
+
+Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe, ce qui correspond à $O(n^3)$ au pire pour des graphes généraux, et à $O(n^2)$ au pire pour des arbres.
+
+\subsubsection{Résultats}
+
+\paragraph{Taille de la couverture trouvée}
+
+Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
+%%% A COMPLETER
+
+\paragraph{Tests}
+Nous avons testé l'algorithme par élimination d'arêtes sur des séries de 100 graphes de taille $n$ générés aléatoirement avec \texttt{generation} et une probabilité de 0.5. Les tests ont été faits sur la même machine, et les temps sont donnés en secondes.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 100 & 200 & 300 & 400 & 500 & 600 & 700 & 800 & 1000 \\
+	\hline
+	temps & 0.03 & 0.32 & 1.06 & 2.53 & 4.95 & 8.56 & 15.03 & 27.09 & 64.76 \\
+	\hline
+\end{tabular}
+\end{center}
+
+On voit que quand la taille de l'instance est doublée, le temps d'exécution est multiplié par un facteur 8, et quand elle est multipliée par 3, le temps d'exécution est multiplié par un facteur 26.75.
+Ces temps montrent bien que notre algorithme se comporte conformément à la complexité estimée.
+
+\bigskip
+Nous avons ensuite testé l'algorithme sur des séries de 100 arbres générés aléatoirement avec \texttt{treeGeneration} ; ces graphes ayant moins d'arêtes, nous nous attendons à pouvoir traiter des graphes de taille plus grande.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 500 & 1000 & 2000 & 5000 & 10000 & 20000 & 50000 & 100000 & 200000\\
+	\hline
+	temps & 0.02 & 0.04 & 0.07 & 0.11 & 0.23 & 0.76 & 2.58 & 6.21 & 13.91\\
+	\hline
+\end{tabular}
+\end{center}
+
+Effectivement, on voit d'une part que les arbres pouvant être traités par série de 100 en moins de 10 secondes ont une taille supérieure à 100000 sommets, tandis que sur des graphes généraux, seuls des graphes de taille légèrement supérieure à 700 sommets peuvent être traités dans le même temps. D'autre part, on voit que quand la taille des graphes est doublée, le temps d'exécution est multiplié par un facteur proche de 2 également, ce qui est en accord avec une complexité linéaire de l'algorithme pour des arbres.
 
 \subsection{Algorithme 2-approché avec arbre couvrant}
 
@@ -972,141 +1104,6 @@ Nous avons comparé les temps d'exécution de l'algorithme récursif sur 100 gra
 
 On voit que les résultats sont cohérents avec la complexité estimée : les graphes considérés ne sont que des arbres, ce qui permet à l'algorithme d'aller d'une part beaucoup plus vite (il traite 100 arbres de 100000 sommets en moins de 5 secondes, alors qu'il ne traite que 100 graphes généraux de moins de 1500 sommets dans le même temps), et d'autre part d'avoir un temps d'exécution à peine plus que linéaire en la taille du graphe.
 
-
-\subsection{Algorithme 2-approché par élimination d'arêtes}
-
-\subsubsection{Description}
-
-L'idée de l'algorithme par suppression d'arêtes (\texttt{edgesDeletionAlg}) est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirées à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
-
-\vspace{0.35cm}
-\begin{algorithm}[H]
-
-\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence}
-\Sortie{Une couverture d'arêtes, sous forme de liste de sommets}
-\BlankLine
-
-$n=\taille(G)$
-
-$v_1=\degrepositif(G,0)$
-
-\Si{$v_1=0$}{\Retour{$\cover$}}
-
-$\deg_1=\deg(v_1)$
-
-\Tq{$\deg_1>0$}{
-
-$\voisins=\voisin(v_1)$
-
-$v_2$ est le premier élément de $\voisins$
-
-$\mathrm{ajouter}(\cover,v_1)$
-
-$\mathrm{ajouter}(\cover,v_2)$
-
-$\mathrm{suppressionAretes}(G,v_1)$
-
-$\mathrm{suppressionAretes}(G,v_2)$
-
-$v_1=\degrepositif(G,v_1)$
-
-\Si{$v_1=0$}{\Retour{$\cover$}}
-
-$\deg_1=\deg(v_1)$
-
-}
-
-
-\Retour{$\cover$}
-\caption{Algorithme par élimination d'arêtes - edgesDeletionAlg}
- 
-\end{algorithm}
-
-La fonction \texttt{degrePositif} prend en argument un graphe $G$ et un indice $i$ et renvoie le premier sommet de $G$ de degré positif et d'indice supérieur à $i$, ou -1 s'il n'y en a pas. Si la dernière fois que la fonction a été appelée, le premier sommet de degré positif avait comme indice $i$, il est en effet inutile de chercher un sommet de degré positif avant l'indice $i$ puisque l'algorithme ne peut à aucun moment augmenter le degré d'un sommet.
-
-\vspace{0.35cm}
-\begin{algorithm}[H]
-
-\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence, un indice $i$}
-\Sortie{Le premier sommet de $G$ de degré positif et d'indice supérieur à $i$}
-\BlankLine
-
-\Pour{$j$ de $i$ à $\taille(G)-1$}{
-
-\Si{$\voisin(j)\neq [\quad]$}{\Retour{$j$}
-}
-}
-\Retour {-1}
-
-
-\caption{degrePositif}
- 
-\end{algorithm}
-
-La fonction \texttt{suppressionAretes} prend en entrée un graphe $G$ et un sommet $v$ et supprime de $G$ toutes les arêtes adjacentes à $v$.
-
-\vspace{0.35cm}
-\begin{algorithm}[H]
-
-\Entree{Un graphe $G$ défini par un tableau $\mathtt{voisin}$ de listes d'adjacence, un sommet $v$}
-\BlankLine
-
-\Pour{$u\in\voisin(v)$}{
-
-$\mathrm{supprimer}(v,\voisin(u))$
-}
-
-$\voisin(v)\leftarrow [\quad]$
-
-\caption{suppressionAretes}
- 
-\end{algorithm}
-
-\subsubsection{Complexité}
-
-Le nombre d'appels de la fonction \texttt{degrePositif} importe en fait assez peu : le fait que la fonction garde en mémoire l'indice du dernier sommet trouvé assure que la somme des temps d'exécution sera en $O(n)$. La complexité de l'algorithme viendra donc des appels de la fonction \texttt{suppressionAretes}, aux lignes 11 et 12. On sait que la fonction \texttt{suppressionAretes} supprimera au maximum $|E(G)|$ arêtes et que chaque suppression d'arête demandera de chercher un élément dans une liste de voisins d'un sommet, de taille majorée par $\Delta(G)$.
-
-Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe, ce qui correspond à $O(n^3)$ au pire pour des graphes généraux, et à $O(n^2)$ au pire pour des arbres.
-
-\subsubsection{Résultats}
-
-\paragraph{Taille de la couverture trouvée}
-
-Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
-%%% A COMPLETER
-
-\paragraph{Tests}
-Nous avons testé l'algorithme par élimination d'arêtes sur des séries de 100 graphes de taille $n$ générés aléatoirement avec \texttt{generation} et une probabilité de 0.5. Les tests ont été faits sur la même machine, et les temps sont donnés en secondes.
-
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
-	\hline 
-	n & 100 & 200 & 300 & 400 & 500 & 600 & 700 & 800 & 1000 \\
-	\hline
-	temps & 0.03 & 0.32 & 1.06 & 2.53 & 4.95 & 8.56 & 15.03 & 27.09 & 64.76 \\
-	\hline
-\end{tabular}
-\end{center}
-
-On voit que quand la taille de l'instance est doublée, le temps d'exécution est multiplié par un facteur 8, et quand elle est multipliée par 3, le temps d'exécution est multiplié par un facteur 26.75.
-Ces temps montrent bien que notre algorithme se comporte conformément à la complexité estimée.
-
-\bigskip
-Nous avons ensuite testé l'algorithme sur des séries de 100 arbres générés aléatoirement avec \texttt{treeGeneration} ; ces graphes ayant moins d'arêtes, nous nous attendons à pouvoir traiter des graphes de taille plus grande.
-
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
-	\hline 
-	n & 500 & 1000 & 2000 & 5000 & 10000 & 20000 & 50000 & 100000 & 200000\\
-	\hline
-	temps & 0.02 & 0.04 & 0.07 & 0.11 & 0.23 & 0.76 & 2.58 & 6.21 & 13.91\\
-	\hline
-\end{tabular}
-\end{center}
-
-Effectivement, on voit d'une part que les arbres pouvant être traités par série de 100 en moins de 10 secondes ont une taille supérieure à 100000 sommets, tandis que sur des graphes généraux, seuls des graphes de taille légèrement supérieure à 700 sommets peuvent être traités dans le même temps. D'autre part, on voit que quand la taille des graphes est doublée, le temps d'exécution est multiplié par un facteur proche de 2 également, ce qui est en accord avec une complexité linéaire de l'algorithme pour des arbres.
-
-
 \subsection{Algorithme paramétrique pour faible couverture}
 
 \subsubsection{Description}
@@ -1191,9 +1188,9 @@ L'algorithme principal est ensuite appliqué. Il consiste en une série de tests
 
 Les tests sont : 
 \begin{itemize}
-\item si $k$ est supérieur à la taille du graphe, alors tous les sommets sont dans la couverture.
-\item si $k$ est négatif, alors le graphe n'a pas de couverture de taille $k$.
-\item si le graphe comporte plus de $k\times(n-1)$ arêtes, alors il n'a pas de couverture de taille $k$.
+\itemb si $k$ est supérieur à la taille du graphe, alors tous les sommets sont dans la couverture.
+\itemb si $k$ est négatif, alors le graphe n'a pas de couverture de taille $k$.
+\itemb si le graphe comporte plus de $k\times(n-1)$ arêtes, alors il n'a pas de couverture de taille $k$.
 \end{itemize}
 
 \bigskip
@@ -1291,6 +1288,8 @@ Ainsi, l'algorithme \texttt{littleCoverAlg} tournera en $O(2^k k\times n)$.
 \vspace{0.35cm}
 Étudions maintenant l'algorithme \texttt{littleCover}. La boucle \texttt{pour} des lignes 6 à 12 demande de déterminer pour chacun des $n$ sommets si son degré est plus grand que $k$ (se fait en $O(k)$). Cette étape de preprocessing ne sera faite qu'une seule fois et sa complexité sera asymptotiquement négligeable. Après cette étape, on appellera \texttt{littleCoverAlg} sur le graphe induit par les sommets restants de degré non nul, si et seulement si ce graphe a moins de $k^2$ arêtes donc moins de $2k^2$ sommets. Comme l'algorithme tourne en $O(2^k k\times n)$, avec $n\leqslant k^2$, l'algorithme final tourne en $O(2^k k^3)$.
 
+Une possible amélioration serait d'itérer l'étape de kernelisation jusqu'à arriver à un point fixe avant de lancer \texttt{littleCoverAlg}, mais cela n'aurait aucune conséquence sur les bornes de complexité.
+
 \subsubsection{Résultats}
 
 Nous avons testé l'algorithme sur des séries de 100 graphes de 20 sommets, générés aléatoirement avec \texttt{generation} et une probabilité de 0.5.
@@ -1344,8 +1343,9 @@ Le problème de satisfiabilité auquel se réduit vertex-cover est finalement $\
  \itemb $|E|$ clauses de $2p$ variables pour $\varphi_3$.
 \end{itemize}
 
-On réduit ainsi la recherche d'une $p$-couverture sur $n$ sommets à un problème de $2p$-satisfiabilité à $\frac {np (n+p-2)}2 +|E|$ clauses.
+On réduit ainsi la recherche d'une $p$-couverture sur $n$ sommets à un problème de $2p$-satisfiabilité à $\frac {np (n+p-2)}2 +|E|$ clauses. La complexité de la réduction en elle-même est proportionnel au nombre de clauses générés, mais elle est négligeable par rapport à la résolution du problème de satisfiabilité.
 
-\subsection{Résultats}
+\vspace{0.35cm}
+\emph{Remarque} : le programme que nous avons obtenu renvoie bien une couverture de la taille indiquée s'il en trouve une mais comporte des erreurs qui rendent impossible de le chronométrer sur une batterie de tests.
 
 \end{document}
