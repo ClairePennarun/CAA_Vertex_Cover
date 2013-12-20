@@ -1,11 +1,16 @@
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <malloc.h>
 #include <assert.h>
-
+#include <unistd.h>
+#include <sys/types.h>
 #include <fileReader.h>
 #include <graph.h>
 #include <list.h>
+#include <string.h>
+
 
 void input(Graph g, int p){
   FILE* file = NULL;
@@ -34,6 +39,7 @@ void input(Graph g, int p){
       l_next(listNeighbors);
     }
   }
+  fclose(file);
 }
 
 void minisat(){
@@ -43,39 +49,40 @@ void minisat(){
 int main(int argc, char* argv[]){
   Graph g=readFile(argv[1]);
   input(g,3);
+  minisat();
   return EXIT_SUCCESS;
 }
 
-/*
+
 List output(int p){
   FILE* file = NULL;
   char* line = NULL;
   size_t len = 0;
-  file = fopen(output, "r");
+  file = fopen("output", "r");
   List cover = l_createList();
-  char* tok = strtok(line, "\n");
-  getline(&line, &len, tmpfile); 
-  
-  getline(&line, &len, tmpfile); 
-  while(*tok == ' '){
-    tok ++;
-  }
-  tok = strtok(tok, " ");
-  while (tok){
-    int i = atoi(tok); // Correction de l'indice (de [1, n] -> [0, n-1])
-    if(i>0){
-      l_addInFront(cover, "%d ", ((i-1)/p));
+  getline(&line, &len, file); 
+  int compare = strcmp (line, "SAT");
+  free(line);
+  char* tok;
+  if (compare == 0){
+    getline(&line, &len, file); 
+    while(*tok == ' '){
+      tok ++;
     }
-    if(i=0){
-      fclose(file);
-      free(line);
-      return cover;
+    tok = strtok(tok, " ");
+    while (tok){
+      int i = atoi(tok);
+      if(i>0){
+	l_addInFront(cover, ((i-1)/p));
+      }
+      if(i==0){
+	fclose(file);
+	free(line);
+	return cover;
+      }
     }
   }
+  fclose(file);
+  free(line);
+  return NULL;
 }
-*/
-
-
-  
-
-
