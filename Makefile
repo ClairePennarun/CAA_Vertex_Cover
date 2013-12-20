@@ -24,6 +24,7 @@ LDLIBS= -lm
 #Le nom du fichier executable a generer
 OUTFILE= vertexCoverExec
 OUTFILE2= minisatExec
+OUTFILE3 = testExec
 
 #les fichiers objets a generer 
 OBJS= graph.o list.o fileReader.o cover.o generation.o
@@ -55,7 +56,7 @@ graph_test: $(OBJS) graph_tester.o
 list_test: $(OBJS) list_tester.o
 	$(CC) $(OBJS) list_tester.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
 time_test: $(OBJS) timeTests.o
-	$(CC) $(OBJS) timeTests.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
+	$(CC) $(OBJS) timeTests.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE3)
 minisat_exec: $(OBJS) minisat.o
 	$(CC) $(OBJS) minisat.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE2)
 
