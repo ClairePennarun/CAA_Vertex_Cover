@@ -116,6 +116,11 @@ List bipartiteOptAlg (Graph g){
   List neighbors;
   for (int i=0; i<size1; i++){
     currentVertex = part1[i];
+    
+    // On ajoute toutes les arêtes de s vers part1
+    g_addEdge(h, s, currentVertex);
+    g_addEdge(hInv, currentVertex, s);
+
     neighbors = g_getNeighbors(g, currentVertex);
     l_head(neighbors);
     while (!l_isOutOfList(neighbors)){
@@ -128,11 +133,6 @@ List bipartiteOptAlg (Graph g){
     }
   }
 
-  // On ajoute toutes les arêtes de s vers part1
-  for (int i=0; i<size1; i++){
-    g_addEdge(h, s, part1[i]);
-    g_addEdge(hInv, part1[i], s);
-  }
   // On ajoute toutes les arêtes de part2 vers t
   for (int i=0; i<size2; i++){
     g_addEdge(h, part2[i], t);
