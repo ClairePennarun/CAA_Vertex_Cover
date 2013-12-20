@@ -41,7 +41,7 @@ int main(int argc, char* argv[]){
       printf("pas assez d'arguments \n");
       return EXIT_FAILURE;
     }
-    Graph g = selectGraph(argc,argv,2);
+    Graph g = selectGraph(argc,argv,3);
     if(g == NULL)
       return EXIT_FAILURE;
     int p = atoi(argv[2]);

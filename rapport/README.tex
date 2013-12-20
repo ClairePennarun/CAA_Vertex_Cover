@@ -57,7 +57,13 @@ README}
 	A la racine sont présents les exécutables et le Makefile.
 
 
-\section{Compilation}
+\section{Installation et compilation}
+
+	Pour utiliser la résolution avec \texttt{minisat}, il faut installer ce logiciel.
+	Pour l'installer sous Linux :
+	\texttt{sudo apt-get install minisat}
+	
+	Nous ne sommes pas sûrs que les appels système utilisés pour résoudre le problème VertexCover à l'aide de \texttt{minisat} soient reconnus sous d'autres systèmes d'exploitation que GNU/Linux.
 
 	Les fichiers se compilent avec la commande \texttt{make} qui lance l'exécution du fichier Makefile présent à la racine et génère l'exécutable \textit{vertexCoverExec}.
 
@@ -78,6 +84,7 @@ README}
 		\item Algorithme 2-approché avec arbre couvrant : \texttt{spanningTree}
 		\item Algorithme 2-approché avec élimination d'arêtes : \texttt{edgesDeletion}
 		\item Algorithme optimal pour petite couverture : \texttt{littleCover} + $tailleCouverture$
+		\item Pour tester l'existence d'une couverture de taille $k$ sur un graphe avec \texttt{minisat} : \texttt{minisat k}
 	\end{itemize}
 	
 	\bigskip
@@ -90,11 +97,12 @@ README}
 			\itemb Génération de graphes de taille $n$ et proba $p$ : \texttt{gen} + $n$ + $p$
 			\itemb Génération de graphes bipartis de taille $n$ et proba $p$ : \texttt{bipartiteGen} + $n$ + $p$
 			\itemb Génération de graphes de taille $n$, proba $p$ et taille de couverture $k$ : \texttt{littleGen} + $n$ + $k$ + $p$
+			
 			\end{itemize}
 	\end{itemize}
 	
 	\bigskip
-	\texttt{[disp]} : argument facultatif, permettant d'afficher le graphe sur lequel l'algorithme est exécuté.
+	\texttt{[disp]} : argument facultatif, permettant d'afficher le graphe sur lequel l'algorithme est exécuté (pas disponible avec minisat).
 	
 	\bigskip
 	Exemple : pour lancer l'algorithme glouton sur un graphe de 17 sommets généré aléatoirement avec une couverture de 5 sommets et une probabilité de 0.7 :
