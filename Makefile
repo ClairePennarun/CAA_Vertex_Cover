@@ -55,7 +55,7 @@ graph_test: $(OBJS) graph_tester.o
 	$(CC) $(OBJS) graph_tester.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
 list_test: $(OBJS) list_tester.o
 	$(CC) $(OBJS) list_tester.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
-time_test: $(OBJS) timeTests.o
+time_test: $(OBJS) timeTests.o minisat.o
 	$(CC) $(OBJS) timeTests.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE3)
 minisat_exec: $(OBJS) minisat.o
 	$(CC) $(OBJS) minisat.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE2)
