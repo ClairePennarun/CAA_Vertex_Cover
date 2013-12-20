@@ -11,8 +11,6 @@
 
 // Generation d'arbre a n sommets
 Graph treeGeneration(int n){
-  initRandom();
-
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
 
@@ -25,8 +23,6 @@ Graph treeGeneration(int n){
 
 // Generation de graphe avec proba
 Graph generation(int n, double proba){
-  initRandom();
-
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
   bool isConnected;
@@ -43,8 +39,6 @@ Graph generation(int n, double proba){
 
 // Generation de graphes bipartis
 Graph bipartiteGeneration (int n, double proba){
-  initRandom();
-
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n);
   assert(n>=2);
@@ -85,15 +79,9 @@ Graph bipartiteGeneration (int n, double proba){
 
 // Generation de graphe avec petite couverture (pratique pour tests)
 Graph littleGeneration (int n, int k, double proba){
-  initRandom();
-  
-  assert(k<=n/2);
-  // Tout graphe connexe admet, au pire des cas, une couverture de taille n/2
-
+  assert(k<=n/2);  // Tout graphe connexe admet, au pire des cas, une couverture de taille n/2
   Graph g = g_createGraph(n);
-  
-  // Les k premières valeurs seront la couvertureœ
-  int* vertices = getRandomVertices(n);
+  int* vertices = getRandomVertices(n); // Les k premières valeurs seront la couverture
 
   for(int ki=0; ki<k; ki++)
     g_addEdge(g, vertices[ki], vertices[k+ki]); // Les sommets "exclusifs" sont relié a un et un seul sommet de la couverture
@@ -105,9 +93,7 @@ Graph littleGeneration (int n, int k, double proba){
       isConnected = randomEdge(g, vertices[gi], vertices[ki], proba) || isConnected;
     makeConnected(g, vertices[gi], vertices, 0, k, isConnected);
   }
-  
   free(vertices);
-  g_display(g);
   return g;
 }
 
@@ -147,13 +133,6 @@ void swap(int* t, int i1, int i2){
   int tmp = t[i1];
   t[i1] = t[i2];
   t[i2] = tmp;
-}
-
-// Initialise la graine et l'affiche
-void initRandom(){
-  int graine = getGraine();
-  srand(graine);
-  printf("La graine pour l'aléatoire est : %d\n", graine);
 }
 
 // Retourne un entier dans [a, b[

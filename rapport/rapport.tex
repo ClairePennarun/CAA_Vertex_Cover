@@ -51,9 +51,9 @@ Notations : dans ce rapport, le graphe considéré sera généralement noté $G$
 
 Le code est disponible à \href{http://github.com/ClairePennarun/CAA_Vertex_Cover }{l'adresse suivante}.
 
-\section{Structure de graphes}
+\section{Graphes}
 
-\subsection{Structure de données}
+\subsection{Structures de données}
 
 \subsubsection{Listes}
 
@@ -62,47 +62,47 @@ Dans ce module, deux types ont été définis : le type 'List' (qui sera manipul
 
 Une liste contient ces champs :
 \begin{itemize}
-\itemb Sa taille
-\itemb Un pointeur vers son premier élément (NULL si liste vide)
-\itemb Un pointeur vers son dernier élément (NULL si liste vide)
-\itemb Un pointeur vers l'élément courant (possiblement à NULL si l'on est sorti de la liste)
+	\itemb Sa taille
+	\itemb Un pointeur vers son premier élément (NULL si liste vide)
+	\itemb Un pointeur vers son dernier élément (NULL si liste vide)
+	\itemb Un pointeur vers l'élément courant (possiblement à NULL si l'on est sorti de la liste)
 \end{itemize}
 ~~\\
 Un élément contient ces champs :
 \begin{itemize}
-\itemb Un pointeur vers l'élément suivant
-\itemb Un pointeur vers l'élément précédent
-\itemb Sa valeur (initialement un int)
+	\itemb Un pointeur vers l'élément suivant
+	\itemb Un pointeur vers l'élément précédent
+	\itemb Sa valeur (initialement un int)
 \end{itemize}
 
 Nous avons codé ensuite une collection de primitives classiques permettant la bonne manipulation de la liste (getVal, next, head, insertInHead, contain, isEmpty, isOutOfList...)
 
 \subsubsection{Graphes}
 
-Nous nous sommes tout de suite posé une questions de représentation du graphe, et avons du faire un choix (pour un graphe G a n sommets) :
+Nous nous sommes tout de suite posé la question de la représentation du graphe, et avons du faire un choix (pour un graphe $G$ a $n$ sommets) :
 \begin{itemize}
-\itemb Représenter le graphe par une matrice d'adjacence de taille $n^2$ :
-\begin{itemize}
-\item Avantage : sontVoisins(s1, s2) serait en temps constant
-\item Inconvénients : getListeVoisins(s1) et serait en O(n)
-\end{itemize}
-\itemb Représenter le graphe par un tableau de sommet ou chaque sommet contiendrait une liste de ses voisins :
-\begin{itemize}
-\item Avantages : getListeVoisins(s1) serait en temps constant
-\item Inconvénients : sontVoisins(s1, s2) serait en O($\Delta$(G))
-\end{itemize}
+	\itemb Représenter le graphe par une matrice d'adjacence de taille $n^2$ :
+	\begin{itemize}
+		\item Avantage : sontVoisins(s1, s2) serait en temps constant
+		\item Inconvénients : getListeVoisins(s1) et serait en O(n)
+	\end{itemize}
+\itemb Représenter le graphe par un tableau de sommets où chaque sommet contiendrait une liste de ses voisins :
+	\begin{itemize}
+		\item Avantages : getListeVoisins(s1) serait en temps constant
+	\item Inconvénients : sontVoisins(s1, s2) serait en O($\Delta$(G))
+	\end{itemize}
 \itemb Utiliser les deux représentations en même temps :
-\begin{itemize}
-\item Avantages : getListeVoisins(s1) et sontVoisins(s1, s2) seraient en temps constant
-\item Inconvénients : Redondance d'information en mémoire, cumul les coûts des deux structures dans l'entretient graphe
+	\begin{itemize}
+		\item Avantages : getListeVoisins(s1) et sontVoisins(s1, s2) seraient en temps constant
+		\item Inconvénients : Redondance d'information en mémoire, cumul des coûts des deux structures dans la mise à jour du graphe
+	\end{itemize}
 \end{itemize}
-\end{itemize}
 
-Partant de la constatation que la fonction getListeVoisins allait être utilisée (et pas une seule fois 'sontVoisins') nous avons choisi la deuxième option.
+Partant de la constatation que la fonction \texttt{getListeVoisins} allait être utilisée (et pas une seule fois \texttt{sontVoisins}) nous avons choisi la deuxième option.
 
-Nous avons donc deux types ('Graph' étant manipulé et 'Vertex' étant caché à l'utilisateur).
+Nous avons donc deux types : 'Graph' est manipulé et 'Vertex' est caché à l'utilisateur.
 
-Un graphe contiendra :
+Un graphe contient :
 \begin{itemize}
 \itemb Son nombre de sommets
 \itemb Son nombre d'arêtes
@@ -110,7 +110,7 @@ Un graphe contiendra :
 \itemb Un booléen indiquant si le graphe est orienté ou non
 \end{itemize}
 
-Un sommet, quand à lui, ne contiendra que la liste de ses voisins (liste étant implémentée grâce au module précédent).
+Un sommet, quand à lui, ne contient que la liste de ses voisins (liste étant implémentée grâce au module précédent).
 
 Nous avons par la suite implémenté les primitives permettant de manipuler le graphe et y collecter des informations (getDegreGraph, getDegreVertex, getSize, cloneGraph, addEdge...)
 
@@ -118,14 +118,14 @@ Nous avons par la suite implémenté les primitives permettant de manipuler le g
 
 \subsubsection{Le module}
 
-Il a fallu implémenter sous fonctions plusieurs fois utilisées :
+Il a fallu implémenter des sous-fonctions plusieurs fois utilisées :
 \begin{itemize}
-\itemb random() : Retourne un double aléatoire inclus dans [0,1[.
-\itemb randint(int a, int b) : Retourne un entier aléatoire inclus dans [a, b[.
-\itemb swap(int* t, int i1, int i2) : Echange les cases d'indice i1 et i2 dans le tableau t.
-\itemb randomEdge(Graph g, int i1, int i2, double proba) : Connecte les sommets d'indices i1 et i2 dans le graphe g avec une probabilité de 'proba'.
-\itemb makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected) : Si 'isConnected' est a false (le sommet d'indice i est isolé), alors cela le connectera avec un sommet d'indice tab[k] (où k est un entier aléatoire inclus dans [iMin, iMax[).
-\itemb getRandomVertice(int n) : Retourne un tableau d'ordre aléatoire avec des entiers allant de 0 à (n-1). Les algorithmes de générations travailleront sur ce tableau d'indices (plutôt que directement sur les vrai indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
+	\itemb random() : Retourne un double aléatoire inclus dans [0,1[.
+	\itemb randint(int a, int b) : Retourne un entier aléatoire inclus dans [a, b[.
+	\itemb swap(int* t, int i1, int i2) : Echange les cases d'indices i1 et i2 dans le tableau t.
+	\itemb randomEdge(Graph g, int i1, int i2, double proba) : Connecte les sommets d'indices i1 et i2 dans le graphe g avec une probabilité de 'proba'.
+	\itemb makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected) : Si 'isConnected' est à false (le sommet d'indice i est isolé), alors cela le connectera avec un sommet d'indice tab[k] (où k est un entier aléatoire inclus dans [iMin, iMax[).
+	\itemb getRandomVertice(int n) : Retourne un tableau d'ordre aléatoire avec des entiers allant de 0 à (n-1). Les algorithmes de génération travailleront sur ce tableau d'indices (plutôt que directement sur les vrais indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
 \end{itemize}
 
 \subsubsection{Génération de graphe quelconque}
@@ -145,7 +145,7 @@ Il a fallu implémenter sous fonctions plusieurs fois utilisées :
 
 \subsubsection{Description}
 
-L'algorithme glouton consiste à ajouter à chaque étape dans la couverture le sommet qui couvrira le plus d'arêtes non couvertes. Bien que non optimal, il a l'avantage d'être rapide. 
+L'algorithme glouton (\texttt{greedyAlg}) consiste à ajouter à chaque étape dans la couverture le sommet qui couvrira le plus d'arêtes non couvertes. Bien que non optimal, il a l'avantage d'être rapide. 
 
 Le nombre d'arêtes couvertes par un sommet est égal à son degré, mais quand un sommet est ajouté à la couverture, il est important de ne plus tenir compte des arêtes adjacentes dans la suite. Pour connaître rapidement le nombre d'arêtes que l'on couvrirait avec chaque sommet, nous avons choisi de créer un tableau répertoriant le degré de chaque sommet du graphe, plus facile à tenir à jour que le graphe lui-même. 
 
@@ -164,13 +164,13 @@ $n=\taille(G)$
 
 $\degmax=1$
 
-$\cover = [\quad]$
+$\cover \leftarrow$ liste
 
 création d'un tableau $\mathtt{degre}$ de taille $n$.
 
-\Pour{$i$ do 0 à $n-1$}{
+\Pour{$i$ de 0 à $n-1$}{
 
-$\mathrm{\degree[i]\leftarrow \taille(\voisin[i])}$
+$\mathrm{\degree[i] = \taille(\voisin[i])}$
 }
 
 \Tq{$\degmax\neq 0$}{
@@ -187,7 +187,7 @@ $\mathrm{actualiser}(\degree, v)$
 }
 }
 \Retour{$\cover$}
-\caption{Algorithme glouton}
+\caption{Algorithme glouton - greedyAlg}
  
 \end{algorithm}
 
@@ -216,7 +216,7 @@ décrémenter $\voisin[i]$ de 1
  \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 7, où $c$ est la taille de la couverture renvoyée. À chaque fois :
 \begin{itemize}
 \itemt Déterminer le sommet de degré maximum (ligne 8) se fait en $O(n)$
-\itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
+\itemt La fonction \texttt{actualiser} tourne en $\deg(V)\leqslant n$.
 \end{itemize}
 \end{itemize}
 
@@ -236,17 +236,17 @@ L'algorithme a été testé sur une série de 100 graphes, générés aléatoire
 Les tests ont été effectués sur une même machine.
 
 \bigskip
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 	\hline 
-	nb de sommets & 20 & 50 & 100 & 200 & 300 & 400 & 500 & 800 & 1000 \\
+	nb de sommets & 50 & 100 & 200 & 300 & 400 & 500 & 800  \\
 	\hline
-	temps (s) & 0 & 0.02 & 0.08 & 0.51 & 1.4 & 3.68 & 9.95 &  & 185 \\
+	temps (s) & 0.01 & 0.13 & 0.64 & 2.09 & 5.91 & 19.27 & 131.06 \\
 	\hline
 \end{tabular}
 
 \bigskip
 
-On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.  %%% REVOIR TEMPS !
+On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.
 
 
 Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédits par la complexité estimée, et cela est sûrement dû à notre gestion du tableau des degrés, qui n'est pas optimale.
@@ -255,7 +255,7 @@ Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédit
 
 \subsubsection{Description}
 
-L'algorithme optimal pour les arbres fonctionne de la façon suivante : on commence par chercher une feuille (notée $u$), il faudra forcément couvrir l'arête qui relie la feuille à son parent (noté $v$). Deux options s'offrent alors : ajouter $u$ à la couverture ou $v$. Comme l'ensemble des arêtes couverte par la feuille est inclus dans l'ensemble des arêtes couvertes par son parent, il y a forcément une couverture optimale qui contient $v$. 
+L'algorithme optimal pour les arbres (\texttt{treeOptAlg}) fonctionne de la façon suivante : on commence par chercher une feuille (notée $u$), il faudra forcément couvrir l'arête qui relie la feuille à son parent (noté $v$). Deux options s'offrent alors : ajouter $u$ à la couverture ou $v$. Comme l'ensemble des arêtes couverte par la feuille est inclus dans l'ensemble des arêtes couvertes par son parent, il y a forcément une couverture optimale qui contient $v$. 
 
 Une fois que le parent est ajouté à la couverture, on peut supprimer toutes les arêtes qu'il couvre et les sommets orphelins, puis itérer, la terminaison étant assurée par le fait que le graphe est un arbre. Comme pour l'algorithme précédent, nous avons choisi de travailler sur un tableau contenant les degrés de chaque sommet, plus facile à tenir à jour que le graphe lui-même. Les feuilles étant caractérisées par un degré égal à 1, elles sont faciles à détecter à partir de ce tableau. On obtient l'algorithme suivant :
 
@@ -268,15 +268,15 @@ Une fois que le parent est ajouté à la couverture, on peut supprimer toutes le
 
 $n=\taille(G)$
 
-création d'un tableau $\mathtt{degre}$ de taille $n$.
+$\degree \leftarrow$ tableau de taille $n$.
 
-$\cover = [\quad]$
+$\cover \leftarrow$ liste
 
 $\nonempty=\true$
 
-\Pour{$i$ do 0 à $n-1$}{
+\Pour{$i$ de 0 à $n-1$}{
 
-$\mathrm{\degree[i]\leftarrow \taille(\voisin[i])}$
+$\mathrm{\degree[i] = \taille(\voisin[i])}$
 }
 
 \Tq{$\nonempty$}{
@@ -293,11 +293,11 @@ $\mathrm{actualiser}(\degree, w)$}
 }
 
 \Retour{$\cover$}
-\caption{Algorithme optimal pour les arbres}
+\caption{Algorithme optimal pour les arbres - treeOptAlg}
  
 \end{algorithm}
 
-Où la fonction $\leaf$ renvoie le premier sommet dont le degré est 1 (c'est-à-dire la première feuille), et -1 s'il n'y en a pas.
+Où la fonction \texttt{leaf} renvoie le premier sommet dont le degré est 1 (c'est-à-dire la première feuille), et -1 s'il n'y en a pas.
 
 \subsubsection{Complexité}
 
@@ -315,7 +315,6 @@ Finalement, la complexité finale de l'algorithme glouton est $O(c\times n)$, o�
 \subsubsection{Résultats}
 
 Les tests ont été effectués sur une même machine. Ils consistent en l'exécution de l'algorithme \texttt{treeOptAlg} consécutivement sur 100 graphes de taille $n$. Le temps est donné en secondes.
-
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
@@ -344,7 +343,7 @@ Les temps d'exécution de notre algorithme sont donc en accord avec la complexit
 
 \subsubsection{Résultats}
 
-Pour 100 graphes générés avec \texttt{bipartiteGen}
+Nous avons effectué des tests sur 100 graphes bipartis de taille $n$ générés aléatoirement avec \texttt{bipartiteGen} et une probabilité de 0.5. Les tests ont été effectués sur une même machine, et les temps sont donnés en secondes.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -356,6 +355,8 @@ Pour 100 graphes générés avec \texttt{bipartiteGen}
 \end{tabular}
 \end{center}
 
+On voit que les résultats sont proches de ceux attendus : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur 6.6. Quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur compris entre 50 et 85. Cela correspond bien à la complexité estimée.
+
 \subsection{Algorithme 2-approché avec arbre couvrant}
 
 \subsubsection{Description}
@@ -364,8 +365,8 @@ L'algorithme se base sur un parcours en profondeur du graphe $G$. Le parcours en
 
 Partitionnons maintenant notre couverture en l'ensemble des nœuds de l'arbre de profondeur paire et ceux de profondeur impaire et intéressons nous à l'ensemble $E$ de plus grand cardinal. La taille de notre couverture est donc majorée par $2|E|$. En reliant chaque sommet de $E$ à son fils, on crée un ensemble d'arêtes indépendantes : en effet, notre couverture ne comportant pas de feuilles, chacun de ses sommets a un fils, et le profondeur du fils étant de parité différente de celle du père, le fils n'appartient pas à $E$. Ainsi, $|E|$ est un minorant de la taille d'une couverture de $G$. Notre algorithme est donc 2-approché.
 
-
-Nous avons implémenté cet algorithme de deux manières différentes : la première version (algorithme \og spanningTreeAlgRec\fg) en nous basant sur un algorithme récursif simple de parcours en profondeur, la deuxième version (algorithme \og spanningTreeAlg\fg) en dérécursifiant le parcours en utilisant une liste doublement chaînée comme pile.
+\bigskip
+Nous avons implémenté cet algorithme de deux manières différentes : la première version (algorithme \texttt{spanningTreeAlgRec}) en nous basant sur un algorithme récursif simple de parcours en profondeur, la deuxième version (algorithme \texttt{spanningTreeAlg}) en dérécursifiant le parcours en utilisant une liste doublement chaînée comme pile.
 
 Chaque sommet de $G$ est \og coloré\fg quand il est visité par le parcours. Un tableau $\Color$ de taille $n$ est créé au début de l'algorithme pour nous permettre de stocker ces "couleurs" : 
 
@@ -384,7 +385,7 @@ Pour savoir si un sommet $v$ est une feuille ou non, nous utilisons un booléen 
 \Entree{le graphe $g$}
 \Sortie{Une couverture d'arêtes, sous forme de liste de sommets $cover$}
 \BlankLine
-$n \leftarrow \taille(G)$
+$n = \taille(G)$
 
 $t \leftarrow$ tableau de taille $n$
 
@@ -434,7 +435,7 @@ parcours\_profondeur($G$, $i$, $\cover$, $t$)
 
 $\cover \leftarrow$ liste % a voir si externe
 
-pile$ \leftarrow$ liste % a voir si externe
+pile $\leftarrow$ liste % a voir si externe
 
 \Pour{$i \in V(G)$}{
 	$\Color[i] = 0$;
@@ -486,11 +487,11 @@ L'algorithme présenté demande un préprocessing faisable en temps linéaire (i
 
 \paragraph{Taille de la couverture trouvée}
 
-Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
+Nous avons comparé la taille $l$ de la couverture trouvée avec la taille $k$ de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
 %%% A COMPLETER
 \begin{itemize}
 \item avec l'algorithme itératif :
-\item avec l'algorithme récursif :
+\item avec l'algorithme récursif : l'algorithme nous retourne des couvertures de taille $l$ avec $l \leq 2*k$, il est bien 2-approché.
 \end{itemize}
 
 \paragraph{Comparaison des deux algorithmes}
@@ -548,7 +549,7 @@ On voit que les résultats sont cohérents avec la complexité estimée : les gr
 
 \subsubsection{Description}
 
-L'idée de cet algorithme est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirées à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
+L'idée de l'algorithme par suppression d'arêtes (\texttt{edgesDeletionAlg}) est de choisir une arête du graphe, d'ajouter ses deux extrémités à la couverture et des les supprimer du graphe (ainsi que toutes les arêtes adjacentes), et d'itérer jusqu'à ce que le graphe n'ait plus d'arêtes. Ainsi, les arêtes tirées à chaque itération forment un ensemble d'arêtes indépendantes, et la taille de la couverture obtenue sera égale à deux fois la taille de cet ensemble. On remarque alors que la taille d'un ensemble d'arêtes indépendantes est un minorant de la taille d'une couverture du graphe puisqu'il faut un sommet différent pour couvrir chacune des arêtes de l'ensemble. L'algorithme décrit est donc 2-approché.
 
 \vspace{0.35cm}
 \begin{algorithm}[H]
@@ -589,7 +590,7 @@ $\deg_1=\deg(v_1)$
 
 
 \Retour{$\cover$}
-\caption{Algorithme par élimination d'arêtes}
+\caption{Algorithme par élimination d'arêtes - edgesDeletionAlg}
  
 \end{algorithm}
 
@@ -637,7 +638,7 @@ $\voisin(v)\leftarrow [\quad]$
 
 Le nombre d'appels de la fonction \texttt{degrePositif} importe en fait assez peu : le fait que la fonction garde en mémoire l'indice du dernier sommet trouvé assure que la somme des temps d'exécution sera en $O(n)$. La complexité de l'algorithme viendra donc des appels de la fonction \texttt{suppressionAretes}, aux lignes 11 et 12. On sait que la fonction \texttt{suppressionAretes} supprimera au maximum $|E(G)|$ arêtes et que chaque suppression d'arête demandera de chercher un élément dans une liste de voisins d'un sommet, de taille majorée par $\Delta(G)$.
 
-Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe.
+Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe, ce qui correspond à $O(n^3)$ au pire pour des graphes généraux, et à $O(n^2)$ au pire pour des arbres.
 
 \subsubsection{Résultats}
 
@@ -647,7 +648,7 @@ Nous avons comparé la taille de la couverture trouvée avec la taille de la cou
 %%% A COMPLETER
 
 \paragraph{Tests}
-Pour 100 graphes générés aléatoirement avec \texttt{generation} :
+Nous avons testé l'algorithme par élimination d'arêtes sur des séries de 100 graphes de taille $n$ générés aléatoirement avec \texttt{generation} et une probabilité de 0.5. Les tests ont été faits sur la même machine, et les temps sont donnés en secondes.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
@@ -659,7 +660,12 @@ Pour 100 graphes générés aléatoirement avec \texttt{generation} :
 \end{tabular}
 \end{center}
 
-Sur 100 arbres générés aléatoirement avec \texttt{treeGeneration} :
+On voit que quand la taille de l'instance est doublée, le temps d'exécution est multiplié par un facteur 8, et quand elle est multipliée par 3, le temps d'exécution est multiplié par un facteur 26.75.
+Ces temps montrent bien que notre algorithme se comporte conformément à la complexité estimée.
+
+\bigskip
+Nous avons ensuite testé l'algorithme sur des séries de 100 arbres générés aléatoirement avec \texttt{treeGeneration} ; ces graphes ayant moins d'arêtes, nous nous attendons à pouvoir traiter des graphes de taille plus grande.
+
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
@@ -670,12 +676,14 @@ Sur 100 arbres générés aléatoirement avec \texttt{treeGeneration} :
 \end{tabular}
 \end{center}
 
+Effectivement, on voit d'une part que les arbres pouvant être traités par série de 100 en moins de 10 secondes ont une taille supérieure à 100000 sommets, tandis que sur des graphes généraux, seuls des graphes de taille légèrement supérieure à 700 sommets peuvent être traités dans le même temps. D'autre part, on voit que quand la taille des graphes est doublée, le temps d'exécution est multiplié par un facteur proche de 2 également, ce qui est en accord avec une complexité linéaire de l'algorithme pour des arbres.
+
 
 \subsection{Algorithme paramétrique pour faible couverture}
 
 \subsubsection{Description}
 
-L'algorithme paramétrique permet de tester si le graphe comporte une couverture par sommets d'une taille $k$ donnée, et de la retourner le cas échéant.
+L'algorithme paramétrique (\texttt{littleCover}) permet de tester si le graphe comporte une couverture par sommets d'une taille $k$ donnée, et de la retourner le cas échéant.
 
 \bigskip
 Pour cela, nous commençons par effectuer une kernelisation du problème. Soit $U = \{ v \in V(G) \mid deg(v) > k\}$. On sait que $G$ admet une $k$-couverture si et seulement si $G \smallsetminus U$ admet une $(k - |U|)$-couverture.
@@ -853,9 +861,24 @@ Commençons par estimer la complexité de l'algorithme \texttt{littleCoverAlg}. 
 Ainsi, l'algorithme \texttt{littleCoverAlg} tournera en $O(2^k k\times n)$. 
 
 \vspace{0.35cm}
-Étudions maintenant l'algorithme \texttt{littleCover}. La boucle \texttt{pour} des lignes 6 à 12 demande de déterminer pour chacun des $n$ sommets si son degré est plus grand que $k$ (se fait en $O(k)$). Cette étape de preprocessing ne sera fait qu'une seule fois et sa complexité sera asymptotiquement négligeable. Après cette étape, on appellera \texttt{littleCoverAlg} sur le graphe induit par les sommets restants de degré non nul, si et seulement si ce graphe a moins de $k^2$ arêtes donc moins de $2k^2$ sommets. Comme l'algorithme tourne en $O(2^k k\times n)$, avec $n\leqslant k^2$, l'algorithme final tourne en $O(2^k k^3)$.
+Étudions maintenant l'algorithme \texttt{littleCover}. La boucle \texttt{pour} des lignes 6 à 12 demande de déterminer pour chacun des $n$ sommets si son degré est plus grand que $k$ (se fait en $O(k)$). Cette étape de preprocessing ne sera faite qu'une seule fois et sa complexité sera asymptotiquement négligeable. Après cette étape, on appellera \texttt{littleCoverAlg} sur le graphe induit par les sommets restants de degré non nul, si et seulement si ce graphe a moins de $k^2$ arêtes donc moins de $2k^2$ sommets. Comme l'algorithme tourne en $O(2^k k\times n)$, avec $n\leqslant k^2$, l'algorithme final tourne en $O(2^k k^3)$.
 
 \subsubsection{Résultats}
+
+Nous avons testé l'algorithme sur des séries de 100 graphes de 20 sommets, générés aléatoirement avec \texttt{generation} et une probabilité de 0.5.
+Nous avons progressivement augmenté la taille $k$ de la couverture à rechercher.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline 
+	k & 9 & 10 & 11 & 12 & 13 & 14  \\
+	\hline
+	temps & 0 & 0.03 & 0.3 & 1.42 & 5.11 & 10.13  \\
+	\hline
+\end{tabular}
+\end{center}
+
+On voit que le temps d'exécution augmente très vite : le rapport entre le temps d'exécution pour une couverture de taille k et $2^k \times k^3$ est pratiquement constant : il vaut en moyenne $2 \times 10^{-7}$. Cela signifie que les temps d'exécution de l'algorithme \texttt{littleCover} sont en accord avec la complexité estimée.
 
 \section{Résolution avec un sat-solver}
 
