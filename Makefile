@@ -23,6 +23,7 @@ LDLIBS= -lm
 
 #Le nom du fichier executable a generer
 OUTFILE= vertexCoverExec
+OUTFILE2= minisatExec
 
 #les fichiers objets a generer 
 OBJS= graph.o list.o fileReader.o cover.o generation.o
@@ -43,6 +44,9 @@ testList: list_test
 testTime: time_test
 	rm -f $(INCDIR)*~ $(SRCDIR)*~ $(INCDIR)*~ $(TESTDIR)*~ ./*~ ./*.o
 
+minisatExec: minisat_exec
+	rm -f $(INCDIR)*~ $(SRCDIR)*~ $(INCDIR)*~ $(TESTDIR)*~ ./*~ ./*.o
+
 
 vertexCoverExec: $(OBJS) main.o
 	$(CC) $(OBJS) main.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
@@ -52,6 +56,9 @@ list_test: $(OBJS) list_tester.o
 	$(CC) $(OBJS) list_tester.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
 time_test: $(OBJS) timeTests.o
 	$(CC) $(OBJS) timeTests.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE)
+minisat_exec: $(OBJS) minisat.o
+	$(CC) $(OBJS) minisat.o $(LDFLAGS) $(LDLIBS) -o $(OUTFILE2)
+
 
 main.o: $(SRCDIR)main.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)main.c
@@ -72,3 +79,5 @@ list_tester.o: $(TESTDIR)list_tester.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(TESTDIR)list_tester.c
 timeTests.o: $(TESTDIR)timeTests.c
 	$(CC) $(CFLAGS) $(CPFLAGS) -c $(TESTDIR)timeTests.c
+minisat.o: $(SRCDIR)minisat.c
+	$(CC) $(CFLAGS) $(CPFLAGS) -c $(SRCDIR)minisat.c
