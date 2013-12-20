@@ -63,9 +63,9 @@ Dans ce module, deux types ont été définis : le type 'List' (qui sera manipul
 Une liste contient ces champs :
 \begin{itemize}
 	\itemb Sa taille
-	\itemb Un pointeur vers son premier élément (NULL si liste vide)
-	\itemb Un pointeur vers son dernier élément (NULL si liste vide)
-	\itemb Un pointeur vers l'élément courant (possiblement à NULL si l'on est sorti de la liste)
+	\itemb Un pointeur vers son premier élément (\texttt{NULL} si liste vide)
+	\itemb Un pointeur vers son dernier élément (\texttt{NULL} si liste vide)
+	\itemb Un pointeur vers l'élément courant (possiblement à \texttt{NULL} si l'on est sorti de la liste)
 \end{itemize}
 ~~\\
 Un élément contient ces champs :
@@ -79,25 +79,25 @@ Nous avons codé ensuite une collection de primitives classiques permettant la b
 
 \subsubsection{Graphes}
 
-Nous nous sommes tout de suite posé la question de la représentation du graphe, et avons du faire un choix (pour un graphe $G$ a $n$ sommets) :
+Nous nous sommes tout de suite posé la question de la représentation du graphe en mémoire, et avons ainsi du faire un choix d'implémentation(pour un graphe $G$ a $n$ sommets) :
 \begin{itemize}
 	\itemb Représenter le graphe par une matrice d'adjacence de taille $n^2$ :
 	\begin{itemize}
-		\item Avantage : sontVoisins(s1, s2) serait en temps constant
-		\item Inconvénients : getListeVoisins(s1) et serait en O(n)
+		\item Avantage : \texttt{sontVoisins(s1, s2)} serait en temps constant
+		\item Inconvénients : complexité de \texttt{getListeVoisins(s1)} et serait en $O(n)$, gros coût en mémoire
 	\end{itemize}
 \itemb Représenter le graphe par un tableau de sommets où chaque sommet contiendrait une liste de ses voisins :
 	\begin{itemize}
-		\item Avantages : getListeVoisins(s1) serait en temps constant
-	\item Inconvénients : sontVoisins(s1, s2) serait en O($\Delta$(G))
+		\item Avantages : complexité de \texttt{getListeVoisins(s1)} serait en temps constant
+	\item Inconvénients : complexité de \texttt{sontVoisins(s1, s2)} serait en $O(\Delta(G))$
 	\end{itemize}
 \itemb Utiliser les deux représentations en même temps :
 	\begin{itemize}
-		\item Avantages : getListeVoisins(s1) et sontVoisins(s1, s2) seraient en temps constant
-		\item Inconvénients : Redondance d'information en mémoire, cumul des coûts des deux structures dans la mise à jour du graphe
+		\item Avantages : complexité de \texttt{getListeVoisins(s1)} et de \texttt{sontVoisins(s1, s2)} seraient en temps constant
+		\item Inconvénients : Redondance d'information en mémoire, cumul des coûts des deux structures dans la maintient du graphe
 	\end{itemize}
 \end{itemize}
-
+~~\\
 Partant de la constatation que la fonction \texttt{getListeVoisins} allait être utilisée (et pas une seule fois \texttt{sontVoisins}) nous avons choisi la deuxième option.
 
 Nous avons donc deux types : 'Graph' est manipulé et 'Vertex' est caché à l'utilisateur.
@@ -118,26 +118,192 @@ Nous avons par la suite implémenté les primitives permettant de manipuler le g
 
 \subsubsection{Le module}
 
-Il a fallu implémenter des sous-fonctions plusieurs fois utilisées :
+Il a fallu implémenter des sous-fonctions plusieurs fois utilisées, notamment pour conserver la propriété de Graphe connexe dans tout les algorithmes :
+\BlankLine
 \begin{itemize}
-	\itemb random() : Retourne un double aléatoire inclus dans [0,1[.
-	\itemb randint(int a, int b) : Retourne un entier aléatoire inclus dans [a, b[.
-	\itemb swap(int* t, int i1, int i2) : Echange les cases d'indices i1 et i2 dans le tableau t.
-	\itemb randomEdge(Graph g, int i1, int i2, double proba) : Connecte les sommets d'indices i1 et i2 dans le graphe g avec une probabilité de 'proba'.
-	\itemb makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected) : Si 'isConnected' est à false (le sommet d'indice i est isolé), alors cela le connectera avec un sommet d'indice tab[k] (où k est un entier aléatoire inclus dans [iMin, iMax[).
-	\itemb getRandomVertice(int n) : Retourne un tableau d'ordre aléatoire avec des entiers allant de 0 à (n-1). Les algorithmes de génération travailleront sur ce tableau d'indices (plutôt que directement sur les vrais indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
+	\itemb \texttt{random()} : Retourne un double aléatoire inclus dans [0,1[.
+	\itemb \texttt{randint(int a, int b)} : Retourne un entier aléatoire inclus dans [a, b[.
+	\itemb \texttt{swap(int* t, int i1, int i2)} : Echange les cases d'indices i1 et i2 dans le tableau t.
+	\itemb \texttt{randomEdge(Graph g, int i1, int i2, double proba)} : Connecte les sommets d'indices i1 et i2 dans le graphe g avec une probabilité de 'proba'.
+	\itemb \texttt{makeConnected(Graph g, int i, int* tab, int iMin, int iMax, bool isConnected)} : Si 'isConnected' est à false (le sommet d'indice i est isolé), alors cela le connectera avec un sommet d'indice tab[k] (où k est un entier aléatoire inclus dans [iMin, iMax[).
+	\itemb \texttt{getRandomVertice(int n)} : Retourne un tableau d'ordre aléatoire avec des entiers allant de 0 à (n-1). Les algorithmes de génération travailleront sur ce tableau d'indices (plutôt que directement sur les vrais indices), ce qui nous assurera qu'ils auront un impact "homogène" sur les sommets (le rôle de chaque sommet sera attribué de manière équiprobable).
 \end{itemize}
 
 \subsubsection{Génération de graphe quelconque}
 
+\begin{algorithm}[H]
+\caption{Algorithme de génération de graphe quelconque}
+\Entree{Un nombre de sommet $n$ à générer et une probabilité $proba$ de connexion entre tout couple de sommet}
+\Sortie{Un graphe connexe quelconque généré aléatoirement}
+\BlankLine
+G $\leftarrow$ graphe de taille n
+
+ordreSommets $=$ getRandomVertices($n$)
+
+création d'un booléen \texttt{estConnecté}
+
+\Pour{$i$ de $0$ à $n-1$}{
+
+estConnecté $=$ false
+
+\Pour{$j$ de $i$ à $n-1$}{
+
+estConnecté $=$ randomEdge(G, ordreSommets[$i$], ordreSommets[$j$], proba) OU estConnecté
+
+}
+makeConnected(G, ordreSommets[$i$], ordreSommets, $i$, $n$, estConnecté)
+
+}
+
+\Retour{G}
+
+\end{algorithm}
+\bigskip
+
+Comme dit précédemment, l'algorithme travail sur un ordre aléatoire des sommets (et non pas sur les vrai indices). Pour des raisons de simplicité, nous considérerons dorénavant, dans nos explications, que les nombres manipulés représentent directement les indices des sommets.
+
+La variable \texttt{estConnecté} sera mise à  jour pour qu'à la fin de la deuxième boucle \texttt{for} elle indique si le sommet courant (d'indice $i$) est connecté à un des sommets précédent (d'indice dans $j\in[0, i[$).
+
+Nous saurons donc (par induction) qu'une seule composante connexe va croître au fur et à mesure et chaque nouveau sommet y sera connecté. Le graphe généré $G$ sera donc connexe.
+
 \subsubsection{Génération d'arbre}
+
+\begin{algorithm}[H]
+\caption{Algorithme de génération d'arbre quelconque}
+\Entree{Un nombre de sommet $n$ à générer}
+\Sortie{Un arbre quelconque généré aléatoirement}
+\BlankLine
+G $\leftarrow$ graphe de taille n
+
+ordreSommets $=$ getRandomVertices($n$)
+
+\Pour{$i$ de $0$ à $n-1$}{
+
+ajouterArête(G, ordreSommet[$i$], ordreSommet[randint($0$, $i$)]
+
+}
+
+\Retour{G}
+
+\end{algorithm}
+\bigskip
+
+Nous connectons chaque sommet d'indice $i$ à un unique sommet d'indice $j\in[0, i[$ (ce sommet peut être vu comme le "père" de ce sommet et $j$ n'est pas une variable explicitement définit dans l'algorithme).
+
+Grâce aux mêmes arguments que précédemment, nous savons que nous obtiendrons un graphe connexe. Si cette composante qui croît est sans cycle, il faudrait y ajouter un sommet avec au moins deux arêtes pour en créer un.
+
+Or nous n'ajoutons qu'une arête à chaque nouveau sommet, donc nous ne créons pas de cycle. Puisque la première composante connexe (une arête connectant les sommets d'indices $0$ et $1$) est sans cycle, nous pouvons prouver par induction que le graphe obtenu sera lui aussi sans cycle : c'est donc bien un arbre.
 
 \subsubsection{Génération de graphe biparti}
 
+\begin{algorithm}[H]
+\caption{Algorithme de génération de graphe biparti}
+\Entree{Un nombre de sommet $n$ à générer et une probabilité $proba$ de connexion entre tout couple de sommet}
+\Sortie{Un graphe connexe biparti généré aléatoirement}
+\BlankLine
+G $\leftarrow$ graphe de taille n
+
+ordreSommets $=$ getRandomVertices($n$)
+
+création d'un booléen \texttt{estConnecté}
+
+création d'un tableau extensible \texttt{part1} de taille $size1=0$
+
+création d'un tableau extensible \texttt{part2} de taille $size2=0$
+
+\bigskip
+ajouter(part1, ordreSommet[$0$])
+
+ajouter(part2, ordreSommet[$1$])
+
+ajouterArête(G, ordreSommet[$0$], ordreSommet[$1$])
+
+\Pour{$i$ de 2 à $n-1$}{
+
+estConnecté $=$ false
+
+\eSi{$random() < 0.5$}
+{
+\Pour{$j$ de $0$ à $size2$}{
+estConnecté $=$ randomEdge(G, ordreSommets[$i$], part2[$j$], proba) OU estConnecté
+}
+makeConnected(G, ordreSommets[$i$], part2, $0$, size2, estConnecté)
+
+ajouter(part1, ordreSommet[$i$])
+}
+{
+\Pour{$j$ de $0$ à $size1$}{
+estConnecté $=$ randomEdge(G, ordreSommets[$i$], part1[$j$], proba) OU estConnecté
+}
+makeConnected(G, ordreSommets[$i$], part1, $0$, size1, estConnecté)
+
+ajouter(part2, ordreSommet[$i$])
+}
+}
+
+\Retour{G}
+
+\end{algorithm}
+\bigskip
+
+Les tableaux extensibles représentent les deux partitions de G. On les initialise arbitrairement avec le sommet d'indice $0$ dans la première partition et le sommet d'indice $1$ dans la seconde, puis on les relie. (on part ainsi avec une composante connexe et deux partitions non vide).
+
+Ensuite, pour chaque nouveau sommet, on l'ajoutera aléatoirement dans la première ou dans la seconde partition (grâce au tirage \texttt{random < 0.5}). On utilisera la même méthode que précédemment pour s'assurer d'avoir des sommets connecté à la composante connexe déjà présente (\texttt{estConnecté} et \texttt{makeConnected}), tout en veillant à ne les connecter qu'à des sommets de la partition opposée.
+
 \subsubsection{Génération de graphe à petite couverture}
 
+\begin{algorithm}[H]
+\caption{Algorithme de génération de graphe à couverture minimale de taille fixée}
+\Entree{Un nombre de sommet $n$ à générer, une probabilité $proba$ de connexion entre tout couple de sommet et en entier $k$ représentant la taille de couverture souhaitée}
+\Sortie{Un graphe connexe de couverture de taille k généré aléatoirement}
+\BlankLine
+G $\leftarrow$ graphe de taille n
 
-% On explique rapidement comment fonctionne nos algorithmes de génération et quel est leur intérêt. Le plus important va être d'expliquer nos choix et ce qui aurait changé sur la fonction de répartition si on fait autrement.
+ordreSommets $=$ getRandomVertices(n)
+
+\Pour{$k_i$ de $0$ à $k$}{
+
+ajouterArête(G, ordreSommets[$k_i$], ordreSommets[$k+k_i$])
+
+\Pour{$k_j$ de $k_i+1$ à $k$}{
+
+randomEdge(G, ordreSommets[$k_i$], ordreSommets[$k_j$], proba)
+
+}
+}
+
+création d'un booléen \texttt{estConnecté}
+
+\Pour{$g_i$ de $2k$ à $n-1$}{
+
+estConnecté $=$ false
+
+\Pour{$k_i$ de $0$ à $k$}{
+
+estConnecté $=$ randomEdge(G, ordreSommets[$g_i$], ordreSommets[$k_i$], proba) OU estConnecté
+
+}
+makeConnected(G, ordreSommets[$g_i$], ordreSommets, $0$, $k$, estConnecté)
+
+}
+
+\Retour{G}
+
+\end{algorithm}
+\bigskip
+
+Durant la première boucle, nous parcourons tout les sommets de la couverture (fixés arbitrairement comme les $k$ premiers) et nous effectuons deux opérations :
+\begin{itemize}
+\itemb Nous les connectons à un sommet qui leur sera exclusif (il ne sera relié qu'à eux). Le voisin exclusif du sommet de la couverture $k_i$ sera le sommet $k_i+k$. Cette opération nous permettra de rendre nécessaire chaque sommet de la couverture.
+\itemb Nous connectons aléatoirement (toujours avec la probabilité \texttt{proba}) les sommets de la couverture entre eux.
+\end{itemize}
+\bigskip
+La deuxième boucle (commençant donc après les sommets exclusifs : à $2\times k$) connectera chaque sommet à au moins un sommet de la couverture (en utilisant toujours \texttt{estConnecté} et \texttt{makeConnected}), ce qui nous permettra de nous assurer que le graphe obtenu est connexe.
+\bigskip
+
+Note : Cette méthode nécessite de réserver un sommet exclusifs à chaque sommet de la couverture, et donc ne fonctionne qu'avec des couvertures de taille $k\leqslant n/2$.
+
+En fait nous générons un couplage de taille $k$ qui nous garanti qu'aucune couverture plus petite n'existe. Cependant nous avons conscience que, par cette méthode, notre algorithme ne pourra pas générer tout l'ensemble des graphes de couverture de taille $k$. De plus, il impose une borne max à la taille de la couverture (contrainte moins gênante puisqu'il est destiné à générer des graphes à petite couverture).
 
 \section{Algorithmes réalisés}
 
