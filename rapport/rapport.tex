@@ -79,7 +79,7 @@ Nous avons codé ensuite une collection de primitives classiques permettant la b
 
 \subsubsection{Graphes}
 
-Nous nous sommes tout de suite posé une questions de représentation du graphe, et avons du faire un choix (pour un graphe G a n sommets) :
+Nous nous sommes tout de suite posé une questions de représentation du graphe, et avons du faire un choix (pour un graphe $G$ a $n$ sommets) :
 \begin{itemize}
 \itemb Représenter le graphe par une matrice d'adjacence de taille $n^2$ :
 \begin{itemize}
@@ -98,7 +98,7 @@ Nous nous sommes tout de suite posé une questions de représentation du graphe,
 \end{itemize}
 \end{itemize}
 
-Partant de la constatation que la fonction getListeVoisins allait être utilisée (et pas une seule fois 'sontVoisins') nous avons choisi la deuxième option.
+Partant de la constatation que la fonction \texttt{getListeVoisins} allait être utilisée (et pas une seule fois \texttt{sontVoisins}) nous avons choisi la deuxième option.
 
 Nous avons donc deux types ('Graph' étant manipulé et 'Vertex' étant caché à l'utilisateur).
 
@@ -216,7 +216,7 @@ décrémenter $\voisin[i]$ de 1
  \itemb On passera $c+1$ fois dans la boucle initiée à la ligne 7, où $c$ est la taille de la couverture renvoyée. À chaque fois :
 \begin{itemize}
 \itemt Déterminer le sommet de degré maximum (ligne 8) se fait en $O(n)$
-\itemt La fonction actualiser tourne en $\deg(V)\leqslant n$.
+\itemt La fonction \texttt{actualiser} tourne en $\deg(V)\leqslant n$.
 \end{itemize}
 \end{itemize}
 
@@ -236,17 +236,17 @@ L'algorithme a été testé sur une série de 100 graphes, générés aléatoire
 Les tests ont été effectués sur une même machine.
 
 \bigskip
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 	\hline 
-	nb de sommets & 20 & 50 & 100 & 200 & 300 & 400 & 500 & 800 & 1000 \\
+	nb de sommets & 50 & 100 & 200 & 300 & 400 & 500 & 800  \\
 	\hline
-	temps (s) & 0 & 0.02 & 0.08 & 0.51 & 1.4 & 3.68 & 9.95 &  & 185 \\
+	temps (s) & 0.01 & 0.13 & 0.64 & 2.09 & 5.91 & 19.27 & 131.06 \\
 	\hline
 \end{tabular}
 
 \bigskip
 
-On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.  %%% REVOIR TEMPS !
+On voit que si on multiplie par deux la taille des graphes considérés, le temps de calcul de la couverture par l'algorithme $greedyAlg$ est multiplié par un facteur supérieur à 4.
 
 
 Les temps d'exécution de notre algorithme sont donc moins bons que ceux prédits par la complexité estimée, et cela est sûrement dû à notre gestion du tableau des degrés, qui n'est pas optimale.
@@ -315,7 +315,6 @@ Finalement, la complexité finale de l'algorithme glouton est $O(c\times n)$, o�
 \subsubsection{Résultats}
 
 Les tests ont été effectués sur une même machine. Ils consistent en l'exécution de l'algorithme \texttt{treeOptAlg} consécutivement sur 100 graphes de taille $n$. Le temps est donné en secondes.
-
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
@@ -344,7 +343,7 @@ Les temps d'exécution de notre algorithme sont donc en accord avec la complexit
 
 \subsubsection{Résultats}
 
-Pour 100 graphes générés avec \texttt{bipartiteGen}
+Nous avons effectué des tests sur 100 graphes bipartis de taille $n$ générés aléatoirement avec \texttt{bipartiteGen} et une probabilité de 0.5. Les tests ont été effectués sur une même machine, et les temps sont donnés en secondes.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -355,6 +354,8 @@ Pour 100 graphes générés avec \texttt{bipartiteGen}
 	\hline
 \end{tabular}
 \end{center}
+
+On voit que les résultats sont proches de ceux attendus : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur 6.6. Quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur compris entre 50 et 85. Cela correspond bien à la complexité estimée.
 
 \subsection{Algorithme 2-approché avec arbre couvrant}
 
@@ -637,7 +638,7 @@ $\voisin(v)\leftarrow [\quad]$
 
 Le nombre d'appels de la fonction \texttt{degrePositif} importe en fait assez peu : le fait que la fonction garde en mémoire l'indice du dernier sommet trouvé assure que la somme des temps d'exécution sera en $O(n)$. La complexité de l'algorithme viendra donc des appels de la fonction \texttt{suppressionAretes}, aux lignes 11 et 12. On sait que la fonction \texttt{suppressionAretes} supprimera au maximum $|E(G)|$ arêtes et que chaque suppression d'arête demandera de chercher un élément dans une liste de voisins d'un sommet, de taille majorée par $\Delta(G)$.
 
-Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe.
+Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe, ce qui correspond à $O(n^3)$ au pire pour des graphes généraux, et à $O(n^2)$ au pire pour des arbres.
 
 \subsubsection{Résultats}
 
@@ -647,7 +648,7 @@ Nous avons comparé la taille de la couverture trouvée avec la taille de la cou
 %%% A COMPLETER
 
 \paragraph{Tests}
-Pour 100 graphes générés aléatoirement avec \texttt{generation} :
+Nous avons testé l'algorithme par élimination d'arêtes sur des séries de 100 graphes de taille $n$ générés aléatoirement avec \texttt{generation} et une probabilité de 0.5. Les tests ont été faits sur la même machine, et les temps sont donnés en secondes.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
@@ -659,7 +660,12 @@ Pour 100 graphes générés aléatoirement avec \texttt{generation} :
 \end{tabular}
 \end{center}
 
-Sur 100 arbres générés aléatoirement avec \texttt{treeGeneration} :
+On voit que quand la taille de l'instance est doublée, le temps d'exécution est multiplié par un facteur 8, et quand elle est multipliée par 3, le temps d'exécution est multiplié par un facteur 26.75.
+Ces temps montrent bien que notre algorithme se comporte conformément à la complexité estimée.
+
+\bigskip
+Nous avons ensuite testé l'algorithme sur des séries de 100 arbres générés aléatoirement avec \texttt{treeGeneration} ; ces graphes ayant moins d'arêtes, nous nous attendons à pouvoir traiter des graphes de taille plus grande.
+
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
@@ -669,6 +675,8 @@ Sur 100 arbres générés aléatoirement avec \texttt{treeGeneration} :
 	\hline
 \end{tabular}
 \end{center}
+
+Effectivement, on voit d'une part que les arbres pouvant être traités par série de 100 en moins de 10 secondes ont une taille supérieure à 100000 sommets, tandis que sur des graphes généraux, seuls des graphes de taille légèrement supérieure à 700 sommets peuvent être traités dans le même temps. D'autre part, on voit que quand la taille des graphes est doublée, le temps d'exécution est multiplié par un facteur proche de 2 également, ce qui est en accord avec une complexité linéaire de l'algorithme pour des arbres.
 
 
 \subsection{Algorithme paramétrique pour faible couverture}
