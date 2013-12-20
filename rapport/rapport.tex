@@ -340,7 +340,17 @@ Les temps d'exécution de notre algorithme sont donc en accord avec la complexit
 
 \subsubsection{Résultats}
 
-% On chronomètre sur une batteries de graphes générés aléatoirement, on commente et on interprète. Je pense que cette partie est importante, c'est ce qui justifie l'implémentation de générateurs.
+Pour 100 graphes générés avec \texttt{bipartiteGen}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 200 & 300 & 400 & 500 & 800 & 1000 & 1500 \\
+	\hline
+	temps & 0.5 & 1.22 & 2.30 & 4.18 & 14.07 & 27.35 & 104 \\
+	\hline
+\end{tabular}
+\end{center}
 
 \subsection{Algorithme 2-approché avec arbre couvrant}
 
@@ -507,7 +517,7 @@ Cependant, les temps d'exécution des deux algorithmes semblent correspondre à 
 
 \paragraph{Comparaison des temps sur des graphes généraux et des arbres}
 
-Nous avons comparé les temps d'exécution de l'algorithme récursif sur 100 graphes de taille $n$ générés aléatoirement avec \texttt{treeGen} :
+Nous avons comparé les temps d'exécution de l'algorithme récursif sur 100 graphes de taille $n$ générés aléatoirement avec \texttt{treeGen} (les tests ont été faits sur la même machine que les deux précédents) :
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 	\hline 
@@ -617,6 +627,29 @@ Le nombre d'appels de la fonction \texttt{degrePositif} importe en fait assez pe
 Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le degré maximum du graphe.
 
 \subsubsection{Résultats}
+
+Pour 100 graphes générés aléatoirement avec \texttt{generation} :
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 100 & 200 & 300 & 400 & 500 & 600 & 700 & 800 & 1000 \\
+	\hline
+	temps & 0.03 & 0.32 & 1.06 & 2.53 & 4.95 & 8.56 & 15.03 & 27.09 & 64.76 \\
+	\hline
+\end{tabular}
+\end{center}
+
+Sur 100 arbres générés aléatoirement avec \texttt{treeGeneration} :
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+	\hline 
+	n & 500 & 1000 & 2000 & 5000 & 10000 & 20000 & 50000 & 100000 & 200000\\
+	\hline
+	temps & 0.02 & 0.04 & 0.07 & 0.11 & 0.23 & 0.76 & 2.58 & 6.21 & 13.91\\
+	\hline
+\end{tabular}
+\end{center}
 
 
 \subsection{Algorithme paramétrique pour faible couverture}
