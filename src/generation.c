@@ -79,12 +79,15 @@ Graph bipartiteGeneration (int n, double proba){
 
 // Generation de graphe avec petite couverture (pratique pour tests)
 Graph littleGeneration (int n, int k, double proba){
-  assert(k<=n/2);  // Tout graphe connexe admet, au pire des cas, une couverture de taille n/2
+  assert(k<=n/2);  // Tout graphe connexe admet, au pire des cas, une couverture de taille k=n/2
   Graph g = g_createGraph(n);
   int* vertices = getRandomVertices(n); // Les k premières valeurs seront la couverture
 
-  for(int ki=0; ki<k; ki++)
-    g_addEdge(g, vertices[ki], vertices[k+ki]); // Les sommets "exclusifs" sont relié a un et un seul sommet de la couverture
+  for (int ki=0; ki<k; ki++){
+    g_addEdge(g, vertices[ki], vertices[k+ki]); // Les sommets "exclusifs" sont relié à un et un seul sommet de la couverture (sommet 'a' relié a 'a+k')
+    for (int kj=ki+1; kj<k; kj++)
+      randomEdge(g, vertices[ki], vertices[kj], proba);
+  }
 
   bool isConnected;
   for(int gi=2*k; gi<n; gi++){
@@ -93,6 +96,7 @@ Graph littleGeneration (int n, int k, double proba){
       isConnected = randomEdge(g, vertices[gi], vertices[ki], proba) || isConnected;
     makeConnected(g, vertices[gi], vertices, 0, k, isConnected);
   }
+
   free(vertices);
   return g;
 }
