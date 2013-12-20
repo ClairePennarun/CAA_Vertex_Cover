@@ -79,14 +79,14 @@ List output(int p){
   return NULL;
 }
 
-int main(int argc, char* argv[]){
-  Graph g=readFile(argv[1]);
-  int p = atoi(argv[2]);
-  input(g,p);
-  minisat();
-  List cover = output(p);
-  l_display(cover);
-  if (cover != NULL)
-    l_freeList(cover);
-  return EXIT_SUCCESS;
-}
+/* int main(int argc, char* argv[]){ */
+/*   Graph g=readFile(argv[1]); */
+/*   int p = atoi(argv[2]); */
+/*   input(g,p); */
+/*   minisat(); */
+/*   List cover = output(p); */
+/*   l_display(cover); */
+/*   if (cover != NULL) */
+/*     l_freeList(cover); */
+/*   return EXIT_SUCCESS; */
+/* } */

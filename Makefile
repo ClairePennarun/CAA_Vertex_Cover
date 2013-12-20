@@ -27,7 +27,7 @@ OUTFILE2= minisatExec
 OUTFILE3 = testExec
 
 #les fichiers objets a generer 
-OBJS= graph.o list.o fileReader.o cover.o generation.o
+OBJS= graph.o list.o fileReader.o cover.o generation.o minisat.o
 
 #les dependances 
 all: $(OUTFILE)
