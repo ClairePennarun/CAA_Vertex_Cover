@@ -11,34 +11,34 @@ void input(Graph g, int p){
   FILE* file = NULL;
   int n = g_getSize(g);
   file = fopen("input", "w");
-  fprintf(file, "p cnf %d %d\n",n*p, ((n*p*(n+p-2))/2+p*g_numberOfEdges(g)));
+  fprintf(file, "p cnf %d %d\n",n*p, ((n*p*(n+p-2))/2+g_numberOfEdges(g)));
   for (int i=1; i<=n; i++){
     for (int k=1; k<=p; k++){
       for (int l=k+1; l<=p; l++){
 	fprintf(file, "%d %d 0\n",(-(p*(i-1)+k)),(-(p*(i-1)+l)));
-      }
+	}
       for (int j=i+1; j<=n; j++){
 	fprintf(file, "%d %d 0\n",(-(p*(i-1)+k)),(-(p*(j-1)+k)));	
-      }
+	}
     }
     List listNeighbors = g_getNeighbors(g, i-1);
     l_head(listNeighbors);
     while (!l_isOutOfList(listNeighbors)){
       int j = l_getVal(listNeighbors);
-      if (j>i){
+      if (j>=i){
 	for (int k=1; k<=p; k++){
-	  fprintf(file, "%d %d ",(p*(i-1)+k),(p*(j-1)+k));
-	  fprintf(file, " 0\n");
-	}
+	  fprintf(file, "%d %d ",(p*(i-1)+k),(p*(j)+k));
+	  }
+	fprintf(file, " 0\n");
       }
       l_next(listNeighbors);
     }
   }
 }
 
-/*void minisat(){
+void minisat(){
   system("minisat input output");
-  }*/
+  }
 
 int main(int argc, char* argv[]){
   Graph g=readFile(argv[1]);
