@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <emmintrin.h>
 
 #include <time.h>
 #include <string.h>
@@ -9,10 +11,13 @@
 #include "cover.h"
 #include "list.h"
 
+int getGraine();
+uint64_t rdtsc();
+
 int main(int argc, char* argv[]){
   clock_t start,finish;
   double duration = 0;
-  int graine = time(NULL);
+  int graine = getGraine();
   srand(graine);
   printf("La graine pour l'aléatoire est : %d\n", graine);
 
@@ -61,14 +66,21 @@ int main(int argc, char* argv[]){
       }
     }
     if(strcmp(argv[4], "littleCover") == 0){
+      clock_t startCreate;
+      clock_t endCreate;
+      double durationCreate;
       for (int i = 0; i < atoi(argv[1]); i++){
+	startCreate = clock();
 	Graph g = generation(atoi(argv[3]), 0.5);
+	endCreate = clock();
 	start = clock();
 	cover = littleCover(g, atoi(argv[5]));
 	finish = clock();
+	durationCreate += (double)(endCreate - startCreate) / CLOCKS_PER_SEC;
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
       }
+      printf("%2.3f seconds creation \n", durationCreate);
     }
     if(cover != NULL)
       l_freeList(cover);
@@ -133,6 +145,7 @@ int main(int argc, char* argv[]){
     }
 
     if(strcmp(argv[4], "littleCover") == 0){
+      
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = treeGeneration(atoi(argv[3]));
 	start = clock();
@@ -208,16 +221,26 @@ int main(int argc, char* argv[]){
   }  
 
   else if(strcmp(argv[2], "littleGen") == 0){
+    int sizeCoverFound = 0;
+    int sizeMaxCover = 0;
+    int size = 0;
     if(strcmp(argv[5], "greedy") == 0){
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = littleGeneration(atoi(argv[3]), atoi(argv[4]), 0.5);
 	start = clock();
 	cover = greedyAlg(g);
-	//printf("taille de couverture trouvee : %d \n", l_size(cover));
 	finish = clock();
+	size = l_size(cover);
+	printf("taille cover = %d \n", size);
+	sizeCoverFound += size;
+	if (size > sizeMaxCover)
+	  sizeMaxCover = size;
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
-      }    
+      } 
+      printf("taille de couverture optimale : %d \n", atoi(argv[4]));
+      printf("taille moyenne de couverture trouvée : %d \n", sizeCoverFound/(atoi(argv[1])));
+      printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
     }
 
     if(strcmp(argv[5], "bipartiteOpt") == 0){
@@ -232,41 +255,99 @@ int main(int argc, char* argv[]){
     }
 
     if(strcmp(argv[5], "spanningTree") == 0){
+      int sizeCoverFound = 0;
+      int sizeMaxCover = 0;
+      int size = 0;
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = littleGeneration(atoi(argv[3]),atoi(argv[4]), 0.5);
+	g_display(g);
 	start = clock();
-	cover = spanningTreeAlg(g);
+	cover = spanningTreeAlgRec(g);
 	finish = clock();
+	l_display(cover);
+	size = l_size(cover);
+	printf("taille cover = %d \n", size);
+	sizeCoverFound += size;
+	if (size > sizeMaxCover)
+	  sizeMaxCover = size;
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
       }
+      printf("taille de couverture optimale : %d \n", atoi(argv[4]));
+      printf("taille moyenne de couverture trouvée : %d \n", sizeCoverFound/atoi(argv[1]));
+      printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
     }
 
     if(strcmp(argv[5], "edgesDeletion") == 0){
+      int sizeCoverFound = 0;
+      int sizeMaxCover = 0;
+      int size = 0;
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = littleGeneration(atoi(argv[3]),atoi(argv[4]), 0.5);
+	g_display(g);
 	start = clock();
 	cover = edgesDeletionAlg(g);
 	finish = clock();
+	l_display(cover);
+	size = l_size(cover);
+	printf("taille cover = %d \n", size);
+	sizeCoverFound += size;
+	if (size > sizeMaxCover)
+	  sizeMaxCover = size;
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
       }
+      printf("taille de couverture optimale : %d \n", atoi(argv[4]));
+      printf("taille moyenne de couverture trouvée : %d \n", sizeCoverFound/ atoi(argv[1]));
+      printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
     }
 
     if(strcmp(argv[5], "littleCover") == 0){
+      int sizeMin = 0;
+      int sizeMax = 0;
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = littleGeneration(atoi(argv[3]),atoi(argv[4]), 0.5);
+	g_display(g);
+	printf("couverture optimale de taille %d \n", atoi(argv[4]));
+	sizeMin = atoi(argv[4]);
 	start = clock();
 	cover = littleCover(g, atoi(argv[6]));
 	finish = clock();
+	l_display(cover);
+	size = l_size(cover);
+	if (size < sizeMin)
+	  sizeMin = size;
+	if (size > sizeMax)
+	  sizeMax = size;
 	duration += (double)(finish - start) / CLOCKS_PER_SEC;
 	g_freeGraph(g);
       }
+      printf("taille min trouvée : %d, taille max trouvée : %d \n", sizeMin, sizeMax);
     }
-    l_freeList(cover);
+    if(cover != NULL)
+      l_freeList(cover);
     printf("%2.3f seconds \n", duration);
     return EXIT_SUCCESS;
   }
 
   return EXIT_SUCCESS;
 }
+
+
+int getGraine(){
+  return rdtsc();
+}
+
+#ifdef __i386
+uint64_t rdtsc() {
+  uint64_t x;
+  __asm__ volatile ("rdtsc" : "=A" (x));
+  return x;
+}
+#else 
+uint64_t rdtsc() {
+  uint64_t a, d;
+  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
+  return (d<<32) | a;
+}
+#endif

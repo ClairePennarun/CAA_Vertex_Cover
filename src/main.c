@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
-#include <emmintrin.h>
 
 #include "graph.h"
 #include "fileReader.h"
@@ -13,8 +12,6 @@
 
 Graph selectGraph(int argc, char* argv[], int i);
 void displayTab(int* tab, int size);
-int getGraine();
-uint64_t rdtsc();
 
 int main(int argc, char* argv[]){
 
@@ -197,24 +194,6 @@ int main(int argc, char* argv[]){
     return EXIT_FAILURE;
     }
 }
-
-int getGraine(){
-  return rdtsc();//time(NULL);
-}
-
-#ifdef __i386
-uint64_t rdtsc() {
-  uint64_t x;
-  __asm__ volatile ("rdtsc" : "=A" (x));
-  return x;
-}
-#else 
-uint64_t rdtsc() {
-  uint64_t a, d;
-  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
-  return (d<<32) | a;
-}
-#endif
 
 void displayTab(int* tab, int size){
   printf("[");

@@ -487,11 +487,11 @@ L'algorithme présenté demande un préprocessing faisable en temps linéaire (i
 
 \paragraph{Taille de la couverture trouvée}
 
-Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
+Nous avons comparé la taille $l$ de la couverture trouvée avec la taille $k$ de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
 %%% A COMPLETER
 \begin{itemize}
 \item avec l'algorithme itératif :
-\item avec l'algorithme récursif :
+\item avec l'algorithme récursif : l'algorithme nous retourne des couvertures de taille $l$ avec $l \leq 2*k$, il est bien 2-approché.
 \end{itemize}
 
 \paragraph{Comparaison des deux algorithmes}
@@ -864,6 +864,19 @@ Ainsi, l'algorithme \texttt{littleCoverAlg} tournera en $O(2^k k\times n)$.
 Étudions maintenant l'algorithme \texttt{littleCover}. La boucle \texttt{pour} des lignes 6 à 12 demande de déterminer pour chacun des $n$ sommets si son degré est plus grand que $k$ (se fait en $O(k)$). Cette étape de preprocessing ne sera fait qu'une seule fois et sa complexité sera asymptotiquement négligeable. Après cette étape, on appellera \texttt{littleCoverAlg} sur le graphe induit par les sommets restants de degré non nul, si et seulement si ce graphe a moins de $k^2$ arêtes donc moins de $2k^2$ sommets. Comme l'algorithme tourne en $O(2^k k\times n)$, avec $n\leqslant k^2$, l'algorithme final tourne en $O(2^k k^3)$.
 
 \subsubsection{Résultats}
+
+Nous avons testé l'algorithme sur des séries de 100 graphes de 20 sommets, générés aléatoirement avec \texttt{generation} et une probabilité de 0.5.
+Nous avons progressivement augmenté la taille $k$ de la couverture à rechercher.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline 
+	k & 9 & 10 & 11 & 12 & 13 & 14  \\
+	\hline
+	temps & 0 & 0.03 & 0.3 & 1.42 & 5.11 & 10.13  \\
+	\hline
+\end{tabular}
+\end{center}
 
 \section{Résolution avec un sat-solver}
 
