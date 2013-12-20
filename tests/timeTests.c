@@ -10,6 +10,7 @@
 #include "generation.h"
 #include "cover.h"
 #include "list.h"
+#include "minisat.h"
 
 int getGraine();
 uint64_t rdtsc();
@@ -239,7 +240,29 @@ int main(int argc, char* argv[]){
 	g_freeGraph(g);
       } 
       printf("taille de couverture optimale : %d \n", atoi(argv[4]));
-      printf("taille moyenne de couverture trouvée : %d \n", sizeCoverFound/(atoi(argv[1])));
+      printf("taille moyenne de couverture trouvée : %f \n", (double) sizeCoverFound/(atoi(argv[1])));
+      printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
+    }
+
+    if(strcmp(argv[5], "minisat") == 0){
+      for (int i = 0; i < atoi(argv[1]); i++){
+	Graph g = littleGeneration(atoi(argv[3]), atoi(argv[4]), 0.5);
+	start = clock();
+	int p = atoi(argv[6]);
+	input(g,p);
+	minisat();
+	cover = output(p);
+	finish = clock();
+	size = l_size(cover);
+	printf("taille cover = %d \n", size);
+	sizeCoverFound += size;
+	if (size > sizeMaxCover)
+	  sizeMaxCover = size;
+	duration += (double)(finish - start) / CLOCKS_PER_SEC;
+	g_freeGraph(g);
+      } 
+      printf("taille de couverture optimale : %d \n", atoi(argv[4]));
+      printf("taille moyenne de couverture trouvée : %f \n", (double) sizeCoverFound/(atoi(argv[1])));
       printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
     }
 
@@ -262,7 +285,7 @@ int main(int argc, char* argv[]){
 	Graph g = littleGeneration(atoi(argv[3]),atoi(argv[4]), 0.5);
 	g_display(g);
 	start = clock();
-	cover = spanningTreeAlgRec(g);
+	cover = spanningTreeAlg(g);
 	finish = clock();
 	l_display(cover);
 	size = l_size(cover);
@@ -274,7 +297,7 @@ int main(int argc, char* argv[]){
 	g_freeGraph(g);
       }
       printf("taille de couverture optimale : %d \n", atoi(argv[4]));
-      printf("taille moyenne de couverture trouvée : %d \n", sizeCoverFound/atoi(argv[1]));
+      printf("taille moyenne de couverture trouvée : %f \n", (double)sizeCoverFound/atoi(argv[1]));
       printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
     }
 
@@ -284,7 +307,6 @@ int main(int argc, char* argv[]){
       int size = 0;
       for (int i = 0; i < atoi(argv[1]); i++){
 	Graph g = littleGeneration(atoi(argv[3]),atoi(argv[4]), 0.5);
-	g_display(g);
 	start = clock();
 	cover = edgesDeletionAlg(g);
 	finish = clock();
@@ -298,7 +320,7 @@ int main(int argc, char* argv[]){
 	g_freeGraph(g);
       }
       printf("taille de couverture optimale : %d \n", atoi(argv[4]));
-      printf("taille moyenne de couverture trouvée : %d \n", sizeCoverFound/ atoi(argv[1]));
+      printf("taille moyenne de couverture trouvée : %f \n", (double)sizeCoverFound/ atoi(argv[1]));
       printf("taille maximale de couverture trouvée : %d \n", sizeMaxCover);
     }
 

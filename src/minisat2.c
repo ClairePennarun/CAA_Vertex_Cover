@@ -16,12 +16,9 @@ void input(Graph g, int p){
   FILE* file = NULL;
   int n = g_getSize(g);
   file = fopen("input", "w");
-  fprintf(file, "p cnf %d %d\n",n*p, ((n*p*(n+p-2))/2+g_numberOfEdges(g)));
+  fprintf(file, "p cnf %d %d\n",n*p, ((n*p*(n-1))/2+g_numberOfEdges(g)));
   for (int i=1; i<=n; i++){
     for (int k=1; k<=p; k++){
-      for (int l=k+1; l<=p; l++){
-	fprintf(file, "%d %d 0\n",(-(p*(i-1)+k)),(-(p*(i-1)+l)));
-	}
       for (int j=i+1; j<=n; j++){
 	fprintf(file, "%d %d 0\n",(-(p*(i-1)+k)),(-(p*(j-1)+k)));	
 	}
@@ -38,7 +35,7 @@ void input(Graph g, int p){
       }
       l_next(listNeighbors);
     }
-    //l_freeList(listNeighbors);
+    l_freeList(listNeighbors);
   }
   fclose(file);
 }
@@ -63,7 +60,9 @@ List output(int p){
       if (*tok != '-'){
 	int i = atoi(tok);
 	if(i>0){
-	  l_addInFront(cover, ((i-1)/p));
+	  int j=(i-1)/p;
+	  if (!l_contain(cover,j))
+	    l_addInFront(cover, j);
 	}
 	if(i==0){
 	  fclose(file);
@@ -77,4 +76,16 @@ List output(int p){
     l_freeList(cover);
   fclose(file);
   return NULL;
+}
+
+int main(int argc, char* argv[]){
+  Graph g=readFile(argv[1]);
+  int p = atoi(argv[2]);
+  input(g,p);
+  minisat();
+  List cover = output(p);
+  l_display(cover);
+  if (cover != NULL)
+    l_freeList(cover);
+  return EXIT_SUCCESS;
 }

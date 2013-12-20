@@ -9,34 +9,12 @@
 #include "list.h"
 #include "cover.h"
 #include "generation.h"
+#include "minisat.h"
 
 Graph selectGraph(int argc, char* argv[], int i);
 void displayTab(int* tab, int size);
 
 int main(int argc, char* argv[]){
-
-  /*Graph g = bipartiteGeneration(20, 0.5);
-
-  g_display(g);
-
-  int** parts = computeBiPartition(g_cloneGraph(g));
-
-  printf("Première partition : ");
-  displayTab(parts[0], parts[2][0]);
-
-  printf("Deuxième partition : ");
-  displayTab(parts[1], parts[2][1]);
-
-  List biPartCouv = bipartiteOptAlg(g_cloneGraph(g));
-
-  printf("Couverture optimale (graphe biparti) : \n");
-  l_display(biPartCouv);
-
-  List gloutonCouv = greedyAlg(g_cloneGraph(g));
-  printf("Couverture trouvé par le glouton : \n");
-  l_display(gloutonCouv);
-  
-  return EXIT_SUCCESS;*/
 
   srand(time(NULL));
 
@@ -55,6 +33,25 @@ int main(int argc, char* argv[]){
     printf("  Génération de graphes bipartis de taille n et proba p: bipartiteGen n p \n");
     printf("  Génération de graphes de taille n, proba p et taille de couverture k : littleGen n k p \n");
     printf("\nTroisieme parametre : disp si vous voulez afficher le graphe de départ \n");
+    return EXIT_SUCCESS;
+  }
+
+  if (strcmp(argv[1],"minisat") == 0){            // Minisat
+    if (argc == 2){
+      printf("pas assez d'arguments \n");
+      return EXIT_FAILURE;
+    }
+    Graph g = selectGraph(argc,argv,3);
+    if(g == NULL)
+      return EXIT_FAILURE;
+    int p = atoi(argv[2]);
+    input(g,p);
+    minisat();
+    List cover = output(p);
+    l_display(cover);
+    if (cover != NULL)
+      l_freeList(cover);
+    g_freeGraph(g);
     return EXIT_SUCCESS;
   }
 

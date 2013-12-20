@@ -1,0 +1,152 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[french,ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,urlcolor= blue,linkcolor= black}
+
+\newcommand*{\itemb}{\item[$\bullet$]}
+\newcommand*{\itemt}{\item[$\blacktriangleright$]}
+\DeclareMathOperator{\degree}{degre}
+\DeclareMathOperator{\taille}{taille}
+\DeclareMathOperator{\voisin}{voisin}
+\DeclareMathOperator{\voisins}{voisins}
+\DeclareMathOperator{\degmax}{degmax}
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\cover}{cover}
+\DeclareMathOperator{\nonempty}{nonempty}
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\leaf}{leaf}
+\DeclareMathOperator{\parent}{parent}
+\DeclareMathOperator{\Color}{color}
+\DeclareMathOperator{\degrepositif}{degrePositif}
+
+\newcommand*{\dlor}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigvee}}}}
+\newcommand*{\dland}[2]{\displaystyle{\underset{#1}{\overset{#2}{\bigwedge}}}}
+
+\title{Projet Complexité et Algorithmique appliquée\\ Implémentation d'algorithmes pour résoudre le problème Vertex Cover \\
+README}
+\author{Thomas \bsc{Bellitto}\and Paul-Émile \bsc{Boutoille} \and Claire \bsc{Pennarun}}
+\date{}
+
+\begin{document}
+
+\maketitle
+\section{Fichiers présents}
+
+	Le répertoire "src" contient les fichiers source .c
+	
+	Le répertoire "include" contient les fichiers header .h
+	
+	Le répertoire "files" contient les fichiers .txt représentant des graphes.
+	
+	Attention, les fichiers de graphes doivent être au format .txt et au format suivant :
+
+	nbSommets
+	
+	indiceSommet1 : indiceVoisin1 indiceVoisin2 ...
+	
+	indiceSommet2 : indiceVoisin1 indiceVoisin2 ...
+	
+	Le répertoire "tests" contient les fichiers .c de tests.
+	
+	A la racine sont présents les exécutables et le Makefile.
+
+
+\section{Installation et compilation}
+
+	Pour utiliser la résolution avec \texttt{minisat}, il faut installer ce logiciel.
+	Pour l'installer sous Linux :
+	\texttt{sudo apt-get install minisat}
+	
+	Nous ne sommes pas sûrs que les appels système utilisés pour résoudre le problème VertexCover à l'aide de \texttt{minisat} soient reconnus sous d'autres systèmes d'exploitation que GNU/Linux.
+
+	Les fichiers se compilent avec la commande \texttt{make} qui lance l'exécution du fichier Makefile présent à la racine et génère l'exécutable \textit{vertexCoverExec}.
+
+
+\section{Exécution}
+
+	L'exécutable \textit{vertexCoverExec} se lance avec la commande \texttt{./vertexCoverExec}, en sélectionnant l'algorithme que l'on veut lancer et le graphe sur lequel on veut le faire :
+	
+	\bigskip
+	\texttt{./vertexCoverExec [algorithme] [graphe] ([disp])}
+
+	\bigskip
+	\texttt{[algorithme]} : algorithme à lancer, avec ses paramètres
+	\begin{itemize}
+		\item Algorithme glouton : \texttt{greedy}
+		\item Algorithme optimal pour les arbres : \texttt{treeOpt}
+		\item Algorithme optimal pour les graphes bipartis : \texttt{bipartiteOpt}
+		\item Algorithme 2-approché avec arbre couvrant : \texttt{spanningTree}
+		\item Algorithme 2-approché avec élimination d'arêtes : \texttt{edgesDeletion}
+		\item Algorithme optimal pour petite couverture : \texttt{littleCover} + $tailleCouverture$
+		\item Pour tester l'existence d'une couverture de taille $k$ sur un graphe avec \texttt{minisat} : \texttt{minisat k}
+	\end{itemize}
+	
+	\bigskip
+	\texttt{[graphe]} : graphe sur lequel exécuter l'algorithme
+	\begin{itemize}
+		\item \texttt{chemin/vers/le/graphe.txt}
+		\item OU appel à une fonction de génération aléatoire avec la taille du graphe et la probabilité d'apparition d'une arête :
+			\begin{itemize}
+			\itemb Génération d'arbres de taille $n$ : \texttt{treeGen} + $n$
+			\itemb Génération de graphes de taille $n$ et proba $p$ : \texttt{gen} + $n$ + $p$
+			\itemb Génération de graphes bipartis de taille $n$ et proba $p$ : \texttt{bipartiteGen} + $n$ + $p$
+			\itemb Génération de graphes de taille $n$, proba $p$ et taille de couverture $k$ : \texttt{littleGen} + $n$ + $k$ + $p$
+			
+			\end{itemize}
+	\end{itemize}
+	
+	\bigskip
+	\texttt{[disp]} : argument facultatif, permettant d'afficher le graphe sur lequel l'algorithme est exécuté (pas disponible avec minisat).
+	
+	\paragraph{Exemples}
+	\begin{itemize}
+	\item Pour lancer l'algorithme glouton sur un graphe de 17 sommets généré aléatoirement avec une couverture de 5 sommets et une probabilité de 0.7 :
+	\texttt{./vertexCoverExec greedy littleGen 17 5 0.7}
+	
+	\item Pour lancer chercher une couverture de taille 4 sur un arbre de taille 12 généré aléatoirement :
+	\texttt{./vertexCoverExec littleCover 4 treeGen 12}
+	\end{itemize}
+	
+	\paragraph{Options}
+	\begin{itemize}
+	\item Pour connaître les commandes possibles : \texttt{./vertexCoverExec help}
+	
+	\end{itemize}
+
+\section{Tests}
+	Les tests peuvent être lancés avec l'exécutable \textit{testExec}, qui est généré grâce à la commande \texttt{make testTime}. Il faut spécifier le nombre de graphes sur lesquels on veut lancer les tests, leur fonction de génération et l'algorithme à tester :
+	
+	\bigskip
+	\texttt{./testExec [nbGraphes] [generation] [algorithme]}
+	
+	\bigskip
+	\texttt{[nbGraphes]} : nombre de graphes sur lesquels on fait les tests
+	
+	\bigskip
+	\texttt{[generation]} : choix de l'algorithme de génération aléatoire et paramètres 
+	\begin{itemize}
+			\itemb Génération d'arbres de taille $n$ : \texttt{treeGen} + $n$
+			\itemb Génération de graphes de taille $n$ et proba $p$ : \texttt{gen} + $n$ + $p$
+			\itemb Génération de graphes bipartis de taille $n$ et proba $p$ : \texttt{bipartiteGen} + $n$ + $p$
+			\itemb Génération de graphes de taille $n$, proba $p$ et taille de couverture $k$ : \texttt{littleGen} + $n$ + $k$ + $p$
+	\end{itemize}
+	
+	\bigskip
+	\texttt{[algorithme]}
+	\begin{itemize}
+		\item Algorithme glouton : \texttt{greedy}
+		\item Algorithme optimal pour les arbres : \texttt{treeOpt}
+		\item Algorithme optimal pour les graphes bipartis : \texttt{bipartiteOpt}
+		\item Algorithme 2-approché avec arbre couvrant : \texttt{spanningTree}
+		\item Algorithme 2-approché avec élimination d'arêtes : \texttt{edgesDeletion}
+		\item Algorithme optimal pour petite couverture : \texttt{littleCover} + $tailleCouverture$
+	\end{itemize}
+	
+
+\end{document}
