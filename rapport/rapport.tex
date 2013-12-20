@@ -121,7 +121,7 @@ Nous avons par la suite implémenté les primitives permettant de manipuler le g
 
 \subsubsection{Le module}
 
-Plusieurs sous-fonctions nous ont été utiles pour la génération de graphe, notamment pour garantir la connexité dans tout les algorithmes :
+Plusieurs sous-fonctions nous ont été utiles pour la génération de graphes, notamment pour garantir la connexité dans tous les algorithmes :
 \BlankLine
 \begin{itemize}
 	\itemb \texttt{random()} : Retourne un double aléatoire inclus dans [0,1[.
@@ -163,9 +163,9 @@ makeConnected($G$, ordreSommets[$i$], ordreSommets, $i$, $n$, estConnecté)
 \end{algorithm}
 \bigskip
 
-Comme dit précédemment, l'algorithme travail sur un ordre aléatoire des sommets (et non pas sur les vrai indices). Pour des raisons de simplicité, nous considérerons dorénavant, dans nos explications, que les nombres manipulés représentent directement les indices des sommets.
+Comme dit précédemment, l'algorithme travaille sur un ordre aléatoire des sommets (et non pas sur les vrais indices). Pour des raisons de simplicité, nous considérerons dorénavant dans nos explications, que les nombres manipulés représentent directement les indices des sommets.
 
-La variable \texttt{estConnecté} sera mise à  jour pour qu'à la fin de la deuxième boucle \texttt{for} elle indique si le sommet courant (d'indice $i$) est connecté à un des sommets précédent (d'indice dans $j\in[0, i[$).
+La variable \texttt{estConnecté} sera mise à jour pour qu'à la fin de la deuxième boucle \texttt{for} elle indique si le sommet courant (d'indice $i$) est connecté à un des sommets précédents (d'indice dans $j\in[0, i[$).
 
 Nous saurons donc (par induction) qu'une seule composante connexe va croître au fur et à mesure et chaque nouveau sommet y sera connecté. Le graphe généré $G$ sera donc connexe.
 
@@ -191,7 +191,7 @@ ajouterArête($G$, ordreSommet[$i$], ordreSommet[randint($0$, $i$)]
 \end{algorithm}
 \bigskip
 
-Nous connectons chaque sommet d'indice $i$ à un unique sommet d'indice $j\in[0, i[$ (ce sommet peut être vu comme le "père" de ce sommet et $j$ n'est pas une variable explicitement défini dans l'algorithme).
+Nous connectons chaque sommet d'indice $i$ à un unique sommet d'indice $j\in[0, i[$ (ce sommet peut être vu comme le "père" de ce sommet et $j$ n'est pas une variable explicitement définie dans l'algorithme).
 
 Grâce aux mêmes arguments que précédemment, nous savons que nous obtiendrons un graphe connexe. Si cette composante connexe qui croît est sans cycle, il faudrait y ajouter un sommet avec au moins deux arêtes pour en créer un.
 
@@ -201,7 +201,7 @@ Or nous n'ajoutons qu'une arête à chaque nouveau sommet, donc nous ne créons 
 
 \begin{algorithm}[H]
 \caption{Algorithme de génération de graphe biparti}
-\Entree{Un nombre $n$ de sommets à générer et une probabilité $\proba$ de connexion entre tout couple de sommet}
+\Entree{Un nombre $n$ de sommets à générer et une probabilité $\proba$ de connexion entre tout couple de sommets}
 \Sortie{Un graphe connexe biparti généré aléatoirement}
 \BlankLine
 $G$ $\leftarrow$ graphe de taille $n$
@@ -215,11 +215,11 @@ création d'un tableau extensible \texttt{part1} de taille $\size 1=0$
 création d'un tableau extensible \texttt{part2} de taille $\size 2=0$
 
 \bigskip
-ajouter(part1, ordreSommet[$0$])
+ajouter(part1, ordreSommets[$0$])
 
-ajouter(part2, ordreSommet[$1$])
+ajouter(part2, ordreSommets[$1$])
 
-ajouterArête(G, ordreSommet[$0$], ordreSommet[$1$])
+ajouterArête(G, ordreSommets[$0$], ordreSommets[$1$])
 
 \Pour{$i$ de $2$ à $n-1$}{
 
@@ -231,7 +231,7 @@ estConnecté $=$ false
 estConnecté $=$ randomEdge(G, ordreSommets[$i$], part2[$j$], $\proba$) OU estConnecté
 }
 makeConnected(G, ordreSommets[$i$], part2, $0$, size2, estConnecté)
-ajouter(part1, ordreSommet[$i$])
+ajouter(part1, ordreSommets[$i$])
  }
  {
 \Pour{$j$ de $0$ à $size1$}{
@@ -239,7 +239,7 @@ estConnecté $=$ randomEdge($G$, ordreSommets[$i$], part1[$j$], proba) OU estCon
 }
 makeConnected($G$, ordreSommets[$i$], part1, $0$, size1, estConnecté)
 
-ajouter(part2, ordreSommet[$i$])
+ajouter(part2, ordreSommets[$i$])
  }
 }
 
@@ -248,7 +248,7 @@ ajouter(part2, ordreSommet[$i$])
 \end{algorithm}
 \bigskip
 
-Les tableaux extensibles représentent les deux partitions de $G$. On les initialise arbitrairement avec le sommet d'indice $0$ dans la première partition et le sommet d'indice $1$ dans la seconde, puis on les relie (on part ainsi avec une composante connexe et deux partitions non vide).
+Les tableaux extensibles représentent les deux partitions de $G$. On les initialise arbitrairement avec le sommet d'indice $0$ dans la première partition et le sommet d'indice $1$ dans la seconde, puis on les relie (on part ainsi avec une composante connexe et deux partitions non vides).
 
 Ensuite, pour chaque nouveau sommet, on l'ajoutera aléatoirement dans la première ou dans la seconde partition (grâce au tirage \texttt{random} $<$ 0.5). On utilisera la même méthode que précédemment pour s'assurer d'avoir des sommets connectés à la composante connexe déjà présente (\texttt{estConnecté} et \texttt{makeConnected}), tout en veillant à ne les connecter qu'à des sommets de la partition opposée.
 
@@ -256,7 +256,7 @@ Ensuite, pour chaque nouveau sommet, on l'ajoutera aléatoirement dans la premi�
 
 \begin{algorithm}[H]
 \caption{Algorithme de génération de graphe à couverture minimale de taille fixée}
-\Entree{Un nombre $n$ de sommets à générer, une probabilité $\proba$ de connexion entre tout couple de sommet et en entier $k$ représentant la taille de couverture souhaitée}
+\Entree{Un nombre $n$ de sommets à générer, une probabilité $\proba$ de connexion entre tout couple de sommets et un entier $k$ représentant la taille de couverture souhaitée}
 \Sortie{Un graphe connexe de couverture de taille $k$ généré aléatoirement}
 \BlankLine
 $G$ $\leftarrow$ graphe de taille $n$
@@ -294,7 +294,7 @@ makeConnected($G$, ordreSommets[$g_i$], ordreSommets, $0$, $k$, estConnecté)
 \end{algorithm}
 \bigskip
 
-Durant la première boucle, nous parcourons tout les sommets de la couverture (fixés arbitrairement comme les $k$ premiers) et nous effectuons deux opérations :
+Durant la première boucle, nous parcourons tous les sommets de la couverture (fixés arbitrairement comme les $k$ premiers) et nous effectuons deux opérations :
 \begin{itemize}
 \itemb Nous les connectons à un sommet qui leur sera exclusif (il ne sera relié qu'à eux). Le voisin exclusif du sommet de la couverture $k_i$ sera le sommet $k_i+k$. Cette opération nous permettra de rendre nécessaire chaque sommet de la couverture.
 \itemb Nous connectons aléatoirement (toujours avec la probabilité \texttt{proba}) les sommets de la couverture entre eux.
@@ -306,7 +306,7 @@ La deuxième boucle (commençant donc après les sommets exclusifs : à $2\times
 
 Note : Cette méthode nécessite de réserver un sommet exclusif à chaque sommet de la couverture, et donc ne fonctionne qu'avec des couvertures de taille $k\leqslant \frac n 2$.
 
-En fait nous générons un couplage de taille $k$ qui nous garantit qu'aucune couverture plus petite n'existe. Cependant nous avons conscience que, par cette méthode, notre algorithme ne pourra pas générer tout l'ensemble des graphes de couverture de taille $k$. De plus, il impose une borne max à la taille de la couverture (contrainte moins gênante puisqu'il est destiné à générer des graphes à petite couverture).
+En fait nous générons un couplage de taille $k$ qui nous garantit qu'aucune couverture plus petite n'existe. Cependant nous avons conscience que, par cette méthode, notre algorithme ne pourra pas générer l'ensemble des graphes de couverture de taille $k$. De plus, il impose une borne max à la taille de la couverture (contrainte moins gênante puisqu'il est destiné à générer des graphes à petite couverture).
 
 \section{Algorithmes réalisés}
 
@@ -521,7 +521,7 @@ partitionPrévue $\leftarrow$ liste
 
 voisins $\leftarrow$ liste
 
-création d'un tableau de booléens \texttt{estVisité} de taille $n$ avec toute ses valeurs initialisée à false
+création d'un tableau de booléens \texttt{estVisité} de taille $n$ avec toutes ses valeurs à false
 
 \bigskip
 ajouterEnQueue(aTester, $0$)
@@ -576,7 +576,7 @@ ajouter(part2, ordreSommet[$1$])
 \end{algorithm}
 \bigskip
 
-Cette algorithme calcul la bi-partition d'un graphe biparti connexe. Pour ce faire, il effectue tout simplement un parcours en largeur en se rappelant quels sommets il n'a pas encore \og rangés\fg et quels sommets il a déjà \og visité\fg.
+Cet algorithme calcule la bi-partition d'un graphe biparti connexe. Pour ce faire, il effectue tout simplement un parcours en largeur en se rappelant quels sommets il n'a pas encore \og rangé\fg et quels sommets il a déjà \og visité\fg.
 
 Le premier sommet ($0$) est fixé arbitrairement dans la partition 1, puis chaque voisin d'un sommet à tester sera dans sa partition opposée (1-partitionCourante).
 
@@ -584,7 +584,7 @@ Le premier sommet ($0$) est fixé arbitrairement dans la partition 1, puis chaqu
 \vspace{0.35cm}
 \begin{algorithm}[H]
 \caption{Algorithme de construction du graphe orienté $H$}
-\Entree{Un graphe $G$ biparti connexe et ses deux partition part1 et part2 de taille respective size1 et size2 (tableaux d'entiers représentant les indices)}
+\Entree{Un graphe $G$ biparti connexe et ses deux partitions part1 et part2 de tailles respectives size1 et size2 (tableaux d'entiers représentant les indices)}
 \Sortie{Un graphe orienté $H$}
 \BlankLine
 $n$ = $\taille(G)$
@@ -627,17 +627,17 @@ création des entiers \texttt{sommetCourant}, \texttt{voisinCourant}
 
 Si on appelle $X$ et $Y$ les deux partitions de $G$, alors l'algorithme effectue le travail suivant :
 \begin{itemize}
-\itemb il crée du graphe orienté $H$ de taille $n+2$ (deux nouveaux sommets : $s$ et $t$)
-\itemb il relie $s$ vers tout les sommets de $X$
-\itemb il ajoute toute les arêtes de $G$ orientée de $X$ vers $Y$
-\itemb il relie tout les sommets de $Y$ vers $t$
+\itemb il crée un graphe orienté $H$ de taille $n+2$ (deux nouveaux sommets : $s$ et $t$)
+\itemb il relie $s$ vers tous les sommets de $X$
+\itemb il ajoute toutes les arêtes de $G$ orientées de $X$ vers $Y$
+\itemb il relie tous les sommets de $Y$ vers $t$
 \end{itemize}
 
-Ce graphe est nécessaire pour l'algorithme de couvertures optimal pour les graphes biparti. La prochaine étape est d'y appliquer l'algorithme de Ford-Fulkerson pour trouver un flux optimal allant de $s$ vers $t$ (toute les arêtes ayant une capacité de 1).
+Ce graphe est nécessaire pour l'algorithme trouvant une couverture optimale pour les graphes bipartis. La prochaine étape est d'y appliquer l'algorithme de Ford-Fulkerson pour trouver un flux optimal allant de $s$ vers $t$ (toute les arêtes ayant une capacité de 1).
 \\
 \begin{algorithm}[H]
 \caption{Algorithme de Ford-Fulkerson}
-\Entree{Le graphe orienté $H$ et les deux partition part1 et part2 de G de taille respective size1 et size2 (tableaux d'entiers représentant les indices)}
+\Entree{Le graphe orienté $H$ et les deux partitions part1 et part2 de G de tailles respectives size1 et size2 (tableaux d'entiers représentant les indices)}
 \Sortie{Une couverture d'arêtes minimale \texttt{cover} sous forme de liste de sommets}
 \BlankLine
 $n$ = taille($H$)
@@ -650,7 +650,7 @@ création d'un tableau d'entiers \texttt{pères} de taille $n$
 
 création d'un tableau d'entiers \texttt{couleurs} de taille $n$
 
-création d'une matrice d'entiers \texttt{flux} de taille $n\times n$ avec toute les valeurs initialisée à 0
+création d'une matrice d'entiers \texttt{flux} de taille $n\times n$ avec toute les valeurs initialisées à 0
 
 enfants $\leftarrow$ liste
 
@@ -749,13 +749,13 @@ $\cover  \leftarrow$ liste
 \end{algorithm}
 
 
-Le tableau de couleur utilisé représente les couleurs de l'algorithme (0 pour blanc, 1 pour gris et 2 pour noir).
+Le tableau de couleurs utilisé représente les couleurs de l'algorithme (0 pour blanc, 1 pour gris et 2 pour noir).
 
 Chaque itération dans la boucle while principale fera trouver un chemin allant de $s$ vers $t$, passant par un sommet de part1 et un sommet de part2.
 
-On remarquera que l'ont pourra passer par des flux déjà à 1 mais seulement en allant d'un fils vers son père (cela correspond a trouver un chemin valide dans le graphe résiduel) ce qui permettra d'optimiser le flux.
+On remarquera que l'on pourra passer par des flux déjà à 1 mais seulement en allant d'un fils vers son père (cela correspond à trouver un chemin valide dans le graphe résiduel) ce qui permettra d'optimiser le flux.
 
-Finalement, on ajoute dans la couverture tout les sommets dans la première partition coloriés en blanc et tout les sommets de la deuxième partition coloriés en noir.
+Finalement, on ajoute dans la couverture tous les sommets dans la première partition coloriés en blanc et tous les sommets de la deuxième partition coloriés en noir.
 
 \subsubsection{Complexité}
 
@@ -763,10 +763,9 @@ L'algorithme de calcul de la bipartition visitera une fois chaque sommet et lui 
 
 La construction du graphe orientée sera également rapide. Il faudra recopier chaque sommet et orienter chaque arête, ce qui se traduira par un coût de $O(|E(G)|+ |V(G)|)$.
 
-L'algorithme de Ford-Fulkerson a, quand à lui, une complexité de $O(|E(G)|)$ puisque toute les capacité d'arêtes sont fixée à 1.
+L'algorithme de Ford-Fulkerson a, quand à lui, une complexité de $O(|E(G)|)$ puisque toutes les capacité d'arêtes sont fixées à 1.
 
-Nous pouvons donc en déduire que la complexité de l'algorithme de calcul de couverture minimale pour un graphe biparti, qui cumule ces trois algorithmes, est %linéaire en la taille du graphe ($O(|E(G)|+ |V(G)|)$).
-en $O(|E(G)|+ |V(G)|)$.
+Nous pouvons donc en déduire que la complexité de l'algorithme de calcul de couverture minimale pour un graphe biparti, qui cumule ces trois algorithmes, est en $O(|E(G)|+ |V(G)|)$.
 
 \subsubsection{Résultats}
 
@@ -782,7 +781,7 @@ Nous avons effectué des tests sur 100 graphes bipartis de taille $n$ générés
 \end{tabular}
 \end{center}
 
-On voit que les résultats sont proches de ceux attendus : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur 6.6. Quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur compris entre 50 et 85. %Cela correspond bien à la complexité estimée.
+On voit que les résultats sont proches de ceux attendus : quand la taille de l'instance double, le temps d'exécution est multiplié par un facteur 6.6. Quand la taille de l'instance est multipliée par 5, le temps d'exécution est multiplié par un facteur compris entre 50 et 85. 
 
 \subsection{Algorithme 2-approché par élimination d'arêtes}
 
@@ -883,8 +882,7 @@ Ainsi, l'algorithme tourne en $O(|E|\times \Delta(G))$ où $\Delta(G)$ est le de
 
 \paragraph{Taille de la couverture trouvée}
 
-Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
-%%% A COMPLETER
+Nous avons comparé la taille de la couverture trouvée avec la taille de la couverture effective (sur des graphes générés avec \texttt{littleGen}) : l'algorithme \texttt{edgesDeletion} renvoie bien des couvertures de taille inférieure à deux fois celle de la couverture optimale.
 
 \paragraph{Tests}
 Nous avons testé l'algorithme par élimination d'arêtes sur des séries de 100 graphes de taille $n$ générés aléatoirement avec \texttt{generation} et une probabilité de 0.5. Les tests ont été faits sur la même machine, et les temps sont donnés en secondes.
@@ -903,7 +901,7 @@ On voit que quand la taille de l'instance est doublée, le temps d'exécution es
 Ces temps montrent bien que notre algorithme se comporte conformément à la complexité estimée.
 
 \bigskip
-Nous avons ensuite testé l'algorithme sur des séries de 100 arbres générés aléatoirement avec \texttt{treeGeneration} ; ces graphes ayant moins d'arêtes, nous nous attendons à pouvoir traiter des graphes de taille plus grande.
+Nous avons ensuite testé l'algorithme sur des séries de 100 arbres générés aléatoirement avec \texttt{tree} \texttt{Generation} ; ces graphes ayant moins d'arêtes, nous nous attendons à pouvoir traiter des graphes de taille plus grande.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
@@ -993,9 +991,9 @@ parcours\_profondeur($G$, $i$, $\cover$, $t$)
 \Entree{le graphe $G$}
 \BlankLine
 
-$\cover \leftarrow$ liste % a voir si externe
+$\cover \leftarrow$ liste
 
-pile $\leftarrow$ liste % a voir si externe
+pile $\leftarrow$ liste
 
 \Pour{$i \in V(G)$}{
 	$\Color[i] = 0$;
@@ -1048,15 +1046,14 @@ L'algorithme présenté demande un préprocessing faisable en temps linéaire (i
 \paragraph{Taille de la couverture trouvée}
 
 Nous avons comparé la taille $l$ de la couverture trouvée avec la taille $k$ de la couverture effective (sur des graphes générés avec \texttt{littleGen}) :
-%%% A COMPLETER
 \begin{itemize}
-\item avec l'algorithme itératif :
+\item avec l'algorithme itératif :  l'algorithme ne se comporte pas comme il le faudrait : il retourne majoritairement des couvertures de taille plus petite que deux fois la taille de l'optimale, mais il arrive assez régulièrement qu'il retourne une couverture de taille supérieure. Nous n'avons pas réussi à comprendre quelle en était la raison.
 \item avec l'algorithme récursif : l'algorithme nous retourne des couvertures de taille $l$ avec $l \leq 2*k$, il est bien 2-approché.
 \end{itemize}
 
 \paragraph{Comparaison des deux algorithmes}
 
-Les deux versions (itérative et récur-sive) ont été exécutées sur un ensemble de 100 graphes de $n$ sommets (générés aléatoi-rement avec la fonction \texttt{generation} et une probabilité de 0.5), sur une même machine.
+Les deux versions (itérative et récursive) ont été exécutées sur un ensemble de 100 graphes de $n$ sommets (générés aléatoirement avec la fonction \texttt{generation} et une probabilité de 0.5), sur une même machine.
 Les temps sont donnés en secondes.
 
 Pour l'algorithme itératif :
@@ -1309,11 +1306,9 @@ On voit que le temps d'exécution augmente très vite : le rapport entre le temp
 
 \section{Résolution avec un sat-solver}
 
-% Proposition de plan qui va sûrement évoluer quand on se sera penchés sur cette partie.
-
 \subsection{Réduction}
 
-Nous nous proposons maintenant de trouver une couverture d'une taille donnée si elle existe, à l'aide du sat-solver Minisat, en passant donc par une réduction du problème vertex cover.
+Nous nous proposons maintenant de trouver une couverture d'une taille donnée si elle existe, à l'aide du sat-solver \texttt{minisat}, en passant donc par une réduction du problème Vertex Cover.
 
 Pour trouver une couverture de taille $p$ à un graphe $G$ donné à $n$ sommets, on crée les variables $(x_{i,k})_{1\leqslant i\leqslant n \atop 1\leqslant k \leqslant p}$ qui indiqueront si le sommet $i$ est le $k^{\text{ième}}$ sommet de la couverture.
 
@@ -1324,7 +1319,7 @@ Nous avons donc trois contraintes à respecter :
  \itemb Chaque arête doit avoir une extremité dans la couverture.
 \end{itemize}
 
-Ces contraintes se formulent en problème de satisfiabilité de la façon suivante 
+Ces contraintes se formulent en problème de satisfaisabilité de la façon suivante :
 
 \[\varphi_1=\dland{i=1} n \quad\dland{1\leqslant k < l \leqslant p}{} (\lnot x_{i,k}) \lor (\lnot x_{i,l})\]
 
@@ -1332,7 +1327,7 @@ Ces contraintes se formulent en problème de satisfiabilité de la façon suivan
 
 \[\varphi_3=\dland{(i,j)\in E(G)}{} \dlor{k=1} p  (\lnot x_{i,k}) \lor (\lnot x_{j,k})\]
 
-Le problème de satisfiabilité auquel se réduit vertex-cover est finalement $\varphi=\varphi_1\land \varphi_2\land \varphi_3$.
+Le problème de satisfaisabilité auquel se réduit Vertex Cover est finalement $\varphi=\varphi_1\land \varphi_2\land \varphi_3$.
 
 \subsection{Algorithme et complexité}
 
@@ -1343,9 +1338,9 @@ Le problème de satisfiabilité auquel se réduit vertex-cover est finalement $\
  \itemb $|E|$ clauses de $2p$ variables pour $\varphi_3$.
 \end{itemize}
 
-On réduit ainsi la recherche d'une $p$-couverture sur $n$ sommets à un problème de $2p$-satisfiabilité à $\frac {np (n+p-2)}2 +|E|$ clauses. La complexité de la réduction en elle-même est proportionnel au nombre de clauses générés, mais elle est négligeable par rapport à la résolution du problème de satisfiabilité.
+On réduit ainsi la recherche d'une $p$-couverture sur $n$ sommets à un problème de $2p$-satisfaisabilité à $\frac {np (n+p-2)}2 +|E|$ clauses. La complexité de la réduction en elle-même est proportionnelle au nombre de clauses générées, mais elle est négligeable par rapport à la résolution du problème de satisfaisabilité.
 
 \vspace{0.35cm}
-\emph{Remarque} : le programme que nous avons obtenu renvoie bien une couverture de la taille indiquée s'il en trouve une mais comporte des erreurs qui rendent impossible de le chronométrer sur une batterie de tests.
+\emph{Remarque} : le programme que nous avons obtenu renvoie bien une couverture de la taille indiquée s'il en trouve une, mais comporte des erreurs qui rendent impossible de le chronométrer sur une batterie de tests.
 
 \end{document}
